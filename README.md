@@ -4,7 +4,7 @@ Provides some libraries to read and write simple plain text
 using the [boost Spirit](https://www.boost.org/doc/libs/1_73_0/libs/spirit/doc/html/index.html) library.
 
 The main use case is a CSV parser, that should read files conform to
-[CSV-1203](http://mastpoint.com/csv-1203)
+[CSV-1203](https://idoc.pub/documents/csv-file-format-specification-standard-csv-1203-6nq88y5xr9nw)
 and
 [RFC 4180](https://tools.ietf.org/html/rfc4180)
 
