@@ -216,19 +216,6 @@ To restore the standard environment:
 source deactivate.sh
 ```
 
-## Configure MdtPlainText
-
-Install the dependencies:
-```bash
-conan install -s build_type=Debug -o build_tests=True --build=missing ..
-```
-
-Configure MdtPlainText:
-```bash
-cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON ..
-cmake-gui .
-```
-
 ## Configure and build with ThreadSanitizer
 
 Gcc supports ThreadSanitizer, but Clang seems to give less false positive.
