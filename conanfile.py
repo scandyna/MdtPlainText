@@ -10,9 +10,11 @@ class MdtPlainTextConan(ConanFile):
   description = "Provides some libraries to read and write simple plain text using the boost Spirit library, typically CSV."
   settings = "os", "compiler", "build_type", "arch"
   options = {"shared": [True, False],
+             "use_conan_boost": [True, False],
              "use_conan_qt": [True, False],
              "build_tests": [True, False]}
   default_options = {"shared": True,
+                     "use_conan_boost": False,
                      "use_conan_qt": False,
                      "build_tests": False}
   requires = "MdtCMakeModules/[>=0.14.9]@scandyna/testing"
@@ -37,6 +39,9 @@ class MdtPlainTextConan(ConanFile):
 
     if self.options.build_tests:
       self.requires("Catch2/[>=2.11.1]@catchorg/stable")
+
+    if self.options.use_conan_boost:
+      self.requires("boost/[>=1.65.1]@conan/stable")
 
     # Building 5.14.x causes currently problems (8.04.2020)
     # As workaround, try fix a known version that we can build
