@@ -21,6 +21,7 @@ mdt_add_test(
   SOURCE_FILES
     src/CsvFileReaderTest.cpp
 )
+target_compile_definitions(csvFileReaderTest PRIVATE TEST_FILES_DIR="${PROJECT_SOURCE_DIR}/libs/PlainText/tests/files")
 
 mdt_add_test(
   NAME CsvFileReaderErrorTest
@@ -29,3 +30,4 @@ mdt_add_test(
   SOURCE_FILES
     src/CsvFileReaderErrorTest.cpp
 )
+target_compile_definitions(csvFileReaderErrorTest PRIVATE TEST_FILES_DIR="${PROJECT_SOURCE_DIR}/libs/PlainText/tests/files")

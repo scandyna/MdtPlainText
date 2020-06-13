@@ -67,6 +67,7 @@ bool CsvFileReader::atEnd() const noexcept
 std::vector<std::string> CsvFileReader::readLine() const
 {
   assert( isOpen() );
+  assert( !atEnd() );
 
   return mImpl->readLine< std::vector<std::string> >();
 }
@@ -74,6 +75,7 @@ std::vector<std::string> CsvFileReader::readLine() const
 std::vector< std::vector<std::string> > CsvFileReader::readAll() const
 {
   assert( isOpen() );
+  assert( !atEnd() );
 
   return mImpl->readAll< std::vector< std::vector<std::string> > >();
 }

@@ -114,7 +114,9 @@ namespace Mdt{ namespace PlainText{
      *
      * \exception CsvFileReadError
      * \pre This file reader must be open
+     * \pre This file reader must not be at end
      * \sa isOpen()
+     * \sa atEnd()
      */
     std::vector<std::string> readLine() const;
 
@@ -122,7 +124,9 @@ namespace Mdt{ namespace PlainText{
      *
      * \exception CsvFileReadError
      * \pre This file reader must be open
+     * \pre This file reader must not be at end (i.e. the file must not be empty)
      * \sa isOpen()
+     * \sa atEnd()
      */
     std::vector< std::vector<std::string> > readAll() const;
 

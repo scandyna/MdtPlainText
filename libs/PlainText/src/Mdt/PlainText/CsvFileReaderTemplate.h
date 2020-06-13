@@ -171,31 +171,41 @@ namespace Mdt{ namespace PlainText{
     {
       assert( isOpen() );
 
-      return mFileIterator == boost::spirit::make_default_multi_pass( SourceIterator() );
+      return mFileIterator == sourceIteratorEnd();
     }
 
     /*! \brief Read a line from the CSV file
      *
      * \exception CsvFileReadError
      * \pre This file reader must be open
+     * \pre This file reader must not be at end
      * \sa isOpen()
+     * \sa atEnd()
      */
     template<typename Record>
     Record readLine() const
     {
       assert( isOpen() );
+      assert( !atEnd() );
+
+      return Record();
     }
 
     /*! \brief Read all lines from the CSV file
      *
      * \exception CsvFileReadError
      * \pre This file reader must be open
+     * \pre This file reader must not be at end (i.e. the file must not be empty)
      * \sa isOpen()
+     * \sa atEnd()
      */
     template<typename RecordList>
     RecordList readAll() const
     {
       assert( isOpen() );
+      assert( !atEnd() );
+
+      return RecordList();
     }
 
     /*! \brief Close this file reader
@@ -206,6 +216,12 @@ namespace Mdt{ namespace PlainText{
     }
 
    private:
+
+    static
+    MultiPassSourceIterator sourceIteratorEnd() noexcept
+    {
+      return boost::spirit::make_default_multi_pass( SourceIterator() );
+    }
 
     MultiPassSourceIterator mFileIterator;
     std::ifstream mFileStream;

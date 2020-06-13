@@ -8,6 +8,8 @@
 #include "Mdt/PlainText/CsvFileReader"
 #include <QTemporaryFile>
 #include <QFile>
+#include <QFileInfo>
+#include <QDir>
 #include <QTemporaryDir>
 #include <QString>
 #include <QLatin1String>
@@ -38,6 +40,14 @@ bool writeSimpleCsvFile(QFile & file)
 void setFilePathToReader(const QFile & file, CsvFileReader & reader)
 {
   reader.setFilePath( file.fileName().toLocal8Bit().toStdString() );
+}
+
+void setTestFilePathToReader(const char *testFileName, CsvFileReader & reader)
+{
+  const QString filePath = QDir::cleanPath( QString::fromLocal8Bit(TEST_FILES_DIR) + '/' + QLatin1String(testFileName) );
+  Q_ASSERT( QFileInfo::exists(filePath) );
+
+  reader.setFilePath( filePath.toLocal8Bit().toStdString() );
 }
 
 void setDirectoryPathToReader(const QTemporaryDir & dir, CsvFileReader & reader)
