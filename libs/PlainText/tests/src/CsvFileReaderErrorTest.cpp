@@ -5,3 +5,29 @@
  * https://www.boost.org/LICENSE_1_0.txt)
  */
 #include "CsvFileReaderTestCommon.h"
+
+TEST_CASE("open")
+{
+  CsvFileReader reader;
+
+  SECTION("File not exists")
+  {
+    reader.setFilePath("/some/non/exising/file.csv");
+
+    REQUIRE_THROWS_AS( reader.open(), FileOpenError );
+  }
+
+  /*
+   * See https://stackoverflow.com/questions/9591036/ifstream-open-doesnt-set-error-bits-when-argument-is-a-directory
+   *
+  SECTION("Path refers to a directory")
+  {
+    QTemporaryDir dir;
+    REQUIRE( dir.isValid() );
+
+    setDirectoryPathToReader(dir, reader);
+
+    REQUIRE_THROWS_AS( reader.open(), FileOpenError );
+  }
+  */
+}

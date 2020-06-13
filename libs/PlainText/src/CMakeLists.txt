@@ -8,9 +8,13 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_PlainText
+  Mdt/PlainText/CsvParserSettings.cpp
+  Mdt/PlainText/CsvFileReaderTemplate.cpp
   Mdt/PlainText/CsvFileReader.cpp
 )
 add_library(Mdt::PlainText ALIAS Mdt_PlainText)
+
+target_compile_features(Mdt_PlainText PUBLIC cxx_std_14)
 
 if(BUILD_USE_IPO_LTO)
   set_target_properties(Mdt_PlainText

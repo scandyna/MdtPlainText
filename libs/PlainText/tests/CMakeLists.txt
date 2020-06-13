@@ -7,9 +7,17 @@
 include(MdtAddTest)
 
 mdt_add_test(
+  NAME CsvParserSettingsTest
+  TARGET csvParserSettingsTest
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main
+  SOURCE_FILES
+    src/CsvParserSettingsTest.cpp
+)
+
+mdt_add_test(
   NAME CsvFileReaderTest
   TARGET csvFileReaderTest
-  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test
   SOURCE_FILES
     src/CsvFileReaderTest.cpp
 )
@@ -17,7 +25,7 @@ mdt_add_test(
 mdt_add_test(
   NAME CsvFileReaderErrorTest
   TARGET csvFileReaderErrorTest
-  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test
   SOURCE_FILES
     src/CsvFileReaderErrorTest.cpp
 )

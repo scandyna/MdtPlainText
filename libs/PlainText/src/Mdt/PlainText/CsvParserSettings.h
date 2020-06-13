@@ -16,7 +16,7 @@ namespace Mdt{ namespace PlainText{
    *
    * \note Some part of this API documentation
    *       refers to CSV-1203 standard.
-   *       CSV-1203 is a open standard available here: http://mastpoint.com/csv-1203
+   *       CSV-1203 is a open standard available here: https://idoc.pub/documents/csv-file-format-specification-standard-csv-1203-6nq88y5xr9nw
    */
   class MDT_PLAINTEXT_EXPORT CsvParserSettings
   {
