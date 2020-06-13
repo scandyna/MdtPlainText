@@ -10,6 +10,7 @@
 #include "CsvParserSettings.h"
 #include "FileOpenError.h"
 #include "mdt_plaintext_export.h"
+#include <boost/spirit/include/support_multi_pass.hpp>
 #include <string>
 #include <cassert>
 #include <fstream>
@@ -61,6 +62,7 @@ namespace Mdt{ namespace PlainText{
   class MDT_PLAINTEXT_EXPORT CsvFileReaderTemplate
   {
     using SourceIterator = std::istreambuf_iterator<char>;
+    using MultiPassSourceIterator = boost::spirit::multi_pass<SourceIterator>;
 
    public:
 
@@ -143,11 +145,12 @@ namespace Mdt{ namespace PlainText{
       assert( !filePath().empty() );
 
       mFileStream.open(mFilePath);
-      mFileIterator = SourceIterator(mFileStream);
       if( mFileStream.fail() ){
         const std::string what = "open file '" + mFilePath + "' failed";
         throw FileOpenError(what);
       }
+
+      mFileIterator = boost::spirit::make_default_multi_pass( SourceIterator(mFileStream) );
     }
 
     /*! \brief Check if this file reader is open
@@ -168,7 +171,7 @@ namespace Mdt{ namespace PlainText{
     {
       assert( isOpen() );
 
-      return mFileIterator == SourceIterator();
+      return mFileIterator == boost::spirit::make_default_multi_pass( SourceIterator() );
     }
 
     /*! \brief Read a line from the CSV file
@@ -204,7 +207,7 @@ namespace Mdt{ namespace PlainText{
 
    private:
 
-    SourceIterator mFileIterator;
+    MultiPassSourceIterator mFileIterator;
     std::ifstream mFileStream;
     std::string mFilePath;
     CsvParserSettings mCsvSettings;
