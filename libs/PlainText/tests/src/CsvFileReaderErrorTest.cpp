@@ -19,7 +19,7 @@ TEST_CASE("open")
 
   /*
    * See https://stackoverflow.com/questions/9591036/ifstream-open-doesnt-set-error-bits-when-argument-is-a-directory
-   *
+   */
   SECTION("Path refers to a directory")
   {
     QTemporaryDir dir;
@@ -29,5 +29,4 @@ TEST_CASE("open")
 
     REQUIRE_THROWS_AS( reader.open(), FileOpenError );
   }
-  */
 }

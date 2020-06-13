@@ -13,6 +13,7 @@
 #include <string>
 #include <cassert>
 #include <fstream>
+#include <iterator>
 
 namespace Mdt{ namespace PlainText{
 
@@ -59,6 +60,8 @@ namespace Mdt{ namespace PlainText{
    */
   class MDT_PLAINTEXT_EXPORT CsvFileReaderTemplate
   {
+    using SourceIterator = std::istreambuf_iterator<char>;
+
    public:
 
     /*! \brief Construct a CSV file reader
@@ -140,6 +143,7 @@ namespace Mdt{ namespace PlainText{
       assert( !filePath().empty() );
 
       mFileStream.open(mFilePath);
+      mFileIterator = SourceIterator(mFileStream);
       if( mFileStream.fail() ){
         const std::string what = "open file '" + mFilePath + "' failed";
         throw FileOpenError(what);
@@ -164,7 +168,7 @@ namespace Mdt{ namespace PlainText{
     {
       assert( isOpen() );
 
-      return mFileStream.eof();
+      return mFileIterator == SourceIterator();
     }
 
     /*! \brief Read a line from the CSV file
@@ -200,6 +204,7 @@ namespace Mdt{ namespace PlainText{
 
    private:
 
+    SourceIterator mFileIterator;
     std::ifstream mFileStream;
     std::string mFilePath;
     CsvParserSettings mCsvSettings;
