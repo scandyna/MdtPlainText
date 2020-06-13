@@ -14,6 +14,11 @@ add_library(Mdt_PlainText
 )
 add_library(Mdt::PlainText ALIAS Mdt_PlainText)
 
+target_link_libraries(Mdt_PlainText
+  PUBLIC
+    Boost::boost
+)
+
 target_compile_features(Mdt_PlainText PUBLIC cxx_std_14)
 
 if(BUILD_USE_IPO_LTO)
