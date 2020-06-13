@@ -134,6 +134,7 @@ endif()
 # so no component is defined for it
 # https://cmake.org/pipermail/cmake/2013-September/055941.html
 find_package(Boost REQUIRED)
+message("Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
 
 if(BUILD_TESTS OR BUILD_BENCHMARKS)
   find_package(Catch2 REQUIRED)
