@@ -17,7 +17,7 @@ project(MdtPlainText)
 
 if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
   include("${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-  conan_basic_setup()
+  conan_basic_setup(NO_OUTPUT_DIRS)
 endif()
 
 #######################################################
@@ -132,14 +132,12 @@ endif()
 
 if(BUILD_TESTS OR BUILD_BENCHMARKS)
   find_package(Catch2 REQUIRED)
+  find_package(Qt5 COMPONENTS Test REQUIRED)
 endif()
 
 if(ENABLE_QT_SUPPORT)
   find_package(Threads REQUIRED)
   find_package(Qt5 COMPONENTS Core REQUIRED)
-  if(BUILD_TESTS OR BUILD_BENCHMARKS)
-    find_package(Qt5 COMPONENTS Test REQUIRED)
-  endif()
 endif()
 
 #######################

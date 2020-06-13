@@ -21,7 +21,7 @@ Some tools and libraries are required to use MdtPlainText:
  - Conan (optional)
  - A compiler (Gcc or Clang or MSVC)
  - Make (optional)
- - Qt5
+ - Qt5 (optional: for libraries with Qt support or for the tests)
 
 For a overview how to install them, see https://gitlab.com/scandyna/build-and-install-cpp
 
