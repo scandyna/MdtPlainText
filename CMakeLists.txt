@@ -57,6 +57,8 @@ option(BUILD_EXAMPLES "Build the examples" OFF)
 option(BUILD_CPP_API_DOC "Generate Doxyfile for C++ API documentation" OFF)
 mdt_set_available_build_types(Release Debug RelWithDebInfo MinSizeRel Instrumented)
 option(WARNING_AS_ERROR "Threat warnings as errors" OFF)
+option(BOOST_SPIRIT_DEBUG "Enable Boost Spirit debug" OFF)
+option(ENABLE_QT_SUPPORT "Enable Qt support" ON)
 
 # Provide LPO/LTO option if supported
 # Note: CMake before 3.9 does only support Intel compiler on Linux.
@@ -246,3 +248,7 @@ if(BUILD_TESTS OR BUILD_BENCHMARKS)
 endif()
 
 add_subdirectory(libs/PlainText)
+
+if(ENABLE_QT_SUPPORT)
+  add_subdirectory(libs/PlainText_QtCore)
+endif()
