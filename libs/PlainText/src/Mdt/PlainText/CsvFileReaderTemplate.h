@@ -7,6 +7,7 @@
 #ifndef MDT_PLAIN_TEXT_CSV_FILE_READER_TEMPLATE_H
 #define MDT_PLAIN_TEXT_CSV_FILE_READER_TEMPLATE_H
 
+#include "CsvParserTemplate.h"
 #include "CsvParserSettings.h"
 #include "FileOpenError.h"
 #include "mdt_plaintext_export.h"
@@ -116,14 +117,14 @@ namespace Mdt{ namespace PlainText{
       assert( settings.isValid() );
       assert( !isOpen() );
 
-      mCsvSettings = settings;
+      mParser.setCsvSettings(settings);
     }
 
     /*! \brief Get CSV settings
      */
     const CsvParserSettings & csvSettings() const noexcept
     {
-      return mCsvSettings;
+      return mParser.csvSettings();
     }
 
     /*! \brief Open this CSV file reader
@@ -188,7 +189,7 @@ namespace Mdt{ namespace PlainText{
       assert( isOpen() );
       assert( !atEnd() );
 
-      return Record();
+      return mParser.readLine<Record>( mFileIterator, sourceIteratorEnd() );
     }
 
     /*! \brief Read all lines from the CSV file
@@ -224,9 +225,9 @@ namespace Mdt{ namespace PlainText{
     }
 
     MultiPassSourceIterator mFileIterator;
+    CsvParserTemplate<MultiPassSourceIterator> mParser;
     std::ifstream mFileStream;
     std::string mFilePath;
-    CsvParserSettings mCsvSettings;
   };
 
 }} // namespace Mdt{ namespace PlainText{

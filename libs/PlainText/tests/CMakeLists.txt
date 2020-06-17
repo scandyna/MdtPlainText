@@ -15,6 +15,38 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME CsvGrammarTest
+  TARGET csvGrammarTest
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main
+  SOURCE_FILES
+    src/CsvGrammarTest.cpp
+)
+
+mdt_add_test(
+  NAME CsvGrammarErrorTest
+  TARGET csvGrammarErrorTest
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main
+  SOURCE_FILES
+    src/CsvGrammarErrorTest.cpp
+)
+
+mdt_add_test(
+  NAME CsvParserTemplateTest
+  TARGET csvParserTemplateTest
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main
+  SOURCE_FILES
+    src/CsvParserTemplateTest.cpp
+)
+
+mdt_add_test(
+  NAME CsvParserTemplateErrorTest
+  TARGET csvParserTemplateErrorTest
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main
+  SOURCE_FILES
+    src/CsvParserTemplateErrorTest.cpp
+)
+
+mdt_add_test(
   NAME CsvFileReaderTest
   TARGET csvFileReaderTest
   DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test

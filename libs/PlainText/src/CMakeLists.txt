@@ -8,7 +8,10 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_PlainText
+  Mdt/PlainText/Grammar/Csv/FieldColumnRule.cpp
+  Mdt/PlainText/Grammar/Csv/RecordRule.cpp
   Mdt/PlainText/CsvParserSettings.cpp
+  Mdt/PlainText/CsvParserTemplate.cpp
   Mdt/PlainText/CsvFileReaderTemplate.cpp
   Mdt/PlainText/CsvFileReader.cpp
 )
@@ -32,6 +35,13 @@ target_include_directories(Mdt_PlainText
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 )
+
+if(BOOST_SPIRIT_DEBUG)
+  target_compile_definitions(Mdt_PlainText
+    PUBLIC
+      BOOST_SPIRIT_DEBUG
+  )
+endif()
 
 generate_export_header(Mdt_PlainText)
 
