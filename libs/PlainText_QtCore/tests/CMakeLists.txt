@@ -14,3 +14,10 @@ mdt_add_test(
     src/BoostSpiritQStringContainerTest.cpp
 )
 
+mdt_add_test(
+  NAME BoostSpiritQStringParserTest
+  TARGET boostSpiritQStringParserTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
+  SOURCE_FILES
+    src/BoostSpiritQStringParserTest.cpp
+)
