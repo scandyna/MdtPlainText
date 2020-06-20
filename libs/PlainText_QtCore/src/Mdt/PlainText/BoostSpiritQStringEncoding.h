@@ -31,6 +31,7 @@
 #include <QChar>
 // #include <QString>
 #include <boost/spirit/include/qi.hpp>
+#include <cctype>
 
 namespace boost { namespace spirit { namespace char_encoding{
 
@@ -41,21 +42,91 @@ namespace boost { namespace spirit { namespace char_encoding{
     // isascii_
 
     static
-    bool ischar(const QChar &)
+    bool ischar(const QChar &) noexcept
     {
       return true;
     }
 
     static
-    bool isalnum(const QChar & ch)
+    bool isalnum(const QChar & ch) noexcept
     {
       return ch.isLetterOrNumber();
     }
 
-    // isalpha
-    // isdigit
+    static
+    bool isalpha(const QChar & ch) noexcept
+    {
+      return ch.isLetter();
+    }
+
+    static
+    bool isblank(const QChar & ch) noexcept
+    {
+      return (ch.toLatin1() == ' ' || ch.toLatin1() == '\t');
+    }
+
+    static
+    bool isspace(const QChar & ch) noexcept
+    {
+      return ch.isSpace();
+    }
+
+    static
+    bool iscntrl(const QChar & ch) noexcept
+    {
+      return ch.category() == QChar::Other_Control;
+    }
+
+    static
+    bool isdigit(const QChar & ch) noexcept
+    {
+      return ch.isDigit();
+    }
+
+    static
+    bool isxdigit(const QChar & ch) noexcept
+    {
+      if( ch.isDigit() ){
+        return true;
+      }
+      const char c = ch.toLower().toLatin1();
+      if( (c >= 'a') && (c <= 'f') ){
+        return true;
+      }
+      return false;
+    }
+
+    static
+    bool isgraph(const QChar & ch) noexcept
+    {
+      return ch.isPrint() && !ch.isSpace();
+    }
+
+    static
+    bool islower(const QChar & ch) noexcept
+    {
+      return ch.isLower();
+    }
+
+    static
+    bool isupper(const QChar & ch) noexcept
+    {
+      return ch.isUpper();
+    }
+
+    static
+    bool isprint(const QChar & ch) noexcept
+    {
+      return ch.isPrint();
+    }
+
+    static
+    bool ispunct(const QChar & ch) noexcept
+    {
+      return ch.isPunct();
+    }
+
     // isxdigit
-    // iscntrl
     // ...
 
     // 
@@ -102,6 +173,17 @@ namespace boost { namespace spirit { namespace char_class{
 
     BOOST_SPIRIT_CLASSIFY(char_, ischar)
     BOOST_SPIRIT_CLASSIFY(alnum, isalnum)
+    BOOST_SPIRIT_CLASSIFY(alpha, isalpha)
+    BOOST_SPIRIT_CLASSIFY(blank, isblank)
+    BOOST_SPIRIT_CLASSIFY(space, isspace)
+    BOOST_SPIRIT_CLASSIFY(cntrl, iscntrl)
+    BOOST_SPIRIT_CLASSIFY(digit, isdigit)
+    BOOST_SPIRIT_CLASSIFY(xdigit, isxdigit)
+    BOOST_SPIRIT_CLASSIFY(graph, isgraph)
+    BOOST_SPIRIT_CLASSIFY(lower, islower)
+    BOOST_SPIRIT_CLASSIFY(upper, isupper)
+    BOOST_SPIRIT_CLASSIFY(print, isprint)
+    BOOST_SPIRIT_CLASSIFY(punct, ispunct)
 
 #undef BOOST_SPIRIT_CLASSIFY
   };
