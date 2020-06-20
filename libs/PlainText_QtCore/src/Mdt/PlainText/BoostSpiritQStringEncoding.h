@@ -31,7 +31,12 @@ namespace boost { namespace spirit { namespace char_encoding{
       return true;
     }
 
-    // isalnum
+    static
+    bool isalnum(const QChar & ch)
+    {
+      return ch.isLetterOrNumber();
+    }
+
     // isalpha
     // isdigit
     // isxdigit
@@ -81,6 +86,7 @@ namespace boost { namespace spirit { namespace char_class{
         }
 
     BOOST_SPIRIT_CLASSIFY(char_, ischar)
+    BOOST_SPIRIT_CLASSIFY(alnum, isalnum)
 
 #undef BOOST_SPIRIT_CLASSIFY
   };
