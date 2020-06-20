@@ -1,15 +1,30 @@
-/*
- * Copyright Philippe Steinmann 2020 - 2020.
- * Distributed under the Boost Software License, Version 1.0.
- * (See accompanying file LICENSE.txt or copy at
- * https://www.boost.org/LICENSE_1_0.txt)
- *
- * This code is inspired from the this post:
- * http://boost.2283326.n4.nabble.com/QString-and-QChar-support-in-qi-td3555736.html
- *
- * and from the Spirit documentation:
- * https://www.boost.org/doc/libs/1_73_0/libs/spirit/doc/html/spirit/qi/reference/basics.html
- */
+/****************************************************************************
+ **
+ ** MdtPlainText - A C++ library to read and write simple plain text
+ ** using the boost Spirit library.
+ **
+ ** Copyright (C) 2020-2020 Philippe Steinmann.
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU Lesser General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ** GNU Lesser General Public License for more details.
+ **
+ ** You should have received a copy of the GNU Lesser General Public License
+ ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ **
+ ** This code is inspired from the this post:
+ ** http://boost.2283326.n4.nabble.com/QString-and-QChar-support-in-qi-td3555736.html
+ **
+ ** and from the Spirit documentation:
+ ** https://www.boost.org/doc/libs/1_73_0/libs/spirit/doc/html/spirit/qi/reference/basics.html
+ **
+ ****************************************************************************/
 #ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_ENCODING_H
 #define MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_ENCODING_H
 
