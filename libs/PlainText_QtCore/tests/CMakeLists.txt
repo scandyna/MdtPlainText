@@ -21,3 +21,11 @@ mdt_add_test(
   SOURCE_FILES
     src/BoostSpiritQStringParserTest.cpp
 )
+
+mdt_add_test(
+  NAME BoostSpiritQStringConstIteratorTest
+  TARGET boostSpiritQStringConstIteratorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
+  SOURCE_FILES
+    src/BoostSpiritQStringConstIteratorTest.cpp
+)
