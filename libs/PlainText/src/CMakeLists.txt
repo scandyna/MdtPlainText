@@ -36,6 +36,11 @@ target_include_directories(Mdt_PlainText
    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 )
 
+target_compile_definitions(Mdt_PlainText
+  PUBLIC
+    BOOST_SPIRIT_UNICODE
+)
+
 if(BOOST_SPIRIT_DEBUG)
   target_compile_definitions(Mdt_PlainText
     PUBLIC

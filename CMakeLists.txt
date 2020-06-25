@@ -223,8 +223,9 @@ mdt_install_namespace_package_config_file(
 )
 
 #######################
-# Qt
+# Build definitions
 #######################
+
 
 # TODO: not a target property, will it be propagated trough projects ??
 if(ENABLE_QT_SUPPORT)
