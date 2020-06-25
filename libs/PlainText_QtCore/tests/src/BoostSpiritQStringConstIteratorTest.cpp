@@ -21,6 +21,8 @@
  ****************************************************************************/
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/BoostSpiritQStringConstIterator.h"
+#include "Mdt/PlainText/BoostSpiritQStringContainer.h"
+#include <boost/spirit/include/qi.hpp>
 #include <QLatin1String>
 #include <QLatin1Char>
 #include <type_traits>
@@ -31,6 +33,33 @@ using Mdt::PlainText::BoostSpiritQStringConstIterator;
 bool iteratorValueEqualsToLatin1Char(const BoostSpiritQStringConstIterator & it, char c)
 {
   return *it == QLatin1Char(c);
+}
+
+template<typename Grammar>
+bool parse(const QString & source, const Grammar & grammar, QString & destination)
+{
+  BoostSpiritQStringConstIterator first( source.cbegin() );
+  BoostSpiritQStringConstIterator last( source.cend() );
+
+  return boost::spirit::qi::parse(first, last, grammar, destination);
+}
+
+template<typename Grammar>
+bool parse(const QString & source, const Grammar & grammar, QChar & destination)
+{
+  BoostSpiritQStringConstIterator first( source.cbegin() );
+  BoostSpiritQStringConstIterator last( source.cend() );
+
+  return boost::spirit::qi::parse(first, last, grammar, destination);
+}
+
+template<typename Grammar, typename Result>
+bool parseNumber(const QString & source, const Grammar & grammar, Result & destination)
+{
+  BoostSpiritQStringConstIterator first( source.cbegin() );
+  BoostSpiritQStringConstIterator last( source.cend() );
+
+  return boost::spirit::qi::parse(first, last, grammar, destination);
 }
 
 /*
@@ -220,3 +249,53 @@ TEST_CASE("std_copy")
  * Tests with some Sprit parsers
  */
 
+TEST_CASE("qi_parser_int_")
+{
+  using boost::spirit::int_;
+
+  int result;
+
+  SECTION("24")
+  {
+    const QString source = QLatin1String("24");
+    REQUIRE( parseNumber(source, int_, result) );
+    REQUIRE( result == 24 );
+  }
+}
+
+TEST_CASE("qi_parser_unicode_char_")
+{
+  using boost::spirit::unicode::char_;
+
+  QString result;
+
+  SECTION("ABC")
+  {
+    const QString source = QLatin1String("ABC");
+    REQUIRE( parse(source, *char_, result) );
+    REQUIRE( result == QLatin1String("ABC") );
+  }
+
+  SECTION("éöàäèü$£")
+  {
+    const QString source = QString::fromUtf8("éöàäèü$£");
+    REQUIRE( parse(source, *char_, result) );
+    REQUIRE( result == source );
+  }
+
+  SECTION("char_(A)")
+  {
+    const QString source = QLatin1String("A");
+    QChar result;
+    REQUIRE( parse(source, char_('A'), result) );
+    REQUIRE( result == QLatin1Char('A') );
+  }
+
+  SECTION("char_(ö)")
+  {
+    const QString source = QString::fromUtf8("ö");
+    QChar result;
+    REQUIRE( parse(source, char_(U'ö'), result) );
+    REQUIRE( result == QChar(0xF6) );
+  }
+}

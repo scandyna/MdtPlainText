@@ -35,13 +35,15 @@ namespace Mdt{ namespace PlainText{
    *  to be able to parse QString directly.
    *
    * \sa https://stackoverflow.com/questions/57461106/how-can-i-use-boostspirit-x3-in-conjunction-with-qstring
+   *
+   * \todo template to xx uint32_t, wchar. s_assert on size >= 16bits
    */
   class MDT_PLAINTEXT_QTCORE_EXPORT BoostSpiritQStringConstIterator : public boost::iterator_adaptor<
       BoostSpiritQStringConstIterator,  // Derived
       QString::const_iterator,          // Base
       uint32_t,                         // Value
       boost::use_default,               // CategoryOrTraversal
-      uint32_t>                         // Reference
+      const uint32_t &>                 // Reference, see dereference()
   {
    public:
 
@@ -84,10 +86,23 @@ namespace Mdt{ namespace PlainText{
 
     friend class boost::iterator_core_access;
 
-    uint32_t dereference() const
+    /*! \internal
+     *
+     * To be recognized as a random access iterator,
+     * the reference type MUST be a reference.
+     * If not doing so, boost::iterator_facade will
+     * tell that this iterator is a input iterator (!)
+     *
+     * \sa https://github.com/boostorg/iterator/issues/47
+     */
+    const uint32_t & dereference() const
     {
-      return static_cast<uint32_t>( this->base_reference()->unicode() );
+      mValue = this->base_reference()->unicode();
+      return mValue;
+//       return static_cast<uint32_t>( this->base_reference()->unicode() );
     }
+
+    mutable uint32_t mValue;
   };
 
 }} // namespace Mdt{ namespace PlainText{
