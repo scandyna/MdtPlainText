@@ -22,6 +22,8 @@
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/BoostSpiritQStringContainer.h"
 #include <boost/spirit/include/qi.hpp>
+#include <QChar>
+#include <QLatin1Char>
 #include <QString>
 #include <QLatin1String>
 #include <string>
@@ -30,6 +32,24 @@ template<typename Grammar>
 bool parse(const std::string & source, const Grammar & grammar, QString & destination)
 {
   return boost::spirit::qi::parse(source.cbegin(), source.cend(), grammar, destination);
+}
+
+template<typename Grammar>
+bool parse(const std::string & source, const Grammar & grammar, QChar & destination)
+{
+  return boost::spirit::qi::parse(source.cbegin(), source.cend(), grammar, destination);
+}
+
+TEST_CASE("standard_char_")
+{
+  using boost::spirit::standard::char_;
+
+  SECTION("char_")
+  {
+    QChar result;
+    REQUIRE( parse("A", char_, result) );
+    REQUIRE( result == QLatin1Char('A') );
+  }
 }
 
 TEST_CASE("from_std_string")
