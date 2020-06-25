@@ -7,4 +7,44 @@
 
 /*! \mainpage Main
  *
+ * \section QString_support
+ *
+ * \subsection QString_as_container
+ *
+ * \subsection parse_QString Parsing QString sources
+ *
+ * Qt offers great unicode support, thaks to QString.
+ * It is also possible to read sources with various encoding,
+ * using QTextCodec and QTextDecoder.
+ *
+ * \subsection parse_QString_first_attempt Parsing QString sources, first attempt (abandoned)
+ *
+ * To support parsing QString sources,
+ * a attempt was made to create a qchar encoding namespace.
+ *
+ * \sa [Character Encoding Namespace](https://www.boost.org/doc/libs/1_73_0/libs/spirit/doc/html/spirit/qi/reference/basics.html#spirit.qi.reference.basics.character_encoding_namespace)
+ *
+ * This was abandoned once trying it with a numeric parser (boost::spirit::ushort_),
+ * because it calls explicitly spirit::char_encoding::ascii::tolower(ch).
+ * After some time searching a solution, I understood that this is not customisable
+ * without rewriting the Boost Spirit library, which of course is a no go.
+ *
+ * \todo Qt QString/QChar integration
+ *  Also a exemple using it (....::qchar::char_)
+ *
+ * Also document to use explicit QChar/QString (QLatin1Char, QLatin1String, ..)
+ * + warn to compile with
+ * -DQT_NO_CAST_DEFINITIONS -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_BYTEARRAY
+ *
+ * \todo document the attempt to write a qchar encoding support,
+ *  and why it did not work.
+ *  Typically the case with int parsers, calling explicitly a function is ascii namespace.
+ *  Avoid to retry such thing again and again every 3 years !!
+ *
+ * \todo Document how to parse QString using BoostSpiritQStringConstIterator,
+ * notably using the undocumented unicode namespace for char parsers.
+ * Maybe reference videos: James McNellis Unicode in C++ , Thiago String theory
+ *
+ * \todo Document how to write a custom CsvFileParser, with int, float, ... fields
+ *
  */
