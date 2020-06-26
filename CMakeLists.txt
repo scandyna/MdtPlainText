@@ -235,10 +235,9 @@ endif()
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-
-#######################
-# Sources and tests
-#######################
+######################
+# Tests and benchmarks
+######################
 
 if(BUILD_TESTS OR BUILD_BENCHMARKS)
   add_library(Mdt_Catch2Main STATIC Catch2Main.cpp)
@@ -247,6 +246,17 @@ if(BUILD_TESTS OR BUILD_BENCHMARKS)
 
   enable_testing()
 endif()
+
+if(BUILD_BENCHMARKS)
+  target_compile_definitions(Mdt_Catch2Main
+    PUBLIC
+      CATCH_CONFIG_ENABLE_BENCHMARKING
+  )
+endif()
+
+#######################
+# Sources
+#######################
 
 add_subdirectory(libs/PlainText)
 
