@@ -27,6 +27,16 @@
 #include <QLatin1String>
 // #include <string>
 
+
+// /*! \brief
+//  */
+// using QStringSpiritUnicodeIterator = QStringSpiritUnicodeIteratorAdaptor<QString::iterator>;
+// 
+// /*! \brief
+//  */
+// using QStringSpiritUnicodeConstIterator = QStringSpiritUnicodeIteratorAdaptor<QString::const_iterator>;
+
+
 template<typename Grammar>
 bool parse(const QString & source, const Grammar & grammar, QString & destination)
 {
@@ -37,6 +47,16 @@ template<typename Grammar>
 bool parse(const QString & source, const Grammar & grammar, QChar & destination)
 {
   return boost::spirit::qi::parse(source.cbegin(), source.cend(), grammar, destination);
+}
+
+template<typename Grammar, typename Result>
+bool parseNumber(const QString & source, const Grammar & grammar, Result & destination)
+{
+  return boost::spirit::qi::parse(source.cbegin(), source.cend(), grammar, destination);
+//   QStringSpiritUnicodeConstIterator first( source.cbegin() );
+//   QStringSpiritUnicodeConstIterator last( source.cend() );
+
+//   return boost::spirit::qi::parse(first, last, grammar, destination);
 }
 
 QString qstringFromLatin1Char(char ch)
@@ -525,6 +545,21 @@ TEST_CASE("punct")
     REQUIRE( !parse(source, punct, result) );
   }
 }
+
+TEST_CASE("ushort_")
+{
+  using boost::spirit::ushort_;
+
+  unsigned short result;
+
+  SECTION("26")
+  {
+    const QString source = QLatin1String("26");
+    REQUIRE( parseNumber(source, ushort_, result) );
+    REQUIRE( result == 26 );
+  }
+}
+
 
 TEST_CASE("*char_")
 {

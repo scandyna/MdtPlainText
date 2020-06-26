@@ -29,11 +29,14 @@
 #define MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_ENCODING_H
 
 #include <QChar>
-// #include <QString>
+#include <QString>
 #include <boost/spirit/include/qi.hpp>
+#include <string>
 #include <cctype>
 
-namespace boost { namespace spirit { namespace char_encoding{
+#include <QDebug>
+
+namespace boost{ namespace spirit{ namespace char_encoding{
 
   struct qchar
   {
@@ -126,14 +129,37 @@ namespace boost { namespace spirit { namespace char_encoding{
       return ch.isPunct();
     }
 
-    // isxdigit
-    // ...
+//     static
+//     QChar tolower(const QChar & ch) noexcept
+//     {
+//       return ch.toLower();
+//     }
 
-    // 
+//     static
+//     ::boost::uint32_t toucs4(const QChar & ch)
+//     {
+//         return ch.unicode();
+//     }
+
   };
 
-}}} // namespace boost { namespace spirit { namespace char_encoding{
+}}} // namespace boost{ namespace spirit{ namespace char_encoding{
 BOOST_SPIRIT_DEFINE_CHAR_CODES(qchar)
+
+// namespace boost{ namespace spirit{ namespace char_encoding{ namespace ascii{
+// 
+//   /*! \internal Provide tolower() for numeric parsers
+//    *
+//    * boost::spirit::qi::detail::radix_traits calls spirit::char_encoding::ascii::tolower() explicitly
+//    * See boost/spirit/home/qi/numeric/detail/numeric_utils.hpp
+//    */
+//   static
+//   QChar tolower(const QChar & ch) noexcept
+//   {
+//     return ch.toLower();
+//   }
+// 
+// }}}} // namespace boost{ namespace spirit{ namespace char_encoding{ namespace ascii{
 
 namespace boost { namespace spirit { namespace traits{
 
@@ -151,6 +177,21 @@ namespace boost { namespace spirit { namespace traits{
    */
   template<>
   struct char_type_of<QString> : mpl::identity<QChar> {};
+
+  /*! \internal Get a C-style String from a QString
+   */
+  template<>
+  struct extract_c_string<QString>
+  {
+    using char_type = char;
+
+    static
+    const char* call(const QString & str)
+    {
+      qWarning() << "extract_c_string::call(" << str << ")";
+      return str.toStdString().c_str();
+    }
+  };
 
 }}} // namespace boost { namespace spirit { namespace traits{
 
@@ -189,6 +230,18 @@ namespace boost { namespace spirit { namespace char_class{
   };
 
 }}} // namespace boost { namespace spirit { namespace char_class{
+
+namespace boost{ namespace spirit{
+
+  /*! \internal Some parsers, like int parsers, will compare QChar with char
+   */
+  inline
+  bool operator==(const QChar & ch, char c) noexcept
+  {
+    return ch.toLatin1() == c;
+  }
+
+}} // namespace boost{ namespace spirit{
 
 namespace boost { namespace spirit { namespace qi{
 
