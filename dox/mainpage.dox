@@ -29,6 +29,11 @@
  * After some time searching a solution, I understood that this is not customisable
  * without rewriting the Boost Spirit library, which of course is a no go.
  *
+ * The source code is available in the [qstring-encoding](https://gitlab.com/scandyna/mdtplaintext/-/tree/qstring-encoding)
+ * branch:
+ * https://gitlab.com/scandyna/mdtplaintext/-/blob/qstring-encoding/libs/PlainText_QtCore/src/Mdt/PlainText/BoostSpiritQStringEncoding.h
+ *
+ *
  * \todo Qt QString/QChar integration
  *  Also a exemple using it (....::qchar::char_)
  *
