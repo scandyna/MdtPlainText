@@ -19,12 +19,9 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#include "catch2/catch.hpp"
+#include "TestCommon.h"
 #include "Mdt/PlainText/BoostSpiritQStringConstIterator.h"
 #include "Mdt/PlainText/BoostSpiritQStringContainer.h"
-#include <boost/spirit/include/qi.hpp>
-#include <QLatin1String>
-#include <QLatin1Char>
 #include <type_traits>
 #include <iterator>
 
