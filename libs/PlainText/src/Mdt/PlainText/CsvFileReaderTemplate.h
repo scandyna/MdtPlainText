@@ -37,7 +37,7 @@ namespace Mdt{ namespace PlainText{
    * {
    *  public:
    *
-   *   // All required public methods, constructors, desstructor
+   *   // All required public methods, constructors, destructor
    *
    *   MyRecord readLine() const;
    *
