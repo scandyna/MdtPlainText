@@ -29,10 +29,11 @@
 #include <QString>
 #include <QStringList>
 #include <vector>
+#include <memory>
 
 namespace Mdt{ namespace PlainText{
 
-  class CsvFileReaderTemplate;
+  class QCsvFileReaderTemplate;
 
   /*! \brief CSV file reader
    *
@@ -151,6 +152,9 @@ namespace Mdt{ namespace PlainText{
      */
     void close();
 
+   private:
+
+    std::unique_ptr<QCsvFileReaderTemplate> mImpl;
   };
 
 }} // namespace Mdt{ namespace PlainText{

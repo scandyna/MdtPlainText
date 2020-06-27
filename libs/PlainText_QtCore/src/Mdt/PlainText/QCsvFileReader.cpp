@@ -20,10 +20,12 @@
  **
  ****************************************************************************/
 #include "QCsvFileReader.h"
+#include "QCsvFileReaderTemplate.h"
 
 namespace Mdt{ namespace PlainText{
 
 QCsvFileReader::QCsvFileReader()
+ : mImpl( std::make_unique<QCsvFileReaderTemplate>() )
 {
 }
 
@@ -35,40 +37,53 @@ void QCsvFileReader::setFilePath(const QString & filePath)
 {
   Q_ASSERT( !filePath.isEmpty() );
   Q_ASSERT( !isOpen() );
+
+  mImpl->setFilePath(filePath);
 }
 
 const QString & QCsvFileReader::filePath() const noexcept
 {
+  return mImpl->filePath();
 }
 
 void QCsvFileReader::setCsvSettings(const CsvParserSettings & settings) noexcept
 {
   Q_ASSERT( settings.isValid() );
   Q_ASSERT( !isOpen() );
+
+  mImpl->setCsvSettings(settings);
 }
 
 const CsvParserSettings & QCsvFileReader::csvSettings() const noexcept
 {
+  return mImpl->csvSettings();
 }
 
 void QCsvFileReader::open()
 {
   Q_ASSERT( !filePath().isEmpty() );
+
+  mImpl->open();
 }
 
 bool QCsvFileReader::isOpen() const
 {
+  return mImpl->isOpen();
 }
 
 bool QCsvFileReader::atEnd() const noexcept
 {
   Q_ASSERT( isOpen() );
+
+  return mImpl->atEnd();
 }
 
 QStringList QCsvFileReader::readLine() const
 {
   Q_ASSERT( isOpen() );
   Q_ASSERT( !atEnd() );
+
+  return mImpl->readLine<QStringList>();
 }
 
 std::vector<QStringList> QCsvFileReader::readAll() const
@@ -76,10 +91,12 @@ std::vector<QStringList> QCsvFileReader::readAll() const
   Q_ASSERT( isOpen() );
   Q_ASSERT( !atEnd() );
 
+  return mImpl->readAll< std::vector<QStringList> >();
 }
 
 void QCsvFileReader::close()
 {
+  mImpl->close();
 }
 
 }} // namespace Mdt{ namespace PlainText{
