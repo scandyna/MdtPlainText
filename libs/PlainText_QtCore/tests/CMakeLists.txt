@@ -15,17 +15,25 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME BoostSpiritQStringParserTest
-  TARGET boostSpiritQStringParserTest
-  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
-  SOURCE_FILES
-    src/BoostSpiritQStringParserTest.cpp
-)
-
-mdt_add_test(
   NAME BoostSpiritQStringConstIteratorTest
   TARGET boostSpiritQStringConstIteratorTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
   SOURCE_FILES
     src/BoostSpiritQStringConstIteratorTest.cpp
+)
+
+mdt_add_test(
+  NAME QCsvFileReaderTest
+  TARGET qCsvFileReaderTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/QCsvFileReaderTest.cpp
+)
+
+mdt_add_test(
+  NAME QCsvFileReaderErrorTest
+  TARGET qCsvFileReaderErrorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/QCsvFileReaderErrorTest.cpp
 )
