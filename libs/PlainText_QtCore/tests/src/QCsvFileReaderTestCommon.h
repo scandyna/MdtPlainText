@@ -24,11 +24,41 @@
 #include "Mdt/PlainText/TestLib/CsvTestFiles.h"
 #include "Mdt/PlainText/QCsvFileReader"
 #include <QString>
+#include <QLatin1String>
 #include <QByteArray>
 #include <QFileInfo>
+#include <QTemporaryFile>
+#include <QFile>
+#include <QTextStream>
+#include <vector>
+#include <string>
 
 using namespace Mdt::PlainText;
 using namespace Mdt::PlainText::TestLib;
+
+bool writeTextFile(QFile & file, const QString & content)
+{
+  Q_ASSERT( file.isOpen() );
+  Q_ASSERT( file.isWritable() );
+
+  QTextStream out(&file);
+  out << content;
+
+  return true;
+}
+
+bool writeSimpleCsvFile(QFile & file)
+{
+  Q_ASSERT( file.isOpen() );
+  Q_ASSERT( file.isWritable() );
+
+  return writeTextFile(file, QLatin1String("A,B,C\nd,e,f"));
+}
+
+void setFilePathToReader(const QFile & file, QCsvFileReader & reader)
+{
+  reader.setFilePath( file.fileName() );
+}
 
 void setTestFilePathToReader(const char *testFileName, QCsvFileReader & reader)
 {

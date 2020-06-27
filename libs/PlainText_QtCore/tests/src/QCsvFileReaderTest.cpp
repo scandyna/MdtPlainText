@@ -21,6 +21,147 @@
  ****************************************************************************/
 #include "QCsvFileReaderTestCommon.h"
 
+TEST_CASE("filePath")
+{
+  QCsvFileReader reader;
+  REQUIRE( reader.filePath().isEmpty() );
+  reader.setFilePath(QLatin1String("tests.csv"));
+  REQUIRE( reader.filePath() == QLatin1String("tests.csv") );
+}
+
+TEST_CASE("csvSettings")
+{
+  QCsvFileReader reader;
+  CsvParserSettings settings;
+
+  settings.setFieldSeparator(';');
+  reader.setCsvSettings(settings);
+  REQUIRE( reader.csvSettings().fieldSeparator() == ';' );
+}
+
+TEST_CASE("open_close")
+{
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+  REQUIRE( writeSimpleCsvFile(file) );
+  file.close();
+
+  QCsvFileReader reader;
+  REQUIRE( !reader.isOpen() );
+
+  setFilePathToReader(file, reader);
+  REQUIRE( !reader.isOpen() );
+
+  reader.open();
+  REQUIRE( reader.isOpen() );
+
+  reader.close();
+  REQUIRE( !reader.isOpen() );
+}
+
+TEST_CASE("atEnd")
+{
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+
+  QCsvFileReader reader;
+  setFilePathToReader(file, reader);
+
+  SECTION("empty")
+  {
+    file.close();
+
+    reader.open();
+    REQUIRE( reader.atEnd() );
+  }
+
+  SECTION("1 line")
+  {
+    REQUIRE( writeTextFile(file, QLatin1String("A,B,C")) );
+    file.close();
+
+    reader.open();
+    REQUIRE( !reader.atEnd() );
+  }
+}
+
+TEST_CASE("readLine")
+{
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+
+  QCsvFileReader reader;
+  setFilePathToReader(file, reader);
+
+  SECTION("1 line")
+  {
+    REQUIRE( writeTextFile(file, QLatin1String("A,B,C")) );
+    file.close();
+
+    reader.open();
+    REQUIRE( !reader.atEnd() );
+    REQUIRE( recordMatches( reader.readLine(), {"A","B","C"} ) );
+    REQUIRE( reader.atEnd() );
+  }
+
+  SECTION("2 lines")
+  {
+    REQUIRE( writeTextFile(file, QLatin1String("A,B,C\nd,e,f")) );
+    file.close();
+
+    reader.open();
+    REQUIRE( !reader.atEnd() );
+
+    REQUIRE( recordMatches( reader.readLine(), {"A","B","C"} ) );
+    REQUIRE( !reader.atEnd() );
+
+    REQUIRE( recordMatches( reader.readLine(), {"d","e","f"} ) );
+    REQUIRE( reader.atEnd() );
+  }
+}
+
+TEST_CASE("readAll")
+{
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+
+  std::vector< std::vector<std::string> > referenceTable;
+
+  QCsvFileReader reader;
+  setFilePathToReader(file, reader);
+
+  SECTION("1 line")
+  {
+    REQUIRE( writeTextFile(file, QLatin1String("A,B,C")) );
+    file.close();
+
+    reader.open();
+    REQUIRE( !reader.atEnd() );
+
+    referenceTable = {
+      {"A","B","C"}
+    };
+    REQUIRE( tableMatches(reader.readAll(), referenceTable) );
+    REQUIRE( reader.atEnd() );
+  }
+
+  SECTION("2 lines")
+  {
+    REQUIRE( writeTextFile(file, QLatin1String("A,B,C\nd,e,f")) );
+    file.close();
+
+    reader.open();
+    REQUIRE( !reader.atEnd() );
+
+    referenceTable = {
+      {"A","B","C"},
+      {"d","e","f"}
+    };
+    REQUIRE( tableMatches(reader.readAll(), referenceTable) );
+    REQUIRE( reader.atEnd() );
+  }
+}
+
 TEST_CASE("Test files")
 {
   CsvParserSettings csvSettings;
