@@ -8,6 +8,7 @@ include(GenerateExportHeader)
 
 add_library(Mdt_PlainText_TestLib
   Mdt/PlainText/TestLib/ContainerCompare.cpp
+  Mdt/PlainText/TestLib/CsvTestFiles.cpp
 )
 add_library(Mdt::PlainText_TestLib ALIAS Mdt_PlainText_TestLib)
 
@@ -29,3 +30,5 @@ target_include_directories(Mdt_PlainText_TestLib
 )
 
 generate_export_header(Mdt_PlainText_TestLib)
+
+target_compile_definitions(Mdt_PlainText_TestLib PRIVATE TEST_FILES_DIR="${PROJECT_SOURCE_DIR}/libs/TestLib/files")

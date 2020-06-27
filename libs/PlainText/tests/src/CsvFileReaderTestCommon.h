@@ -6,6 +6,8 @@
  */
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/CsvFileReader"
+#include "Mdt/PlainText/TestLib/ContainerCompare.h"
+#include "Mdt/PlainText/TestLib/CsvTestFiles.h"
 #include <QTemporaryFile>
 #include <QFile>
 #include <QFileInfo>
@@ -15,8 +17,10 @@
 #include <QLatin1String>
 #include <QTextStream>
 #include <QByteArray>
+#include <QLatin1Char>
 
 using namespace Mdt::PlainText;
+using namespace Mdt::PlainText::TestLib;
 
 bool writeTextFile(QFile & file, const QString & content)
 {
@@ -44,7 +48,7 @@ void setFilePathToReader(const QFile & file, CsvFileReader & reader)
 
 void setTestFilePathToReader(const char *testFileName, CsvFileReader & reader)
 {
-  const QString filePath = QDir::cleanPath( QString::fromLocal8Bit(TEST_FILES_DIR) + '/' + QLatin1String(testFileName) );
+  const QString filePath = Mdt::PlainText::TestLib::csvTestFilePath(testFileName);
   Q_ASSERT( QFileInfo::exists(filePath) );
 
   reader.setFilePath( filePath.toLocal8Bit().toStdString() );

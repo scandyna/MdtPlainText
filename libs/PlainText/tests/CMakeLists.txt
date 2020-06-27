@@ -49,17 +49,15 @@ mdt_add_test(
 mdt_add_test(
   NAME CsvFileReaderTest
   TARGET csvFileReaderTest
-  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test Mdt::PlainText_TestLib
   SOURCE_FILES
     src/CsvFileReaderTest.cpp
 )
-target_compile_definitions(csvFileReaderTest PRIVATE TEST_FILES_DIR="${PROJECT_SOURCE_DIR}/libs/PlainText/tests/files")
 
 mdt_add_test(
   NAME CsvFileReaderErrorTest
   TARGET csvFileReaderErrorTest
-  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test Mdt::PlainText_TestLib
   SOURCE_FILES
     src/CsvFileReaderErrorTest.cpp
 )
-target_compile_definitions(csvFileReaderErrorTest PRIVATE TEST_FILES_DIR="${PROJECT_SOURCE_DIR}/libs/PlainText/tests/files")
