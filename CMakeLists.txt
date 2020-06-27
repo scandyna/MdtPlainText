@@ -244,6 +244,8 @@ if(BUILD_TESTS OR BUILD_BENCHMARKS)
   target_link_libraries(Mdt_Catch2Main PUBLIC Catch2::Catch2)
   add_library(Mdt::Catch2Main ALIAS Mdt_Catch2Main)
 
+  add_subdirectory(libs/TestLib)
+
   enable_testing()
 endif()
 
