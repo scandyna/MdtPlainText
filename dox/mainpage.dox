@@ -7,13 +7,26 @@
 
 /*! \mainpage Main
  *
+ * \section csv_parsers CSV parsers
+ *
+ * Some CSV parsers can be used:
+ * - Mdt::PlainText::CsvFileReader
+ * - Mdt::PlainText::QCsvFileReader,
+ *   which also supports reading files that have a different encoding than the machine locale one.
+ *
+ * \todo Document how to write a custom CsvFileParser, with int, float, ... fields
+ *
+ * \section support Support
+ *
+ * \subsection iterators Iterators
+ *
  * \section QString_support
  *
  * \subsection QString_as_container
  *
  * \subsection parse_QString Parsing QString sources
  *
- * Qt offers great unicode support, thaks to QString.
+ * Qt offers great unicode support, thanks to QString.
  * It is also possible to read sources with various encoding,
  * using QTextCodec and QTextDecoder.
  *
@@ -27,7 +40,7 @@
  * This was abandoned once trying it with a numeric parser (boost::spirit::ushort_),
  * because it calls explicitly spirit::char_encoding::ascii::tolower(ch).
  * After some time searching a solution, I understood that this is not customisable
- * without rewriting the Boost Spirit library, which of course is a no go.
+ * without rewriting a part of the Boost Spirit library, which of course is a no go.
  *
  * The source code is available in the [qstring-encoding](https://gitlab.com/scandyna/mdtplaintext/-/tree/qstring-encoding)
  * branch:
@@ -50,6 +63,5 @@
  * notably using the undocumented unicode namespace for char parsers.
  * Maybe reference videos: James McNellis Unicode in C++ , Thiago String theory
  *
- * \todo Document how to write a custom CsvFileParser, with int, float, ... fields
  *
  */
