@@ -10,12 +10,16 @@ include(MdtInstallLibrary)
 add_library(Mdt_PlainText_QtCore
   Mdt/PlainText/BoostSpiritQStringContainer.cpp
   Mdt/PlainText/BoostSpiritQStringConstIterator.cpp
+  Mdt/PlainText/QTextFileInputConstIteratorSharedData.cpp
+  Mdt/PlainText/QTextFileInputConstIterator.cpp
   Mdt/PlainText/QCsvFileReaderTemplate.cpp
   Mdt/PlainText/QCsvFileReader.cpp
 )
 add_library(Mdt::PlainText_QtCore ALIAS Mdt_PlainText_QtCore)
 
 target_link_libraries(Mdt_PlainText_QtCore
+  PRIVATE
+    Boost::boost
   PUBLIC
     Mdt::PlainText Qt5::Core
 )
@@ -34,7 +38,7 @@ target_include_directories(Mdt_PlainText_QtCore
 
 if(BOOST_SPIRIT_DEBUG)
   target_compile_definitions(Mdt_PlainText_QtCore
-    PUBLIC
+    PRIVATE
       BOOST_SPIRIT_DEBUG
   )
 endif()

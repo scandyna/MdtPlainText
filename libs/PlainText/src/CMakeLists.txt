@@ -18,7 +18,7 @@ add_library(Mdt_PlainText
 add_library(Mdt::PlainText ALIAS Mdt_PlainText)
 
 target_link_libraries(Mdt_PlainText
-  PUBLIC
+  PRIVATE
     Boost::boost
 )
 
@@ -43,7 +43,7 @@ target_compile_definitions(Mdt_PlainText
 
 if(BOOST_SPIRIT_DEBUG)
   target_compile_definitions(Mdt_PlainText
-    PUBLIC
+    PRIVATE
       BOOST_SPIRIT_DEBUG
   )
 endif()
