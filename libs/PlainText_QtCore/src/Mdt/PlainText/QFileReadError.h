@@ -19,23 +19,23 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#ifndef MDT_PLAIN_TEXT_QFILE_OPEN_ERROR_H
-#define MDT_PLAIN_TEXT_QFILE_OPEN_ERROR_H
+#ifndef MDT_PLAIN_TEXT_QFILE_READ_ERROR_H
+#define MDT_PLAIN_TEXT_QFILE_READ_ERROR_H
 
 #include "QRuntimeError.h"
 #include "mdt_plaintext_qtcore_export.h"
 
 namespace Mdt{ namespace PlainText{
 
-  /*! \brief Error thrown when opening a file failed
+  /*! \brief Error thrown when reading a file failed
    */
-  class MDT_PLAINTEXT_QTCORE_EXPORT QFileOpenError : public QRuntimeError
+  class MDT_PLAINTEXT_QTCORE_EXPORT QFileReadError : public QRuntimeError
   {
    public:
 
     /*! \brief Construct a error
      */
-    explicit QFileOpenError(const QString & what)
+    explicit QFileReadError(const QString & what)
      : QRuntimeError(what)
     {
     }
@@ -43,4 +43,4 @@ namespace Mdt{ namespace PlainText{
 
 }} // namespace Mdt{ namespace PlainText{
 
-#endif // #ifndef MDT_PLAIN_TEXT_QFILE_OPEN_ERROR_H
+#endif // #ifndef MDT_PLAIN_TEXT_QFILE_READ_ERROR_H
