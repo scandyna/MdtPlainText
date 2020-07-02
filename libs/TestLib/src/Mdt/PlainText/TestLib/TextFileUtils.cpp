@@ -19,42 +19,20 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#include "catch2/catch.hpp"
-#include "Mdt/PlainText/TestLib/ContainerCompare.h"
-#include "Mdt/PlainText/TestLib/CsvTestFiles.h"
-#include "Mdt/PlainText/TestLib/TextFileUtils.h"
-#include "Mdt/PlainText/QCsvFileReader"
-#include <QString>
-#include <QLatin1String>
-#include <QByteArray>
-#include <QFileInfo>
-#include <QTemporaryFile>
-#include <QFile>
+#include "TextFileUtils.h"
 #include <QTextStream>
-#include <vector>
-#include <string>
 
-using namespace Mdt::PlainText;
-using namespace Mdt::PlainText::TestLib;
-using Mdt::PlainText::TestLib::writeTextFile;
+namespace Mdt{ namespace PlainText{ namespace TestLib{
 
-bool writeSimpleCsvFile(QFile & file)
+bool writeTextFile(QFile & file, const QString & content)
 {
   Q_ASSERT( file.isOpen() );
   Q_ASSERT( file.isWritable() );
 
-  return writeTextFile(file, QLatin1String("A,B,C\nd,e,f"));
+  QTextStream out(&file);
+  out << content;
+
+  return true;
 }
 
-void setFilePathToReader(const QFile & file, QCsvFileReader & reader)
-{
-  reader.setFilePath( file.fileName() );
-}
-
-void setTestFilePathToReader(const char *testFileName, QCsvFileReader & reader)
-{
-  const QString filePath = Mdt::PlainText::TestLib::csvTestFilePath(testFileName);
-  Q_ASSERT( QFileInfo::exists(filePath) );
-
-  reader.setFilePath(filePath);
-}
+}}} // namespace Mdt{ namespace PlainText{ namespace TestLib{

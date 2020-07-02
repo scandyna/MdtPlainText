@@ -9,6 +9,7 @@ include(GenerateExportHeader)
 add_library(Mdt_PlainText_TestLib
   Mdt/PlainText/TestLib/ContainerCompare.cpp
   Mdt/PlainText/TestLib/CsvTestFiles.cpp
+  Mdt/PlainText/TestLib/TextFileUtils.cpp
 )
 add_library(Mdt::PlainText_TestLib ALIAS Mdt_PlainText_TestLib)
 
