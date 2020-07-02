@@ -21,6 +21,7 @@
  ****************************************************************************/
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/QTextFileInputConstIteratorSharedData.h"
+#include "Mdt/PlainText/QFileReadError.h"
 #include "Mdt/PlainText/TestLib/TextFileUtils.h"
 #include <QTemporaryFile>
 #include <QLatin1String>

@@ -31,5 +31,17 @@ TEST_CASE("Non existing codec")
 
 TEST_CASE("Read while closing file")
 {
-  REQUIRE( false );
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+  const int rawBufferCapacity = 1;
+
+  REQUIRE( writeTextFile(file, QLatin1String("ABCD")) );
+  file.close();
+
+  REQUIRE( openTextFileReadOnly(file) );
+  QTextFileInputConstIteratorSharedData sd(&file, "UTF-8", rawBufferCapacity);
+  REQUIRE( !sd.atEnd() );
+
+  file.close();
+  REQUIRE_THROWS_AS( sd.advance() , QFileReadError );
 }
