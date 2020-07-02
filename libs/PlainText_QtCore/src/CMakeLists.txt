@@ -17,10 +17,11 @@ add_library(Mdt_PlainText_QtCore
 )
 add_library(Mdt::PlainText_QtCore ALIAS Mdt_PlainText_QtCore)
 
+# At least boost::iterator_adaptor and boost::iterator_facade
+# are exposed in the public API
 target_link_libraries(Mdt_PlainText_QtCore
-  PRIVATE
-    Boost::boost
   PUBLIC
+    Boost::boost
     Mdt::PlainText Qt5::Core
 )
 

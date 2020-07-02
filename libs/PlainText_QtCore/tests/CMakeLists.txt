@@ -9,7 +9,7 @@ include(MdtAddTest)
 mdt_add_test(
   NAME BoostSpiritQStringContainerTest
   TARGET boostSpiritQStringContainerTest
-  DEPENDENCIES Mdt::PlainText_QtCore Boost::boost Mdt::Catch2Main
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
   SOURCE_FILES
     src/BoostSpiritQStringContainerTest.cpp
 )
@@ -17,15 +17,31 @@ mdt_add_test(
 mdt_add_test(
   NAME BoostSpiritQStringConstIteratorTest
   TARGET boostSpiritQStringConstIteratorTest
-  DEPENDENCIES Mdt::PlainText_QtCore Boost::boost Mdt::Catch2Main
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
   SOURCE_FILES
     src/BoostSpiritQStringConstIteratorTest.cpp
 )
 
 mdt_add_test(
+  NAME QTextFileInputConstIteratorSharedDataTest
+  TARGET qTextFileInputConstIteratorSharedDataTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/QTextFileInputConstIteratorSharedDataTest.cpp
+)
+
+mdt_add_test(
+  NAME QTextFileInputConstIteratorSharedDataErrorTest
+  TARGET qTextFileInputConstIteratorSharedDataErrorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/QTextFileInputConstIteratorSharedDataErrorTest.cpp
+)
+
+mdt_add_test(
   NAME QTextFileInputConstIteratorTest
   TARGET qTextFileInputConstIteratorTest
-  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
   SOURCE_FILES
     src/QTextFileInputConstIteratorTest.cpp
 )
@@ -33,7 +49,7 @@ mdt_add_test(
 mdt_add_test(
   NAME QTextFileInputConstIteratorErrorTest
   TARGET qTextFileInputConstIteratorErrorTest
-  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
   SOURCE_FILES
     src/QTextFileInputConstIteratorErrorTest.cpp
 )
