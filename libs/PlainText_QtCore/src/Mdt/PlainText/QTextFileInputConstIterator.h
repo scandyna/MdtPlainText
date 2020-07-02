@@ -111,10 +111,12 @@ namespace Mdt{ namespace PlainText{
       Q_ASSERT( !isEof() );
       Q_ASSERT( mImpl.get() != nullptr );
 
+      mImpl->advance();
     }
 
     bool equal(const QTextFileInputConstIterator & other) const
     {
+      return other.isEof() == isEof();
     }
 
     const QChar & dereference() const noexcept
@@ -122,6 +124,7 @@ namespace Mdt{ namespace PlainText{
       Q_ASSERT( !isEof() );
       Q_ASSERT( mImpl.get() != nullptr );
 
+      return mImpl->get();
     }
 
     static
