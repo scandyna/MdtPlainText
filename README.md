@@ -1,6 +1,5 @@
 
-[![pipeline status](https://gitlab.com/scandyna/mdtplaintext/badges/experimental/pipeline.svg)]
-(https://gitlab.com/scandyna/mdtplaintext/-/commits/experimental)
+[![pipeline status](https://gitlab.com/scandyna/mdtplaintext/badges/experimental/pipeline.svg)](https://gitlab.com/scandyna/mdtplaintext/-/commits/experimental)
 
 # MdtPlainText
 
