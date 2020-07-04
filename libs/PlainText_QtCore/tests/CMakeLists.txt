@@ -55,6 +55,22 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME BoostSpiritQTextFileInputConstIteratorTest
+  TARGET boostSpiritQTextFileInputConstIteratorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/BoostSpiritQTextFileInputConstIteratorTest.cpp
+)
+
+mdt_add_test(
+  NAME BoostSpiritQTextFileInputConstIteratorErrorTest
+  TARGET boostSpiritQTextFileInputConstIteratorErrorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/BoostSpiritQTextFileInputConstIteratorErrorTest.cpp
+)
+
+mdt_add_test(
   NAME QCsvFileReaderTest
   TARGET qCsvFileReaderTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
