@@ -90,6 +90,10 @@ namespace Mdt{ namespace PlainText{
        Q_ASSERT( fileOpenModeIsReadable(*file) );
      }
 
+    /*! \brief Copy construct a iterator from \a other
+     */
+    QTextFileInputConstIterator(const QTextFileInputConstIterator & other) noexcept = default;
+
      /*! \brief Check if this iterator is a end-of-file iterator
       */
      bool isEof() const noexcept
