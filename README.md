@@ -1,3 +1,7 @@
+
+[![pipeline status](https://gitlab.com/scandyna/mdtplaintext/badges/experimental/pipeline.svg)]
+(https://gitlab.com/scandyna/mdtplaintext/-/commits/experimental)
+
 # MdtPlainText
 
 Provides some libraries to read and write simple plain text
