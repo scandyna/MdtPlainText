@@ -23,11 +23,16 @@
 #define MDT_PLAIN_TEXT_QCSV_FILE_READER_TEMPLATE_H
 
 #include "QFileOpenError.h"
+#include "QTextCodecNotFoundError.h"
+#include "BoostSpiritQTextFileInputConstIterator.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include "Mdt/PlainText/CsvParserTemplate.h"
 #include "mdt_plaintext_qtcore_export.h"
+#include <QByteArray>
 #include <QString>
 #include <QObject>
+#include <QFile>
+#include <boost/spirit/include/support_multi_pass.hpp>
 
 namespace Mdt{ namespace PlainText{
 
@@ -74,6 +79,8 @@ namespace Mdt{ namespace PlainText{
   {
     Q_OBJECT
 
+    using MultiPassSourceIterator = boost::spirit::multi_pass<BoostSpiritQTextFileInputConstIterator>;
+
    public:
 
     /*! \brief Construct a CSV file reader
@@ -106,16 +113,38 @@ namespace Mdt{ namespace PlainText{
       Q_ASSERT( !filePath.isEmpty() );
       Q_ASSERT( !isOpen() );
 
-      mFilePath = filePath;
+      mFile.setFileName(filePath);
     }
 
     /*! \brief Get the path to the file
      *
      * \sa setFilePath()
      */
-    const QString & filePath() const noexcept
+    QString filePath() const
     {
-      return mFilePath;
+      return mFile.fileName();
+    }
+
+    /*! \brief Set the file encoding
+     *
+     * The default encoding is UTF-8
+     *
+     * \pre \a encoding must not be empty
+     */
+    void setFileEncoding(const QByteArray & encoding)
+    {
+      Q_ASSERT( !encoding.isEmpty() );
+
+      mFileEncoding = encoding;
+    }
+
+    /*! \brief Get the file encoding
+     *
+     * \sa setFileEncoding()
+     */
+    const QByteArray & fileEncoding() const noexcept
+    {
+      return mFileEncoding;
     }
 
     /*! \brief Set CSV settings
@@ -129,14 +158,14 @@ namespace Mdt{ namespace PlainText{
       Q_ASSERT( settings.isValid() );
       Q_ASSERT( !isOpen() );
 
-//       mParser.setCsvSettings(settings);
+      mParser.setCsvSettings(settings);
     }
 
     /*! \brief Get CSV settings
      */
     const CsvParserSettings & csvSettings() const noexcept
     {
-//       return mParser.csvSettings();
+      return mParser.csvSettings();
     }
 
     /*! \brief Open this CSV file reader
@@ -147,6 +176,7 @@ namespace Mdt{ namespace PlainText{
      * Open the file set with setFilePath().
      *
      * \exception QFileOpenError
+     * \exception QTextCodecNotFoundError
      * \pre A path to a file must have been set
      * \sa setFilePath()
      * \sa close()
@@ -157,13 +187,12 @@ namespace Mdt{ namespace PlainText{
     {
       Q_ASSERT( !filePath().isEmpty() );
 
-//       mFileStream.open(mFilePath);
-//       if( mFileStream.fail() ){
-//         const QString what = tr("open file '%1' failed").arg(mFilePath);
-//         throw QFileOpenError(what);
-//       }
-// 
-//       mFileIterator = boost::spirit::make_default_multi_pass( SourceIterator(mFileStream) );
+      if( !mFile.open(QIODevice::ReadOnly | QIODevice::Text) ){
+        const QString what = tr("open file '%1' failed").arg(filePath());
+        throw QFileOpenError(what);
+      }
+
+      mFileIterator = boost::spirit::make_default_multi_pass( BoostSpiritQTextFileInputConstIterator(&mFile, mFileEncoding) );
     }
 
     /*! \brief Check if this file reader is open
@@ -172,7 +201,7 @@ namespace Mdt{ namespace PlainText{
      */
     bool isOpen() const
     {
-//       return mFileStream.is_open();
+      return mFile.isOpen();
     }
 
     /*! \brief Check if this file reader is at end
@@ -184,7 +213,7 @@ namespace Mdt{ namespace PlainText{
     {
       Q_ASSERT( isOpen() );
 
-//       return mFileIterator == sourceIteratorEnd();
+      return mFileIterator == sourceIteratorEnd();
     }
 
     /*! \brief Read a line from the CSV file
@@ -201,7 +230,7 @@ namespace Mdt{ namespace PlainText{
       Q_ASSERT( isOpen() );
       Q_ASSERT( !atEnd() );
 
-//       return mParser.readLine<Record>( mFileIterator, sourceIteratorEnd() );
+      return mParser.readLine<Record>( mFileIterator, sourceIteratorEnd() );
     }
 
     /*! \brief Read all lines from the CSV file
@@ -225,22 +254,21 @@ namespace Mdt{ namespace PlainText{
      */
     void close()
     {
-//       mFileStream.close();
+      mFile.close();
     }
 
    private:
 
-//     static
-//     MultiPassSourceIterator sourceIteratorEnd() noexcept
-//     {
-//       return boost::spirit::make_default_multi_pass( SourceIterator() );
-//     }
+    static
+    MultiPassSourceIterator sourceIteratorEnd() noexcept
+    {
+      return boost::spirit::make_default_multi_pass( BoostSpiritQTextFileInputConstIterator() );
+    }
 
-//     MultiPassSourceIterator mFileIterator;
-//     CsvParserTemplate<MultiPassSourceIterator> mParser;
-//     std::ifstream mFileStream;
-    QString mFilePath;
-
+    MultiPassSourceIterator mFileIterator;
+    CsvParserTemplate<MultiPassSourceIterator> mParser;
+    QFile mFile;
+    QByteArray mFileEncoding = "UTF-8";
   };
 
 }} // namespace Mdt{ namespace PlainText{

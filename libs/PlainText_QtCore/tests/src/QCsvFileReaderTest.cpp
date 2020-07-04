@@ -29,6 +29,15 @@ TEST_CASE("filePath")
   REQUIRE( reader.filePath() == QLatin1String("tests.csv") );
 }
 
+TEST_CASE("fileEncoding")
+{
+  QCsvFileReader reader;
+  REQUIRE( reader.fileEncoding() == "UTF-8" );
+
+  reader.setFileEncoding("ISO 8859-1");
+  REQUIRE( reader.fileEncoding() == "ISO 8859-1" );
+}
+
 TEST_CASE("csvSettings")
 {
   QCsvFileReader reader;

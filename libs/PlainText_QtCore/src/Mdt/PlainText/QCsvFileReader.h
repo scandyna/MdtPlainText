@@ -23,6 +23,7 @@
 #define MDT_PLAIN_TEXT_QCSV_FILE_READER_H
 
 #include "QFileOpenError.h"
+#include "QTextCodecNotFoundError.h"
 #include "QCsvFileReadError.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include "mdt_plaintext_qtcore_export.h"
@@ -87,7 +88,21 @@ namespace Mdt{ namespace PlainText{
      *
      * \sa setFilePath()
      */
-    const QString & filePath() const noexcept;
+    QString filePath() const;
+
+    /*! \brief Set the file encoding
+     *
+     * The default encoding is UTF-8
+     *
+     * \pre \a encoding must not be empty
+     */
+    void setFileEncoding(const QByteArray & encoding);
+
+    /*! \brief Get the file encoding
+     *
+     * \sa setFileEncoding()
+     */
+    const QByteArray & fileEncoding() const noexcept;
 
     /*! \brief Set CSV settings
      *
@@ -109,6 +124,7 @@ namespace Mdt{ namespace PlainText{
      * Open the file set with setFilePath().
      *
      * \exception QFileOpenError
+     * \exception QTextCodecNotFoundError
      * \pre A path to a file must have been set
      * \sa setFilePath()
      * \sa close()

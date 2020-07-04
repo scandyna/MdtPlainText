@@ -29,6 +29,7 @@
 #include <QByteArray>
 #include <QFileInfo>
 #include <QTemporaryFile>
+#include <QTemporaryDir>
 #include <QFile>
 #include <QTextStream>
 #include <vector>
@@ -57,4 +58,9 @@ void setTestFilePathToReader(const char *testFileName, QCsvFileReader & reader)
   Q_ASSERT( QFileInfo::exists(filePath) );
 
   reader.setFilePath(filePath);
+}
+
+void setDirectoryPathToReader(const QTemporaryDir & dir, QCsvFileReader & reader)
+{
+  reader.setFilePath( dir.path() );
 }

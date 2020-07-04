@@ -20,3 +20,38 @@
  **
  ****************************************************************************/
 #include "QCsvFileReaderTestCommon.h"
+
+TEST_CASE("open")
+{
+  QCsvFileReader reader;
+
+  SECTION("File not exists")
+  {
+    reader.setFilePath( QLatin1String("/some/non/exising/file.csv") );
+
+    REQUIRE_THROWS_AS( reader.open(), QFileOpenError );
+  }
+
+  SECTION("Path refers to a directory")
+  {
+    QTemporaryDir dir;
+    REQUIRE( dir.isValid() );
+
+    setDirectoryPathToReader(dir, reader);
+
+    REQUIRE_THROWS_AS( reader.open(), QFileOpenError );
+  }
+
+  SECTION("File encoding not supported")
+  {
+    QTemporaryFile file;
+    REQUIRE( file.open() );
+
+    REQUIRE( writeTextFile(file, QLatin1String("A,B,C")) );
+    file.close();
+
+    setFilePathToReader(file, reader);
+    reader.setFileEncoding("SomeUnknownEncoding");
+    REQUIRE_THROWS_AS( reader.open(), QTextCodecNotFoundError );
+  }
+}

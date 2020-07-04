@@ -41,9 +41,21 @@ void QCsvFileReader::setFilePath(const QString & filePath)
   mImpl->setFilePath(filePath);
 }
 
-const QString & QCsvFileReader::filePath() const noexcept
+QString QCsvFileReader::filePath() const
 {
   return mImpl->filePath();
+}
+
+void QCsvFileReader::setFileEncoding(const QByteArray & encoding)
+{
+  Q_ASSERT( !encoding.isEmpty() );
+
+  mImpl->setFileEncoding(encoding);
+}
+
+const QByteArray & QCsvFileReader::fileEncoding() const noexcept
+{
+  return mImpl->fileEncoding();
 }
 
 void QCsvFileReader::setCsvSettings(const CsvParserSettings & settings) noexcept
