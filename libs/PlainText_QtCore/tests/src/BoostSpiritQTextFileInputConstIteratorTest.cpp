@@ -194,6 +194,17 @@ TEST_CASE("qi_parser_unicode_char_")
     REQUIRE( result == source );
   }
 
+  SECTION("a𐐅ö")
+  {
+    const QString source = QString::fromUtf8("a𐐅ö");
+    REQUIRE( writeTextFile(file, source) );
+    file.close();
+
+    REQUIRE( openTextFileReadOnly(file) );
+    REQUIRE( parse(file, *char_, result) );
+    REQUIRE( result == source );
+  }
+
   SECTION("char_(A)")
   {
     REQUIRE( writeTextFile(file, QLatin1String("ABC")) );

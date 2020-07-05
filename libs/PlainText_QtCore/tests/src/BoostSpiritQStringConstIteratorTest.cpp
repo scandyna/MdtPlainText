@@ -280,6 +280,13 @@ TEST_CASE("qi_parser_unicode_char_")
     REQUIRE( result == source );
   }
 
+  SECTION("a𐐅ö")
+  {
+    const QString source = QString::fromUtf8("a𐐅ö");
+    REQUIRE( parse(source, *char_, result) );
+    REQUIRE( result == source );
+  }
+
   SECTION("char_(A)")
   {
     const QString source = QLatin1String("A");
