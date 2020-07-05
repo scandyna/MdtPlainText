@@ -55,9 +55,6 @@ namespace Mdt{ namespace PlainText{
    * }
    * \endcode
    *
-   * \note Some part of this API documentation refers to following standards:
-   *       \li CSV-1203 available here: https://idoc.pub/documents/csv-file-format-specification-standard-csv-1203-6nq88y5xr9nw
-   *       \li RFC 4180 available here: https://tools.ietf.org/html/rfc4180
    * \sa CsvFileReader
    */
   class MDT_PLAINTEXT_EXPORT CsvFileReaderTemplate

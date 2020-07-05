@@ -27,9 +27,6 @@ namespace Mdt{ namespace PlainText{
    * \note Including directly this header in a project can slow down compilation time
    * \sa CsvStringParser
    * \sa CsvFileReader
-   * \note Some part of this API documentation refers to following standards:
-   *       \li CSV-1203 should be available here: https://idoc.pub/documents/csv-file-format-specification-standard-csv-1203-6nq88y5xr9nw
-   *       \li RFC 4180 available here: https://tools.ietf.org/html/rfc4180
    */
   template <typename SourceIterator>
   class CsvParserTemplate
