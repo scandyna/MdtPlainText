@@ -52,7 +52,12 @@ namespace boost { namespace spirit { namespace traits{
   {
     static bool call(QString& c, const uint32_t & val)
     {
-      c.append( QString::fromUcs4(&val, 1) );
+      if(val < 65536){
+        c.append( QChar(val) );
+      }else{
+        c.append( QString::fromUcs4(&val, 1) );
+      }
+
       return true;
     }
   };
