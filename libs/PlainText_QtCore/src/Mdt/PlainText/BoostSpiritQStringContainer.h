@@ -34,26 +34,55 @@
 #include <QChar>
 #include <QString>
 
+#include <cstdint>
+
+#include <QDebug>
+
+// namespace Mdt{ namespace PlainText{ namespace Impl{
+
+//   /*! \internal Get a QChar from the low part of a unit32_t unicode point
+//    */
+//   inline
+//   QChar lowCharFromUint32UnicodePoint(uint32_t code)
+//   {
+//     const ushort u16Code = (code & 0x0000ffff);
+// 
+//     return QChar(u16Code);
+//   }
+
+//   /*! \internal Get a QChar from the high part of a unit32_t unicode point
+//    */
+//   inline
+//   QChar highCharFromUint32UnicodePoint(uint32_t code)
+//   {
+//     const ushort u16Code = (code >> 16);
+// 
+//     return QChar(u16Code);
+//   }
+
+// }}} // namespace Mdt{ namespace PlainText{ namespace Impl{
+
 namespace boost { namespace spirit { namespace traits{
 
-  /*! \internal
-   *
-   * Prototype:
-   * \code
-   * template <typename Attrib, typename T, typename Enable>
-   * struct assign_to_attribute_from_value
-   * {
-   * };
-   * \endcode
-   */
-  template<>
-  struct assign_to_attribute_from_value<QChar, char>
-  {
-    static void call(const char & val, QChar & attr)
-    {
-      attr = QChar::fromLatin1(val);
-    }
-  };
+//   /*! \internal
+//    *
+//    * Prototype:
+//    * \code
+//    * template <typename Attrib, typename T, typename Enable>
+//    * struct assign_to_attribute_from_value
+//    * {
+//    * };
+//    * \endcode
+//    */
+//   template<>
+//   struct assign_to_attribute_from_value<QChar, char>
+//   {
+//     static void call(const char & val, QChar & attr)
+//     {
+//       qDebug() << "assign_to_attribute_from_value::call(const char -> QChar), val: " << val;
+//       attr = QChar::fromLatin1(val);
+//     }
+//   };
 
   /*! \internal Make Qi recognize QString as a container
    */
@@ -61,19 +90,36 @@ namespace boost { namespace spirit { namespace traits{
   struct is_container<QString> : mpl::true_ {};
 
   /*! \internal Expose the container's (QString's) value_type
+   *
+   * \note We expose the QString's value_type as uint32_t,
+   * which is the type used by Spirit unicode encoding.
    */
   template<>
-  struct container_value<QString> : mpl::identity<QChar> {};
+  struct container_value<QString> : mpl::identity<uint32_t> {};
 
   /*! \internal Define how to insert a new element at the end of the container (QString)
    */
   template<>
-  struct push_back_container<QString, QChar>
+  struct push_back_container<QString, uint32_t>
   {
-    static bool call(QString& c, const QChar & val)
+    static bool call(QString& c, const uint32_t & val)
     {
-        c.append(val);
-        return true;
+      qDebug() << "push_back_container::call(uint32_t append QString), val: " << val;
+
+      c.append( QString::fromUcs4(&val, 1) );
+      return true;
+    }
+  };
+
+  template<>
+  struct push_back_container<QString, char>
+  {
+    static bool call(QString& c, const char & val)
+    {
+      qDebug() << "push_back_container::call(char append QString), val: " << val;
+
+//       c.append( QString::fromUcs4(&val, 1) );
+      return true;
     }
   };
 
@@ -84,7 +130,7 @@ namespace boost { namespace spirit { namespace traits{
   {
     static bool call(const QString & c)
     {
-        return c.isEmpty();
+      return c.isEmpty();
     }
   };
 
@@ -95,7 +141,7 @@ namespace boost { namespace spirit { namespace traits{
   {
     static void call(Out & out, const QString & val)
     {
-        out << val.toStdString();
+      out << val.toStdString();
     }
   };
 
