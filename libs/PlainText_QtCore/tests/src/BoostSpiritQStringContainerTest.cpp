@@ -34,50 +34,36 @@ bool parseFromStdString(const std::string & source, const Grammar & grammar, QSt
   return boost::spirit::qi::parse(source.cbegin(), source.cend(), grammar, destination);
 }
 
-// template<typename Grammar>
-// bool parse(const std::string & source, const Grammar & grammar, QChar & destination)
-// {
-//   return boost::spirit::qi::parse(source.cbegin(), source.cend(), grammar, destination);
-// }
-
 template<typename Grammar>
 bool parseFromStdu32String(const std::u32string & source, const Grammar & grammar, QString & destination)
 {
   return boost::spirit::qi::parse(source.cbegin(), source.cend(), grammar, destination);
 }
 
-// TEST_CASE("QCharFromUnit32")
-// {
-//   using namespace Mdt::PlainText::Impl;
-// 
-//   SECTION("A")
-//   {
-//     uint32_t code = 'A';
-//     REQUIRE( lowCharFromUint32UnicodePoint(code) == QLatin1Char('A') );
-//     REQUIRE( highCharFromUint32UnicodePoint(code).isNull() );
-//   }
-// 
-//   SECTION("�")
-//   {
-//     uint32_t code = 0x0000fffd;
-//     REQUIRE( highCharFromUint32UnicodePoint(code) == QChar(0x0000) );
-//     REQUIRE( lowCharFromUint32UnicodePoint(code) == QChar(0xfffd) );
-//   }
-// 
-//   SECTION("𐀀")
-//   {
-//     uint32_t code = 0x00010000;
-//     REQUIRE( highCharFromUint32UnicodePoint(code) == QChar(0x0001) );
-//     REQUIRE( lowCharFromUint32UnicodePoint(code) == QChar(0x0000) );
-//   }
-// 
-//   SECTION("𐐅")
-//   {
-//     uint32_t code = 0x00010405;
-//     REQUIRE( highCharFromUint32UnicodePoint(code) == QChar(0x0001) );
-//     REQUIRE( lowCharFromUint32UnicodePoint(code) == QChar(0x0405) );
-//   }
-// }
+TEST_CASE("standard_char_")
+{
+  using boost::spirit::standard::char_;
+
+  QString result;
+
+  SECTION("A")
+  {
+    REQUIRE( parseFromStdString("A", *char_, result) );
+    REQUIRE( result == QLatin1String("A") );
+  }
+
+  SECTION("AB")
+  {
+    REQUIRE( parseFromStdString("AB", *char_, result) );
+    REQUIRE( result == QLatin1String("AB") );
+  }
+
+  SECTION("ABC")
+  {
+    REQUIRE( parseFromStdString("ABC", *char_, result) );
+    REQUIRE( result == QLatin1String("ABC") );
+  }
+}
 
 TEST_CASE("unicode_char_")
 {
@@ -119,54 +105,5 @@ TEST_CASE("unicode_char_")
   {
     REQUIRE( parseFromStdu32String(U"\U00010405", *char_, result) );
     REQUIRE( result == QString::fromUtf8("𐐅") );
-  }
-}
-
-// TEST_CASE("standard_char_")
-// {
-//   using boost::spirit::standard::char_;
-// 
-//   SECTION("char_")
-//   {
-//     QChar result;
-//     REQUIRE( parse("A", char_, result) );
-//     REQUIRE( result == QLatin1Char('A') );
-//   }
-// }
-
-// TEST_CASE("unicode_char_")
-// {
-//   using boost::spirit::unicode::char_;
-// 
-//   SECTION("char_")
-//   {
-//     QChar result;
-//     REQUIRE( parse("A", char_, result) );
-//     REQUIRE( result == QLatin1Char('A') );
-//   }
-// }
-
-TEST_CASE("standard_char_")
-{
-  using boost::spirit::standard::char_;
-
-  QString result;
-
-  SECTION("A")
-  {
-    REQUIRE( parseFromStdString("A", *char_, result) );
-    REQUIRE( result == QLatin1String("A") );
-  }
-
-  SECTION("AB")
-  {
-    REQUIRE( parseFromStdString("AB", *char_, result) );
-    REQUIRE( result == QLatin1String("AB") );
-  }
-
-  SECTION("ABC")
-  {
-    REQUIRE( parseFromStdString("ABC", *char_, result) );
-    REQUIRE( result == QLatin1String("ABC") );
   }
 }

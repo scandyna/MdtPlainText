@@ -26,63 +26,11 @@
 #define MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_CONTAINER_H
 
 #include <boost/spirit/include/qi.hpp>
-
-#include <boost/spirit/home/qi/detail/assign_to.hpp>
-
-// #include <boost/spirit/home/support/attributes.hpp>
-
 #include <QChar>
 #include <QString>
-
 #include <cstdint>
 
-#include <QDebug>
-
-// namespace Mdt{ namespace PlainText{ namespace Impl{
-
-//   /*! \internal Get a QChar from the low part of a unit32_t unicode point
-//    */
-//   inline
-//   QChar lowCharFromUint32UnicodePoint(uint32_t code)
-//   {
-//     const ushort u16Code = (code & 0x0000ffff);
-// 
-//     return QChar(u16Code);
-//   }
-
-//   /*! \internal Get a QChar from the high part of a unit32_t unicode point
-//    */
-//   inline
-//   QChar highCharFromUint32UnicodePoint(uint32_t code)
-//   {
-//     const ushort u16Code = (code >> 16);
-// 
-//     return QChar(u16Code);
-//   }
-
-// }}} // namespace Mdt{ namespace PlainText{ namespace Impl{
-
 namespace boost { namespace spirit { namespace traits{
-
-//   /*! \internal
-//    *
-//    * Prototype:
-//    * \code
-//    * template <typename Attrib, typename T, typename Enable>
-//    * struct assign_to_attribute_from_value
-//    * {
-//    * };
-//    * \endcode
-//    */
-//   template<>
-//   struct assign_to_attribute_from_value<QChar, char>
-//   {
-//     static void call(const char & val, QChar & attr)
-//     {
-//       qDebug() << "assign_to_attribute_from_value::call(const char -> QChar), val: " << val;
-//       attr = QChar::fromLatin1(val);
-//     }
-//   };
 
   /*! \internal Make Qi recognize QString as a container
    */
@@ -104,21 +52,7 @@ namespace boost { namespace spirit { namespace traits{
   {
     static bool call(QString& c, const uint32_t & val)
     {
-      qDebug() << "push_back_container::call(uint32_t append QString), val: " << val;
-
       c.append( QString::fromUcs4(&val, 1) );
-      return true;
-    }
-  };
-
-  template<>
-  struct push_back_container<QString, char>
-  {
-    static bool call(QString& c, const char & val)
-    {
-      qDebug() << "push_back_container::call(char append QString), val: " << val;
-
-//       c.append( QString::fromUcs4(&val, 1) );
       return true;
     }
   };
