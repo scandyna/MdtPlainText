@@ -71,6 +71,22 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME QCsvGrammarTest
+  TARGET qCsvGrammarTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/QCsvGrammarTest.cpp
+)
+
+mdt_add_test(
+  NAME QCsvGrammarErrorTest
+  TARGET qCsvGrammarErrorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/QCsvGrammarErrorTest.cpp
+)
+
+mdt_add_test(
   NAME QCsvFileReaderTest
   TARGET qCsvFileReaderTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib

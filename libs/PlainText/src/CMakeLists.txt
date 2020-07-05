@@ -41,13 +41,6 @@ target_compile_definitions(Mdt_PlainText
     BOOST_SPIRIT_UNICODE
 )
 
-if(BOOST_SPIRIT_DEBUG)
-  target_compile_definitions(Mdt_PlainText
-    PRIVATE
-      BOOST_SPIRIT_DEBUG
-  )
-endif()
-
 generate_export_header(Mdt_PlainText)
 
 mdt_install_library(

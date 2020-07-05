@@ -23,6 +23,12 @@ TEST_CASE("FieldColumnRule")
     REQUIRE( data == "A" );
   }
 
+  SECTION("\"A\"")
+  {
+    data = parseFieldColumn("\"A\"", csvSettings);
+    REQUIRE( data == "A" );
+  }
+
   SECTION("AB")
   {
     data = parseFieldColumn("AB", csvSettings);
@@ -39,6 +45,113 @@ TEST_CASE("FieldColumnRule")
   {
     data = parseFieldColumn("ABCD", csvSettings);
     REQUIRE( data == "ABCD" );
+  }
+
+  SECTION("\"ABCD\"")
+  {
+    data = parseFieldColumn("\"ABCD\"", csvSettings);
+    REQUIRE( data == "ABCD" );
+  }
+
+  SECTION("\"A\"\"B\"")
+  {
+    data = parseFieldColumn("\"A\"\"B\"", csvSettings);
+    REQUIRE( data == "A\"B" );
+  }
+
+  SECTION("\"A\"\"BC\"\"D\"")
+  {
+    data = parseFieldColumn("\"A\"\"BC\"\"D\"", csvSettings);
+    REQUIRE( data == "A\"BC\"D" );
+  }
+
+  SECTION("\"A \"")
+  {
+    data = parseFieldColumn("\"A \"", csvSettings);
+    REQUIRE( data == "A " );
+  }
+
+  SECTION("\"AB \"")
+  {
+    data = parseFieldColumn("\"AB \"", csvSettings);
+    REQUIRE( data == "AB " );
+  }
+
+  SECTION("\"A B\"")
+  {
+    data = parseFieldColumn("\"A B\"", csvSettings);
+    REQUIRE( data == "A B" );
+  }
+
+  SECTION("\" AB \"")
+  {
+    data = parseFieldColumn("\" AB \"", csvSettings);
+    REQUIRE( data == " AB " );
+  }
+
+  SECTION("\"A,B\"")
+  {
+    data = parseFieldColumn("\"A,B\"", csvSettings);
+    REQUIRE( data == "A,B" );
+  }
+
+  SECTION("\"A\\nB\"")
+  {
+    data = parseFieldColumn("\"A\nB\"", csvSettings);
+    REQUIRE( data == "A\nB" );
+  }
+
+  SECTION("\"A\\rB\"")
+  {
+    data = parseFieldColumn("\"A\rB\"", csvSettings);
+    REQUIRE( data == "A\rB" );
+  }
+
+  SECTION("\"A\\r\\nB\"")
+  {
+    data = parseFieldColumn("\"A\r\nB\"", csvSettings);
+    REQUIRE( data == "A\r\nB" );
+  }
+}
+
+TEST_CASE("FieldColumnRule Excel protection marker")
+{
+  std::string data;
+  CsvParserSettings csvSettings;
+
+  SECTION("A (EXP ON)")
+  {
+    csvSettings.setParseExp(true);
+    data = parseFieldColumn("A", csvSettings);
+    REQUIRE( data == "A" );
+  }
+
+  SECTION("~A (EXP ON)")
+  {
+    csvSettings.setParseExp(true);
+    data = parseFieldColumn("~A", csvSettings);
+    REQUIRE( data == "A" );
+  }
+
+  SECTION("~ABCD (EXP ON)")
+  {
+    csvSettings.setParseExp(true);
+    data = parseFieldColumn("~ABCD", csvSettings);
+    REQUIRE( data == "ABCD" );
+  }
+
+  SECTION("~A (EXP OFF)")
+  {
+    csvSettings.setParseExp(false);
+    data = parseFieldColumn("~A", csvSettings);
+    REQUIRE( data == "~A" );
+  }
+
+  SECTION("~ABCD (EXP OFF)")
+  {
+    csvSettings.setParseExp(false);
+    data = parseFieldColumn("~ABCD", csvSettings);
+    REQUIRE( data == "~ABCD" );
   }
 
 }

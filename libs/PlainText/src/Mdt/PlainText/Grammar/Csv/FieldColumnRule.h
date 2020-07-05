@@ -9,16 +9,17 @@
 
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include <boost/spirit/include/qi.hpp>
+#include <cstdint>
 #include <cassert>
 
 namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
   /*! \brief CSV field column rule
    */
-  template <typename SourceIterator, typename DestinationData>
-  struct FieldColumnRule : boost::spirit::qi::grammar<SourceIterator, DestinationData()>
+  template <typename SourceIterator, typename DestinationString>
+  struct FieldColumnRule : boost::spirit::qi::grammar<SourceIterator, DestinationString()>
   {
-    using CharType = typename DestinationData::value_type;
+    using CharType = uint32_t;
 
     /*! \brief Constructor
      *
@@ -33,10 +34,8 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
       using qi::lit;
       using qi::eol;
-      using boost::spirit::standard::char_;
-      using boost::spirit::standard::space;
-//       using boost::spirit::standard_wide::char_;
-//       using boost::spirit::standard_wide::space;
+      using boost::spirit::unicode::char_;
+      using boost::spirit::unicode::space;
 
       const char fieldSep = settings.fieldSeparator();
       const char fieldQuote = settings.fieldProtection();
@@ -57,7 +56,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
       // Character collections
       mAnychar = mChar | char_(fieldSep) | (char_(fieldQuote) >> lit(fieldQuote)) | space; // space matches space, CR, LF and other See std::isspace()
       mChar = mSafechar | char_(0x20);  // 0x20 == SPACE char
-      std::string exclude = std::string("\n\t\r") + fieldSep + fieldQuote;
+      const std::string exclude = std::string("\n\t\r") + fieldSep + fieldQuote;
       mSafechar = ~char_(exclude);
 
       BOOST_SPIRIT_DEBUG_NODE(mFieldColumnRule);
@@ -85,14 +84,14 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
       mSafechar.name("Safechar");
     }
 
-    boost::spirit::qi::rule<SourceIterator, DestinationData()> mFieldColumnRule;
-    boost::spirit::qi::rule<SourceIterator, std::string()> mProtectedField;
-    boost::spirit::qi::rule<SourceIterator, std::string()> mUnprotectedField;
-    boost::spirit::qi::rule<SourceIterator, std::string()> mFieldPayload;
-    boost::spirit::qi::rule<SourceIterator, std::string()> mRawFieldPayload;
-    boost::spirit::qi::rule<SourceIterator, char()> mAnychar;
-    boost::spirit::qi::rule<SourceIterator, char()> mChar;
-    boost::spirit::qi::rule<SourceIterator, char()> mSafechar;
+    boost::spirit::qi::rule<SourceIterator, DestinationString()> mFieldColumnRule;
+    boost::spirit::qi::rule<SourceIterator, DestinationString()> mProtectedField;
+    boost::spirit::qi::rule<SourceIterator, DestinationString()> mUnprotectedField;
+    boost::spirit::qi::rule<SourceIterator, DestinationString()> mFieldPayload;
+    boost::spirit::qi::rule<SourceIterator, DestinationString()> mRawFieldPayload;
+    boost::spirit::qi::rule<SourceIterator, CharType()> mAnychar;
+    boost::spirit::qi::rule<SourceIterator, CharType()> mChar;
+    boost::spirit::qi::rule<SourceIterator, CharType()> mSafechar;
   };
 
 }}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{

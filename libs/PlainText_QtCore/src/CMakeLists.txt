@@ -38,13 +38,6 @@ target_include_directories(Mdt_PlainText_QtCore
    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 )
 
-if(BOOST_SPIRIT_DEBUG)
-  target_compile_definitions(Mdt_PlainText_QtCore
-    PRIVATE
-      BOOST_SPIRIT_DEBUG
-  )
-endif()
-
 generate_export_header(Mdt_PlainText_QtCore)
 
 mdt_install_library(

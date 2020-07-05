@@ -99,7 +99,6 @@ namespace Mdt{ namespace PlainText{
     {
       mValue = this->base_reference()->unicode();
       return mValue;
-//       return static_cast<uint32_t>( this->base_reference()->unicode() );
     }
 
     mutable uint32_t mValue;
