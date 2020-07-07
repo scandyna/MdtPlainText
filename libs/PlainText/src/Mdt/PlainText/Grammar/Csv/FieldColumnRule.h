@@ -37,7 +37,6 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
       namespace qi = boost::spirit::qi;
 
       using qi::lit;
-      using qi::eol;
       using boost::spirit::unicode::char_;
       using boost::spirit::unicode::space;
 

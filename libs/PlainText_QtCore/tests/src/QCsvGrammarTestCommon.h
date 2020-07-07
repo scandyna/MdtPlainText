@@ -29,6 +29,9 @@
 #include <QString>
 #include <QStringList>
 #include <QLatin1String>
+#include <QDebug>
+#include <string>
+#include <vector>
 
 using namespace Mdt::PlainText;
 
@@ -67,4 +70,20 @@ QStringList parseRecord(const QString & sourceString, const CsvParserSettings & 
   }
 
   return record;
+}
+
+bool qStringListEqualsUtf8StringList(const QStringList & list, const std::vector<std::string> & refList)
+{
+  if( list.size() != (int)refList.size() ){
+    qDebug() << "list size(" << list.size() << ") differs from expected list size: " << refList.size();
+    return false;
+  }
+  for(int i=0; i < list.size(); ++i){
+    if(list.at(i).toStdString() != refList[i]){
+      qDebug() << "list[" << i << "] differs from reference. Str: " << list.at(i) << ", expected: " << QString::fromStdString(refList[i]);
+      return false;
+    }
+  }
+
+  return true;
 }

@@ -109,5 +109,35 @@ TEST_CASE("FieldColumnRule")
     result = parseFieldColumn(QString::fromUtf8("\"a𐐅,ö\""), csvSettings);
     REQUIRE( result == QString::fromUtf8("a𐐅,ö") );
   }
+}
+
+TEST_CASE("RecordRule")
+{
+  QStringList result;
+  CsvParserSettings csvSettings;
+
+  SECTION("A,B")
+  {
+    result = parseRecord(QLatin1String("A,B"), csvSettings);
+    REQUIRE( qStringListEqualsUtf8StringList(result, {"A","B"}) );
+  }
+
+  SECTION("A,é")
+  {
+    result = parseRecord(QString::fromUtf8("A,é"), csvSettings);
+    REQUIRE( qStringListEqualsUtf8StringList(result, {"A","é"}) );
+  }
+
+  SECTION("A,é,à,B,è,ü,ö,ä,𐐅,l")
+  {
+    result = parseRecord(QString::fromUtf8("A,é,à,B,è,ü,ö,ä,𐐅,l"), csvSettings);
+    REQUIRE( qStringListEqualsUtf8StringList(result, {"A","é","à","B","è","ü","ö","ä","𐐅","l"}) );
+  }
+
+  SECTION("A,é,à,B,è,ü,ö,ä,𐐅,l\\n")
+  {
+    result = parseRecord(QString::fromUtf8("A,é,à,B,è,ü,ö,ä,𐐅,l\n"), csvSettings);
+    REQUIRE( qStringListEqualsUtf8StringList(result, {"A","é","à","B","è","ü","ö","ä","𐐅","l"}) );
+  }
 
 }
