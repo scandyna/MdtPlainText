@@ -160,154 +160,188 @@ TEST_CASE("UnprotectedField_NonEmptyUnprotectedField_EXP")
   }
 }
 
-TEST_CASE("FieldColumn")
+TEST_CASE("ProtectedField")
 {
-  std::string data;
   CsvParserSettings csvSettings;
 
-  SECTION("empty")
+  SECTION("Non quoted string fails")
   {
-    data = parseFieldColumn("", csvSettings);
-    REQUIRE( data == "" );
+    const auto nonQuotedData = GENERATE( as<std::string>(), "","A","AB","ABC" );
+
+    SECTION("Parse EXP")
+    {
+      REQUIRE( parseProtectedFieldFails(nonQuotedData, csvSettings) );
+    }
+
+    SECTION("Ignore EXP")
+    {
+      csvSettings.setParseExp(false);
+
+      REQUIRE( parseProtectedFieldFails(nonQuotedData, csvSettings) );
+    }
   }
 
-  SECTION("A")
+  SECTION("Quoted string")
   {
-    data = parseFieldColumn("A", csvSettings);
-    REQUIRE( data == "A" );
-  }
+    const auto data = GENERATE( values<InputExpectedStringData>
+      ({
+        {"\"A\"","A"},
+        {"\"AB\"","AB"},
+        {"\"ABC\"","ABC"},
+        {"\"ABCD\"","ABCD"},
+        {"\"A\"\"B\"","A\"B"},
+        {"\"A\"\"BC\"\"D\"","A\"BC\"D"},
+        {"\"A \"","A "},
+        {"\" A\""," A"},
+        {"\" A \""," A "},
+        {"\"AB \"","AB "},
+        {"\"A B\"","A B"},
+        {"\" AB\""," AB"},
+        {"\" AB \""," AB "},
+        {"\" A B \""," A B "},
+        {"\"A\nB\"","A\nB"},
+        {"\"AB\nC\"","AB\nC"},
+        {"\"A\nBC\"","A\nBC"},
+        {"\"AB\rC\"","AB\rC"},
+        {"\"A\r\nB\"","A\r\nB"},
+        {"\"AB\r\nC\"","AB\r\nC"},
+        {"\"A\r\nBC\"","A\r\nBC"},
+        {"\"A,B\"","A,B"},
+        {"\"A,BC\"","A,BC"},
+        {"\"AB,C\"","AB,C"}
+      })
+    );
 
-  SECTION("\"A\"")
-  {
-    data = parseFieldColumn("\"A\"", csvSettings);
-    REQUIRE( data == "A" );
-  }
+    SECTION("Parse EXP")
+    {
+      REQUIRE( parseProtectedField(data.input, csvSettings) == data.expected );
+    }
 
-  SECTION("AB")
-  {
-    data = parseFieldColumn("AB", csvSettings);
-    REQUIRE( data == "AB" );
-  }
+    SECTION("Ignore EXP")
+    {
+      csvSettings.setParseExp(false);
 
-  SECTION("ABC")
-  {
-    data = parseFieldColumn("ABC", csvSettings);
-    REQUIRE( data == "ABC" );
-  }
-
-  SECTION("ABCD")
-  {
-    data = parseFieldColumn("ABCD", csvSettings);
-    REQUIRE( data == "ABCD" );
-  }
-
-  SECTION("\"ABCD\"")
-  {
-    data = parseFieldColumn("\"ABCD\"", csvSettings);
-    REQUIRE( data == "ABCD" );
-  }
-
-  SECTION("\"A\"\"B\"")
-  {
-    data = parseFieldColumn("\"A\"\"B\"", csvSettings);
-    REQUIRE( data == "A\"B" );
-  }
-
-  SECTION("\"A\"\"BC\"\"D\"")
-  {
-    data = parseFieldColumn("\"A\"\"BC\"\"D\"", csvSettings);
-    REQUIRE( data == "A\"BC\"D" );
-  }
-
-  SECTION("\"A \"")
-  {
-    data = parseFieldColumn("\"A \"", csvSettings);
-    REQUIRE( data == "A " );
-  }
-
-  SECTION("\"AB \"")
-  {
-    data = parseFieldColumn("\"AB \"", csvSettings);
-    REQUIRE( data == "AB " );
-  }
-
-  SECTION("\"A B\"")
-  {
-    data = parseFieldColumn("\"A B\"", csvSettings);
-    REQUIRE( data == "A B" );
-  }
-
-  SECTION("\" AB \"")
-  {
-    data = parseFieldColumn("\" AB \"", csvSettings);
-    REQUIRE( data == " AB " );
-  }
-
-  SECTION("\"A,B\"")
-  {
-    data = parseFieldColumn("\"A,B\"", csvSettings);
-    REQUIRE( data == "A,B" );
-  }
-
-  SECTION("\"A\\nB\"")
-  {
-    data = parseFieldColumn("\"A\nB\"", csvSettings);
-    REQUIRE( data == "A\nB" );
-  }
-
-  SECTION("\"A\\rB\"")
-  {
-    data = parseFieldColumn("\"A\rB\"", csvSettings);
-    REQUIRE( data == "A\rB" );
-  }
-
-  SECTION("\"A\\r\\nB\"")
-  {
-    data = parseFieldColumn("\"A\r\nB\"", csvSettings);
-    REQUIRE( data == "A\r\nB" );
+      REQUIRE( parseProtectedField(data.input, csvSettings) == data.expected );
+    }
   }
 }
 
-TEST_CASE("FieldColumnRule Excel protection marker")
+TEST_CASE("ProtectedField_EXP")
 {
   std::string data;
   CsvParserSettings csvSettings;
 
-  SECTION("A (EXP ON)")
+  SECTION("Parse EXP")
   {
-    csvSettings.setParseExp(true);
-    data = parseFieldColumn("A", csvSettings);
-    REQUIRE( data == "A" );
+    SECTION("~")
+    {
+      REQUIRE( parseProtectedField("\"~\"", csvSettings) == "" );
+    }
+
+    SECTION("~A")
+    {
+      REQUIRE( parseProtectedField("\"~A\"", csvSettings) == "A" );
+    }
+
+    SECTION("~AB")
+    {
+      REQUIRE( parseProtectedField("\"~AB\"", csvSettings) == "AB" );
+    }
+
+    SECTION("~A~")
+    {
+      REQUIRE( parseProtectedField("\"~A~\"", csvSettings) == "A~" );
+    }
+
+    SECTION("~AB~")
+    {
+      REQUIRE( parseProtectedField("\"~AB~\"", csvSettings) == "AB~" );
+    }
   }
 
-  SECTION("~A (EXP ON)")
-  {
-    csvSettings.setParseExp(true);
-    data = parseFieldColumn("~A", csvSettings);
-    REQUIRE( data == "A" );
-  }
-
-  SECTION("~ABCD (EXP ON)")
-  {
-    csvSettings.setParseExp(true);
-    data = parseFieldColumn("~ABCD", csvSettings);
-    REQUIRE( data == "ABCD" );
-  }
-
-  SECTION("~A (EXP OFF)")
+  SECTION("Ignore EXP")
   {
     csvSettings.setParseExp(false);
-    data = parseFieldColumn("~A", csvSettings);
-    REQUIRE( data == "~A" );
-  }
 
-  SECTION("~ABCD (EXP OFF)")
+    SECTION("~")
+    {
+      REQUIRE( parseProtectedField("\"~\"", csvSettings) == "~" );
+    }
+
+    SECTION("~A")
+    {
+      REQUIRE( parseProtectedField("\"~A\"", csvSettings) == "~A" );
+    }
+
+    SECTION("~AB")
+    {
+      REQUIRE( parseProtectedField("\"~AB\"", csvSettings) == "~AB" );
+    }
+
+    SECTION("~A~")
+    {
+      REQUIRE( parseProtectedField("\"~A~\"", csvSettings) == "~A~" );
+    }
+
+    SECTION("~AB~")
+    {
+      REQUIRE( parseProtectedField("\"~AB~\"", csvSettings) == "~AB~" );
+    }
+  }
+}
+
+TEST_CASE("FieldColumn")
+{
+  CsvParserSettings csvSettings;
+
+  SECTION("Unquoted empty")
   {
-    csvSettings.setParseExp(false);
-    data = parseFieldColumn("~ABCD", csvSettings);
-    REQUIRE( data == "~ABCD" );
+    REQUIRE( parseFieldColumn("", csvSettings) == "" );
   }
 
+  SECTION("Quoted empty")
+  {
+    REQUIRE( parseFieldColumn("\"\"", csvSettings) == "" );
+  }
+}
+
+TEST_CASE("NonEmptyFieldColumn")
+{
+  CsvParserSettings csvSettings;
+
+  SECTION("Unquoted empty")
+  {
+    REQUIRE( parseNonEmptyFieldColumnFails("", csvSettings) );
+  }
+
+  SECTION("Quoted empty")
+  {
+    REQUIRE( parseNonEmptyFieldColumn("\"\"", csvSettings) == "" );
+  }
+}
+
+TEST_CASE("FieldColumn_NonEmptyFieldColumn")
+{
+  CsvParserSettings csvSettings;
+
+  const auto data = GENERATE( values<InputExpectedStringData>
+    ({
+      {"A","A"},
+      {"\"A\"","A"},
+      {"ABCD","ABCD"},
+      {"\"ABCD\"","ABCD"}
+    })
+  );
+
+  SECTION("FieldColumn")
+  {
+    REQUIRE( parseFieldColumn(data.input, csvSettings) == data.expected );
+  }
+
+  SECTION("NonEmptyFieldColumn")
+  {
+    REQUIRE( parseNonEmptyFieldColumn(data.input, csvSettings) == data.expected );
+  }
 }
 
 TEST_CASE("RecordRule")

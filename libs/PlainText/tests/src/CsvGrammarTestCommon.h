@@ -7,7 +7,9 @@
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/Grammar/Csv/UnprotectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/NonEmptyUnprotectedField.h"
+#include "Mdt/PlainText/Grammar/Csv/ProtectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/FieldColumn.h"
+#include "Mdt/PlainText/Grammar/Csv/NonEmptyFieldColumn.h"
 #include "Mdt/PlainText/Grammar/Csv/RecordRule.h"
 #include "Mdt/PlainText/Grammar/Csv/CsvFileRule.h"
 #include "Mdt/PlainText/CsvParserSettings"
@@ -25,7 +27,9 @@ using StringTable = std::vector<StringRecord>;
 
 using UnprotectedField = Grammar::Csv::UnprotectedField<std::string::const_iterator, std::string>;
 using NonEmptyUnprotectedField = Grammar::Csv::NonEmptyUnprotectedField<std::string::const_iterator, std::string>;
+using ProtectedField = Grammar::Csv::ProtectedField<std::string::const_iterator, std::string>;
 using FieldColumn = Grammar::Csv::FieldColumn<std::string::const_iterator, std::string>;
+using NonEmptyFieldColumn = Grammar::Csv::NonEmptyFieldColumn<std::string::const_iterator, std::string>;
 
 using RecordRule = Grammar::Csv::RecordRule<std::string::const_iterator, StringRecord>;
 
@@ -37,6 +41,7 @@ struct InputExpectedStringData
   std::string input;
   std::string expected;
 };
+
 
 template<typename Rule>
 bool parseRuleFails(const std::string & sourceString, const CsvParserSettings & settings)
@@ -111,11 +116,39 @@ std::string parseNonEmptyUnprotectedField(const std::string & sourceString, cons
   return parseToStringRule<NonEmptyUnprotectedField>(sourceString, settings);
 }
 
+bool parseProtectedFieldFails(const std::string & sourceString, const CsvParserSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return parseRuleFails<ProtectedField>(sourceString, settings);
+}
+
+std::string parseProtectedField(const std::string & sourceString, const CsvParserSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return parseToStringRule<ProtectedField>(sourceString, settings);
+}
+
 std::string parseFieldColumn(const std::string & sourceString, const CsvParserSettings & settings)
 {
   assert( settings.isValid() );
 
   return parseToStringRule<FieldColumn>(sourceString, settings);
+}
+
+bool parseNonEmptyFieldColumnFails(const std::string & sourceString, const CsvParserSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return parseRuleFails<NonEmptyFieldColumn>(sourceString, settings);
+}
+
+std::string parseNonEmptyFieldColumn(const std::string & sourceString, const CsvParserSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return parseToStringRule<NonEmptyFieldColumn>(sourceString, settings);
 }
 
 StringRecord parseRecord(const std::string & sourceString, const CsvParserSettings & settings)
