@@ -4,8 +4,8 @@
  * (See accompanying file LICENSE.txt or copy at
  * https://www.boost.org/LICENSE_1_0.txt)
  */
-#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_RULE_H
-#define MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_RULE_H
+#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_H
+#define MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_H
 
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include <boost/spirit/include/qi.hpp>
@@ -21,14 +21,14 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
    *       \li RFC 4180 available here: https://tools.ietf.org/html/rfc4180
    */
   template <typename SourceIterator, typename DestinationString>
-  struct ProtectedFieldRule : boost::spirit::qi::grammar<SourceIterator, DestinationString()>
+  struct ProtectedField : boost::spirit::qi::grammar<SourceIterator, DestinationString()>
   {
     /*! \brief Constructor
      *
      * \pre \a settings must be valid
      */
-    ProtectedFieldRule(const CsvParserSettings & settings) noexcept
-     : ProtectedFieldRule::base_type(mProtectedFieldRule)
+    ProtectedField(const CsvParserSettings & settings) noexcept
+     : ProtectedField::base_type(mProtectedField)
     {
       assert( settings.isValid() );
 
@@ -36,19 +36,19 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
       nameRules();
 
-      BOOST_SPIRIT_DEBUG_NODE(mProtectedFieldRule);
+      BOOST_SPIRIT_DEBUG_NODE(mProtectedField);
     }
 
    private:
 
     void nameRules()
     {
-      mProtectedFieldRule.name("ProtectedFieldRule");
+      mProtectedField.name("ProtectedField");
     }
 
-    boost::spirit::qi::rule<SourceIterator, DestinationString()> mProtectedFieldRule;
+    boost::spirit::qi::rule<SourceIterator, DestinationString()> mProtectedField;
   };
 
 }}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
-#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_RULE_H
+#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_H

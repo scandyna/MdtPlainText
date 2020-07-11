@@ -4,8 +4,8 @@
  * (See accompanying file LICENSE.txt or copy at
  * https://www.boost.org/LICENSE_1_0.txt)
  */
-#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_FIELD_COLUMN_RULE_H
-#define MDT_PLAIN_TEXT_GRAMMAR_CSV_FIELD_COLUMN_RULE_H
+#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_FIELD_COLUMN_H
+#define MDT_PLAIN_TEXT_GRAMMAR_CSV_FIELD_COLUMN_H
 
 #include "UnprotectedField.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
@@ -22,7 +22,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
    *       \li RFC 4180 available here: https://tools.ietf.org/html/rfc4180
    */
   template <typename SourceIterator, typename DestinationString>
-  struct FieldColumnRule : boost::spirit::qi::grammar<SourceIterator, DestinationString()>
+  struct FieldColumn : boost::spirit::qi::grammar<SourceIterator, DestinationString()>
   {
     using CharType = uint32_t;
 
@@ -30,8 +30,8 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
      *
      * \pre \a settings must be valid
      */
-    FieldColumnRule(const CsvParserSettings & settings) noexcept
-     : FieldColumnRule::base_type(mFieldColumnRule),
+    FieldColumn(const CsvParserSettings & settings) noexcept
+     : FieldColumn::base_type(mFieldColumn),
        mUnprotectedField(settings)
     {
       assert( settings.isValid() );
@@ -48,7 +48,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
       nameRules();
 
-      mFieldColumnRule = mProtectedField | mUnprotectedField;
+      mFieldColumn = mProtectedField | mUnprotectedField;
       if(parseExp){
         mProtectedField = lit(fieldQuote) >> -lit('~') >> mFieldPayload >> lit(fieldQuote);
       }else{
@@ -61,7 +61,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
       const std::string exclude = std::string("\n\t\r") + fieldSep + fieldQuote;
       mSafechar = ~char_(exclude);
 
-      BOOST_SPIRIT_DEBUG_NODE(mFieldColumnRule);
+      BOOST_SPIRIT_DEBUG_NODE(mFieldColumn);
       BOOST_SPIRIT_DEBUG_NODE(mProtectedField);
       BOOST_SPIRIT_DEBUG_NODE(mFieldPayload);
       BOOST_SPIRIT_DEBUG_NODE(mAnychar);
@@ -73,7 +73,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
     void nameRules()
     {
-      mFieldColumnRule.name("FieldColumnRule");
+      mFieldColumn.name("FieldColumn");
       mProtectedField.name("ProtectedField");
       mFieldPayload.name("FieldPayload");
       mAnychar.name("Anychar");
@@ -81,7 +81,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
       mSafechar.name("Safechar");
     }
 
-    boost::spirit::qi::rule<SourceIterator, DestinationString()> mFieldColumnRule;
+    boost::spirit::qi::rule<SourceIterator, DestinationString()> mFieldColumn;
     boost::spirit::qi::rule<SourceIterator, DestinationString()> mProtectedField;
     UnprotectedField<SourceIterator, DestinationString> mUnprotectedField;
     boost::spirit::qi::rule<SourceIterator, DestinationString()> mFieldPayload;
@@ -92,4 +92,4 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
 }}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
-#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_FIELD_COLUMN_RULE_H
+#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_FIELD_COLUMN_H

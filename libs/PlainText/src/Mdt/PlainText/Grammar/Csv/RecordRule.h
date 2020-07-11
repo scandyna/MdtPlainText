@@ -7,7 +7,7 @@
 #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_RECORD_RULE_H
 #define MDT_PLAIN_TEXT_GRAMMAR_CSV_RECORD_RULE_H
 
-#include "FieldColumnRule.h"
+#include "FieldColumn.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include <boost/spirit/include/qi.hpp>
 #include <cassert>
@@ -86,7 +86,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
     boost::spirit::qi::rule<SourceIterator, DestinationRecord()> mRecordRule;
     boost::spirit::qi::rule<SourceIterator, DestinationRecord()> mRecordPayload;
-    FieldColumnRule<SourceIterator, StringType> mFieldColumn;
+    FieldColumn<SourceIterator, StringType> mFieldColumn;
   };
 
 }}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
