@@ -8,8 +8,14 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_PlainText
+  Mdt/PlainText/Grammar/Csv/SafeChar.cpp
+  Mdt/PlainText/Grammar/Csv/UnprotectedField.cpp
+  Mdt/PlainText/Grammar/Csv/NonEmptyUnprotectedField.cpp
+  Mdt/PlainText/Grammar/Csv/ProtectedFieldRule.cpp
   Mdt/PlainText/Grammar/Csv/FieldColumnRule.cpp
+  Mdt/PlainText/Grammar/Csv/NonEmptyFieldColumn.cpp
   Mdt/PlainText/Grammar/Csv/RecordRule.cpp
+  Mdt/PlainText/Grammar/Csv/CsvFileRule.cpp
   Mdt/PlainText/CsvParserSettings.cpp
   Mdt/PlainText/CsvParserTemplate.cpp
   Mdt/PlainText/CsvFileReaderTemplate.cpp

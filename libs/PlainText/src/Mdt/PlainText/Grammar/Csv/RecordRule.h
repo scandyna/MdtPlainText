@@ -16,6 +16,28 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
   /*! \brief CSV record rule
    *
+   * CSV-1203 describes a CSV record as:
+   * \code
+   * csvrecord = recordpayload EOR
+   * recordpayload = fieldcolumn COMMA fieldcolumn *(COMMA fieldcolumn)
+   * \endcode
+   * This means that a record must have at least 2 columns,
+   * and it must be terminated by a EOR (end of record)
+   *
+   * RFC 4180 describes a CSV record as:
+   * \code
+   * record = field *(COMMA field)
+   * \endcode
+   * That means that a record must have at least 1 column.
+   *
+   * A empty record has no meaning, and should not be allowed.
+   * Neverthless, this implementation accepts empty fields,
+   * as well as 1 column records.
+   * To avoid empty records, the grammar becomes:
+   * \code
+   * Record = NonEmptyFieldColumn / ( FieldColumn *(COMMA FieldColumn) )
+   * \endcode
+   *
    * \note Some part of this API documentation refers to following standards:
    *       \li CSV-1203 available here: https://idoc.pub/documents/csv-file-format-specification-standard-csv-1203-6nq88y5xr9nw
    *       \li RFC 4180 available here: https://tools.ietf.org/html/rfc4180
@@ -30,7 +52,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
      * \pre \a settings must be valid
      */
     RecordRule(const CsvParserSettings & settings) noexcept
-     : RecordRule::base_type(mRecordRule),
+     : RecordRule::base_type(mRecordPayload),
        mFieldColumn(settings)
     {
       assert( settings.isValid() );
@@ -42,7 +64,11 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
       nameRules();
 
-      mRecordRule = mRecordPayload >> -eol; // RFC 4180 do not need a end of line in last line
+//       const char fieldSep = settings.fieldSeparator();
+
+//       mRecordRule = mRecordPayload >> eol;
+//       mRecordRule = mRecordPayload >> -eol; // RFC 4180 do not need a end of line in last line
+//       mRecordPayload = mFieldColumn >> *(fieldSep >> mFieldColumn);
       mRecordPayload = mFieldColumn % lit( settings.fieldSeparator() );
 
       BOOST_SPIRIT_DEBUG_NODE(mRecordRule);

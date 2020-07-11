@@ -6,6 +6,160 @@
  */
 #include "CsvGrammarTestCommon.h"
 
+
+TEST_CASE("UnprotectedField")
+{
+  std::string data;
+  CsvParserSettings csvSettings;
+
+  SECTION("empty")
+  {
+    data = parseUnprotectedField("", csvSettings);
+    REQUIRE( data == "" );
+  }
+}
+
+TEST_CASE("NonEmptyUnprotectedField")
+{
+  std::string data;
+  CsvParserSettings csvSettings;
+
+  SECTION("empty")
+  {
+    REQUIRE( parseNonEmptyUnprotectedFieldFails("", csvSettings) );
+  }
+}
+
+TEST_CASE("UnprotectedField_NonEmptyUnprotectedField")
+{
+  CsvParserSettings csvSettings;
+
+  const auto data = GENERATE( values<InputExpectedStringData>
+    ({
+      {"A","A"},
+      {"AB","AB"},
+      {"ABC","ABC"},
+      {"ABCD","ABCD"}
+    })
+  );
+
+  SECTION("UnprotectedField")
+  {
+    REQUIRE( parseUnprotectedField(data.input, csvSettings) == data.expected );
+  }
+
+  SECTION("NonEmptyUnprotectedField")
+  {
+    REQUIRE( parseNonEmptyUnprotectedField(data.input, csvSettings) == data.expected );
+  }
+}
+
+TEST_CASE("UnprotectedField_EXP")
+{
+  std::string data;
+  CsvParserSettings csvSettings;
+
+  SECTION("Parse EXP")
+  {
+    SECTION("~")
+    {
+      data = parseUnprotectedField("~", csvSettings);
+      REQUIRE( data == "" );
+    }
+  }
+
+  SECTION("Ignore EXP")
+  {
+    csvSettings.setParseExp(false);
+
+    SECTION("~")
+    {
+      data = parseUnprotectedField("~", csvSettings);
+      REQUIRE( data == "~" );
+    }
+  }
+}
+
+TEST_CASE("NonEmptyUnprotectedField_EXP")
+{
+  std::string data;
+  CsvParserSettings csvSettings;
+
+  SECTION("Parse EXP")
+  {
+    SECTION("~")
+    {
+      REQUIRE( parseNonEmptyUnprotectedFieldFails("~", csvSettings) );
+    }
+  }
+
+  SECTION("Ignore EXP")
+  {
+    csvSettings.setParseExp(false);
+
+    SECTION("~")
+    {
+      data = parseNonEmptyUnprotectedField("~", csvSettings);
+      REQUIRE( data == "~" );
+    }
+  }
+}
+
+TEST_CASE("UnprotectedField_NonEmptyUnprotectedField_EXP")
+{
+  CsvParserSettings csvSettings;
+
+  SECTION("Parse EXP")
+  {
+    const auto data = GENERATE( values<InputExpectedStringData>
+      ({
+        {"~A","A"},
+        {"~AB","AB"},
+        {"~A~","A~"},
+        {"~AB~","AB~"}
+      })
+    );
+
+    SECTION("UnprotectedField")
+    {
+      REQUIRE( parseUnprotectedField(data.input, csvSettings) == data.expected );
+    }
+
+    SECTION("NonEmptyUnprotectedField")
+    {
+      REQUIRE( parseNonEmptyUnprotectedField(data.input, csvSettings) == data.expected );
+    }
+  }
+
+  SECTION("Ignore EXP")
+  {
+    csvSettings.setParseExp(false);
+
+    const auto data = GENERATE( values<InputExpectedStringData>
+      ({
+        {"A","A"},
+        {"AB","AB"},
+        {"ABC","ABC"},
+        {"ABCD","ABCD"},
+        {"~A","~A"},
+        {"~AB","~AB"},
+        {"~A~","~A~"},
+        {"~AB~","~AB~"}
+      })
+    );
+
+    SECTION("UnprotectedField")
+    {
+      REQUIRE( parseUnprotectedField(data.input, csvSettings) == data.expected );
+    }
+
+    SECTION("NonEmptyUnprotectedField")
+    {
+      REQUIRE( parseNonEmptyUnprotectedField(data.input, csvSettings) == data.expected );
+    }
+  }
+}
+
 TEST_CASE("FieldColumnRule")
 {
   std::string data;
@@ -270,5 +424,35 @@ TEST_CASE("RecordRule")
   {
     record = parseRecord("A,BC,D,EFG\n", csvSettings);
     REQUIRE( record == StringRecord{"A","BC","D","EFG"} );
+  }
+}
+
+TEST_CASE("CsvFileRule")
+{
+  StringTable table;
+  CsvParserSettings csvSettings;
+
+  SECTION("A")
+  {
+    table = parseCsvFileRuleString("A", csvSettings);
+    REQUIRE( table == StringTable{{"A"}} );
+  }
+
+  SECTION("A,BC\\n")
+  {
+    table = parseCsvFileRuleString("A,BC\n", csvSettings);
+    REQUIRE( table == StringTable{{"A","BC"}} );
+  }
+
+  SECTION("A\\nB")
+  {
+    table = parseCsvFileRuleString("A\nB", csvSettings);
+    REQUIRE( table == StringTable{{"A"},{"B"}} );
+  }
+
+  SECTION("A\\nB\\n")
+  {
+    table = parseCsvFileRuleString("A\nB\n", csvSettings);
+    REQUIRE( table == StringTable{{"A"},{"B"}} );
   }
 }
