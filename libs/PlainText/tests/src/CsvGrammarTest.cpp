@@ -160,7 +160,7 @@ TEST_CASE("UnprotectedField_NonEmptyUnprotectedField_EXP")
   }
 }
 
-TEST_CASE("FieldColumnRule")
+TEST_CASE("FieldColumn")
 {
   std::string data;
   CsvParserSettings csvSettings;
