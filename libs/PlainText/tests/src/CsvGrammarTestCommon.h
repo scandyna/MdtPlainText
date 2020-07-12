@@ -31,6 +31,7 @@ using ProtectedField = Grammar::Csv::ProtectedField<std::string::const_iterator,
 using FieldColumn = Grammar::Csv::FieldColumn<std::string::const_iterator, std::string>;
 using NonEmptyFieldColumn = Grammar::Csv::NonEmptyFieldColumn<std::string::const_iterator, std::string>;
 using CsvRecord = Grammar::Csv::CsvRecord<std::string::const_iterator, StringRecord>;
+using CsvFile = Grammar::Csv::CsvFile<std::string::const_iterator, StringTable>;
 
 /*
  * Used for GENERATE( values<> )
@@ -164,7 +165,14 @@ StringRecord parseCsvRecord(const std::string & sourceString, const CsvParserSet
   return parseToStringRecordRule<CsvRecord>(sourceString, settings);
 }
 
-StringTable parseCsvFileRuleString(const std::string & sourceString, const CsvParserSettings & settings)
+bool parseCsvFileStringFails(const std::string & sourceString, const CsvParserSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return parseRuleFails<CsvFile>(sourceString, settings);
+}
+
+StringTable parseCsvFileString(const std::string & sourceString, const CsvParserSettings & settings)
 {
   StringTable table;
   Mdt::PlainText::Grammar::Csv::CsvFile<std::string::const_iterator, StringTable> rule(settings);

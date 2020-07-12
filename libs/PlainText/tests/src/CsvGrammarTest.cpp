@@ -495,27 +495,32 @@ TEST_CASE("CsvFile")
   StringTable table;
   CsvParserSettings csvSettings;
 
+  SECTION("empty")
+  {
+    REQUIRE( parseCsvFileStringFails("", csvSettings) );
+  }
+
   SECTION("A")
   {
-    table = parseCsvFileRuleString("A", csvSettings);
+    table = parseCsvFileString("A", csvSettings);
     REQUIRE( table == StringTable{{"A"}} );
   }
 
   SECTION("A,BC\\n")
   {
-    table = parseCsvFileRuleString("A,BC\n", csvSettings);
+    table = parseCsvFileString("A,BC\n", csvSettings);
     REQUIRE( table == StringTable{{"A","BC"}} );
   }
 
   SECTION("A\\nB")
   {
-    table = parseCsvFileRuleString("A\nB", csvSettings);
+    table = parseCsvFileString("A\nB", csvSettings);
     REQUIRE( table == StringTable{{"A"},{"B"}} );
   }
 
   SECTION("A\\nB\\n")
   {
-    table = parseCsvFileRuleString("A\nB\n", csvSettings);
+    table = parseCsvFileString("A\nB\n", csvSettings);
     REQUIRE( table == StringTable{{"A"},{"B"}} );
   }
 }
