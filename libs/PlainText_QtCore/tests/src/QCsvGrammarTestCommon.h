@@ -20,8 +20,9 @@
  **
  ****************************************************************************/
 #include "catch2/catch.hpp"
-#include "Mdt/PlainText/Grammar/Csv/FieldColumnRule.h"
-#include "Mdt/PlainText/Grammar/Csv/RecordRule.h"
+#include "Mdt/PlainText/Grammar/Csv/FieldColumn.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
 #include "Mdt/PlainText/BoostSpiritQStringConstIterator.h"
 #include "Mdt/PlainText/BoostSpiritQStringContainer.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
@@ -35,13 +36,14 @@
 
 using namespace Mdt::PlainText;
 
+using StringTable = std::vector<QStringList>;
 
 QString parseFieldColumn(const QString & sourceString, const CsvParserSettings & settings)
 {
   Q_ASSERT( settings.isValid() );
 
   QString data;
-  Mdt::PlainText::Grammar::Csv::FieldColumnRule<BoostSpiritQStringConstIterator, QString> rule(settings);
+  Mdt::PlainText::Grammar::Csv::FieldColumn<BoostSpiritQStringConstIterator, QString> rule(settings);
 
   BoostSpiritQStringConstIterator first( sourceString.cbegin() );
   BoostSpiritQStringConstIterator last( sourceString.cend() );
@@ -59,7 +61,7 @@ QStringList parseRecord(const QString & sourceString, const CsvParserSettings & 
   assert( settings.isValid() );
 
   QStringList record;
-  Mdt::PlainText::Grammar::Csv::RecordRule<BoostSpiritQStringConstIterator, QStringList> rule(settings);
+  Mdt::PlainText::Grammar::Csv::CsvRecord<BoostSpiritQStringConstIterator, QStringList> rule(settings);
 
   BoostSpiritQStringConstIterator first( sourceString.cbegin() );
   BoostSpiritQStringConstIterator last( sourceString.cend() );
@@ -82,6 +84,45 @@ bool qStringListEqualsUtf8StringList(const QStringList & list, const std::vector
     if(list.at(i).toStdString() != refList[i]){
       qDebug() << "list[" << i << "] differs from reference. Str: " << list.at(i) << ", expected: " << QString::fromStdString(refList[i]);
       return false;
+    }
+  }
+
+  return true;
+}
+
+StringTable parseCsvFileRuleString(const QString & sourceString, const CsvParserSettings & settings)
+{
+  StringTable table;
+  Mdt::PlainText::Grammar::Csv::CsvFile<BoostSpiritQStringConstIterator, StringTable> rule(settings);
+
+  BoostSpiritQStringConstIterator first( sourceString.cbegin() );
+  BoostSpiritQStringConstIterator last( sourceString.cend() );
+  const bool ok = boost::spirit::qi::parse(first, last, rule, table);
+  if(!ok){
+    const QString what = QLatin1String("Failed to parse table from ") + sourceString;
+    throw QRuntimeError(what);
+  }
+
+  return table;
+}
+
+bool qStringTableEqualsUtf8StringTable(const StringTable & table, const std::vector< std::vector<std::string> > & refTable)
+{
+  if( table.size() != refTable.size() ){
+    qDebug() << "table size(" << table.size() << ") differs from expected table size: " << refTable.size();
+    return false;
+  }
+  for(size_t row = 0; row < table.size(); ++row){
+    if(table[row].size() != (int)refTable[row].size()){
+      qDebug() << "table's row " << row << " column count (" << table[row].size() << ") differs from expected one: " << refTable[row].size();
+      return false;
+    }
+    for(int col = 0; col < table[row].size(); ++col){
+      if(table[row].at(col).toStdString() != refTable[row][col]){
+        qDebug() << "table[" << row << "][" << col << "] differs from reference. Str: " << table[row].at(col)
+                 << ", expected: " << QString::fromStdString(refTable[row][col]);
+        return false;
+      }
     }
   }
 

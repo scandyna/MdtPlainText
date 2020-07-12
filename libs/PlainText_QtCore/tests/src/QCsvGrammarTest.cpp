@@ -139,5 +139,22 @@ TEST_CASE("RecordRule")
     result = parseRecord(QString::fromUtf8("A,é,à,B,è,ü,ö,ä,𐐅,l\n"), csvSettings);
     REQUIRE( qStringListEqualsUtf8StringList(result, {"A","é","à","B","è","ü","ö","ä","𐐅","l"}) );
   }
+}
 
+TEST_CASE("CsvFileRule")
+{
+  StringTable result;
+  CsvParserSettings csvSettings;
+
+  SECTION("A")
+  {
+    result = parseCsvFileRuleString(QLatin1String("A"), csvSettings);
+    REQUIRE( qStringTableEqualsUtf8StringTable(result, {{"A"}}) );
+  }
+
+  SECTION("é\\n𐐅\\nö")
+  {
+    result = parseCsvFileRuleString(QString::fromUtf8("é\n𐐅\nö"), csvSettings);
+    REQUIRE( qStringTableEqualsUtf8StringTable(result, {{"é"},{"𐐅"},{"ö"}}) );
+  }
 }
