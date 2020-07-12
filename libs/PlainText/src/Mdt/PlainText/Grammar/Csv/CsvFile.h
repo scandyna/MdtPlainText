@@ -4,10 +4,10 @@
  * (See accompanying file LICENSE.txt or copy at
  * https://www.boost.org/LICENSE_1_0.txt)
  */
-#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_FILE_RULE_H
-#define MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_FILE_RULE_H
+#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_FILE_H
+#define MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_FILE_H
 
-#include "RecordRule.h"
+#include "CsvRecord.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include <boost/spirit/include/qi.hpp>
 #include <cassert>
@@ -33,7 +33,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
    *       \li RFC 4180 available here: https://tools.ietf.org/html/rfc4180
    */
   template <typename SourceIterator, typename DestinationTable>
-  struct CsvFileRule : boost::spirit::qi::grammar<SourceIterator, DestinationTable()>
+  struct CsvFile : boost::spirit::qi::grammar<SourceIterator, DestinationTable()>
   {
     using Record = typename DestinationTable::value_type;
 
@@ -41,8 +41,8 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
      *
      * \pre \a settings must be valid
      */
-    CsvFileRule(const CsvParserSettings & settings) noexcept
-     : CsvFileRule::base_type(mCsvFile),
+    CsvFile(const CsvParserSettings & settings) noexcept
+     : CsvFile::base_type(mCsvFile, "CsvFile"),
        mRecord(settings)
     {
       assert( settings.isValid() );
@@ -53,9 +53,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
       nameRules();
 
-//       mCsvFile = mRecord >> *(eol >> mRecord) >> -eol;
       mCsvFile = (mRecord % eol) >> -eol;
-//       mCsvFile = +mRecord;
 
       BOOST_SPIRIT_DEBUG_NODE(mCsvFile);
     }
@@ -69,9 +67,9 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
     }
 
     boost::spirit::qi::rule<SourceIterator, DestinationTable()> mCsvFile;
-    RecordRule<SourceIterator, Record> mRecord;
+    CsvRecord<SourceIterator, Record> mRecord;
   };
 
 }}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
-#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_FILE_RULE_H
+#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_FILE_H

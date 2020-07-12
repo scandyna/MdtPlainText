@@ -4,12 +4,16 @@
  * (See accompanying file LICENSE.txt or copy at
  * https://www.boost.org/LICENSE_1_0.txt)
  */
-#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_RECORD_RULE_H
-#define MDT_PLAIN_TEXT_GRAMMAR_CSV_RECORD_RULE_H
+#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_RECORD_H
+#define MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_RECORD_H
 
 #include "FieldColumn.h"
+#include "NonEmptyFieldColumn.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/phoenix_core.hpp>
+#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/spirit/include/phoenix_stl.hpp>
 #include <cassert>
 
 namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
@@ -31,11 +35,12 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
    * That means that a record must have at least 1 column.
    *
    * A empty record has no meaning, and should not be allowed.
-   * Neverthless, this implementation accepts empty fields,
+   * Nevertheless, this implementation accepts empty fields,
    * as well as 1 column records.
    * To avoid empty records, the grammar becomes:
    * \code
-   * Record = NonEmptyFieldColumn / ( FieldColumn *(COMMA FieldColumn) )
+   * CsvRecord = RecordPayload / NonEmptyFieldColumn
+   * RecordPayload = FieldColumn *(COMMA FieldColumn)
    * \endcode
    *
    * \note Some part of this API documentation refers to following standards:
@@ -43,7 +48,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
    *       \li RFC 4180 available here: https://tools.ietf.org/html/rfc4180
    */
   template <typename SourceIterator, typename DestinationRecord>
-  struct RecordRule : boost::spirit::qi::grammar<SourceIterator, DestinationRecord()>
+  struct CsvRecord : boost::spirit::qi::grammar<SourceIterator, DestinationRecord()>
   {
     using StringType = typename DestinationRecord::value_type;
 
@@ -51,8 +56,9 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
      *
      * \pre \a settings must be valid
      */
-    RecordRule(const CsvParserSettings & settings) noexcept
-     : RecordRule::base_type(mRecordPayload),
+    CsvRecord(const CsvParserSettings & settings) noexcept
+     : CsvRecord::base_type(mCsvRecord, "CsvRecord"),
+       mNonEmptyFieldColumn(settings),
        mFieldColumn(settings)
     {
       assert( settings.isValid() );
@@ -61,17 +67,31 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
       using qi::eol;
       using qi::lit;
+      using qi::_val;
+      using qi::_1;
+      using boost::phoenix::push_back;
+
+      const char fieldSep = settings.fieldSeparator();
 
       nameRules();
 
-//       const char fieldSep = settings.fieldSeparator();
+      /*
+       * Why we use semantic actions here
+       *
+       * When using automatic attributes propagation,
+       * attributes are propagated despite a parser will eventually fail.
+       * For example, parsing "ABC":
+       *  - RecordPayload will parse and propagate attributes
+       *  - RecordPayload fails
+       *  - NonEmptyFieldColumn propagates attributes
+       *  - The result is a record that contains [ABC,ABC]
+       *
+       * Semantic actions are only called when a parser succeeds.
+       */
+      mCsvRecord = mRecordPayload[_val = _1] | mNonEmptyFieldColumn[push_back(_val, _1)];
+      mRecordPayload = mFieldColumn >> lit(fieldSep) >> ( mFieldColumn % lit(fieldSep) );
 
-//       mRecordRule = mRecordPayload >> eol;
-//       mRecordRule = mRecordPayload >> -eol; // RFC 4180 do not need a end of line in last line
-//       mRecordPayload = mFieldColumn >> *(fieldSep >> mFieldColumn);
-      mRecordPayload = mFieldColumn % lit( settings.fieldSeparator() );
-
-      BOOST_SPIRIT_DEBUG_NODE(mRecordRule);
+      BOOST_SPIRIT_DEBUG_NODE(mCsvRecord);
       BOOST_SPIRIT_DEBUG_NODE(mRecordPayload);
     }
 
@@ -79,16 +99,16 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
     void nameRules()
     {
-      mRecordRule.name("RecordRule");
+      mCsvRecord.name("CsvRecord");
       mRecordPayload.name("RecordPayload");
-      mFieldColumn.name("FieldColumn");
     }
 
-    boost::spirit::qi::rule<SourceIterator, DestinationRecord()> mRecordRule;
+    boost::spirit::qi::rule<SourceIterator, DestinationRecord()> mCsvRecord;
     boost::spirit::qi::rule<SourceIterator, DestinationRecord()> mRecordPayload;
+    NonEmptyFieldColumn<SourceIterator, StringType> mNonEmptyFieldColumn;
     FieldColumn<SourceIterator, StringType> mFieldColumn;
   };
 
 }}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
 
-#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_RECORD_RULE_H
+#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_RECORD_H

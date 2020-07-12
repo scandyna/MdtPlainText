@@ -32,7 +32,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
      * \pre \a settings must be valid
      */
     ProtectedField(const CsvParserSettings & settings) noexcept
-     : ProtectedField::base_type(mProtectedField),
+     : ProtectedField::base_type(mProtectedField, "ProtectedField"),
        mSafeChar(settings)
     {
       assert( settings.isValid() );

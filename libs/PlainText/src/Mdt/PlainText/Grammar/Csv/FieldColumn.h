@@ -29,7 +29,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
      * \pre \a settings must be valid
      */
     FieldColumn(const CsvParserSettings & settings) noexcept
-     : FieldColumn::base_type(mFieldColumn),
+     : FieldColumn::base_type(mFieldColumn, "FieldColumn"),
        mProtectedField(settings),
        mUnprotectedField(settings)
     {

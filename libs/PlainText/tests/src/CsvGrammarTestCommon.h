@@ -10,8 +10,8 @@
 #include "Mdt/PlainText/Grammar/Csv/ProtectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/FieldColumn.h"
 #include "Mdt/PlainText/Grammar/Csv/NonEmptyFieldColumn.h"
-#include "Mdt/PlainText/Grammar/Csv/RecordRule.h"
-#include "Mdt/PlainText/Grammar/Csv/CsvFileRule.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
 #include "Mdt/PlainText/CsvParserSettings"
 #include <boost/spirit/include/qi.hpp>
 #include <string>
@@ -30,8 +30,7 @@ using NonEmptyUnprotectedField = Grammar::Csv::NonEmptyUnprotectedField<std::str
 using ProtectedField = Grammar::Csv::ProtectedField<std::string::const_iterator, std::string>;
 using FieldColumn = Grammar::Csv::FieldColumn<std::string::const_iterator, std::string>;
 using NonEmptyFieldColumn = Grammar::Csv::NonEmptyFieldColumn<std::string::const_iterator, std::string>;
-
-using RecordRule = Grammar::Csv::RecordRule<std::string::const_iterator, StringRecord>;
+using CsvRecord = Grammar::Csv::CsvRecord<std::string::const_iterator, StringRecord>;
 
 /*
  * Used for GENERATE( values<> )
@@ -63,7 +62,7 @@ std::string parseToStringRule(const std::string & sourceString, const CsvParserS
 
   const bool ok = boost::spirit::qi::parse(sourceString.cbegin(), sourceString.cend(), rule, data);
   if(!ok){
-    const std::string what = "Rule " + rule.name() + " failed to parse " + sourceString;
+    const std::string what = "Rule '" + rule.name() + "' failed to parse '" + sourceString + "'";
     throw std::runtime_error(what);
   }
 
@@ -80,7 +79,7 @@ StringRecord parseToStringRecordRule(const std::string & sourceString, const Csv
 
   const bool ok = boost::spirit::qi::parse(sourceString.cbegin(), sourceString.cend(), rule, record);
   if(!ok){
-    const std::string what = "Rule " + rule.name() + " failed to parse " + sourceString;
+    const std::string what = "Rule '" + rule.name() + "' failed to parse '" + sourceString + "'";
     throw std::runtime_error(what);
   }
 
@@ -151,17 +150,24 @@ std::string parseNonEmptyFieldColumn(const std::string & sourceString, const Csv
   return parseToStringRule<NonEmptyFieldColumn>(sourceString, settings);
 }
 
-StringRecord parseRecord(const std::string & sourceString, const CsvParserSettings & settings)
+bool parseCsvRecordFails(const std::string & sourceString, const CsvParserSettings & settings)
 {
   assert( settings.isValid() );
 
-  return parseToStringRecordRule<RecordRule>(sourceString, settings);
+  return parseRuleFails<CsvRecord>(sourceString, settings);
+}
+
+StringRecord parseCsvRecord(const std::string & sourceString, const CsvParserSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return parseToStringRecordRule<CsvRecord>(sourceString, settings);
 }
 
 StringTable parseCsvFileRuleString(const std::string & sourceString, const CsvParserSettings & settings)
 {
   StringTable table;
-  Mdt::PlainText::Grammar::Csv::CsvFileRule<std::string::const_iterator, StringTable> rule(settings);
+  Mdt::PlainText::Grammar::Csv::CsvFile<std::string::const_iterator, StringTable> rule(settings);
 
   const bool ok = boost::spirit::qi::parse(sourceString.cbegin(), sourceString.cend(), rule, table);
   if(!ok){

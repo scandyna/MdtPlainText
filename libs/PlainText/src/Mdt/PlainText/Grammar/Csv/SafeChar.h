@@ -30,7 +30,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
      * \pre \a settings must be valid
      */
     SafeChar(const CsvParserSettings & settings) noexcept
-     : SafeChar::base_type(mSafeChar)
+     : SafeChar::base_type(mSafeChar, "SafeChar")
     {
       assert( settings.isValid() );
 

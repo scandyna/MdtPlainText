@@ -344,124 +344,153 @@ TEST_CASE("FieldColumn_NonEmptyFieldColumn")
   }
 }
 
-TEST_CASE("RecordRule")
+TEST_CASE("CsvRecord")
 {
   StringRecord record;
   CsvParserSettings csvSettings;
+
+  SECTION("empty")
+  {
+    REQUIRE( parseCsvRecordFails("", csvSettings) );
+  }
 
   /*
    * Single char CSV - No EOL (No EOL is allowed by RFC 4180)
    */
   SECTION("A")
   {
-    record = parseRecord("A", csvSettings);
+    record = parseCsvRecord("A", csvSettings);
     REQUIRE( record == StringRecord{"A"} );
   }
 
   SECTION("A\\n")
   {
-    record = parseRecord("A\n", csvSettings);
+    record = parseCsvRecord("A\n", csvSettings);
     REQUIRE( record == StringRecord{"A"} );
   }
 
   SECTION("A\\r\\n")
   {
-    record = parseRecord("A\r\n", csvSettings);
+    record = parseCsvRecord("A\r\n", csvSettings);
     REQUIRE( record == StringRecord{"A"} );
   }
 
   SECTION("AB")
   {
-    record = parseRecord("AB", csvSettings);
+    record = parseCsvRecord("AB", csvSettings);
     REQUIRE( record == StringRecord{"AB"} );
   }
 
   SECTION("A,B")
   {
-    record = parseRecord("A,B", csvSettings);
+    record = parseCsvRecord("A,B", csvSettings);
     REQUIRE( record == StringRecord{"A","B"} );
+  }
+
+  SECTION(",B")
+  {
+    record = parseCsvRecord(",B", csvSettings);
+    REQUIRE( record == StringRecord{"","B"} );
+  }
+
+  SECTION("A,")
+  {
+    record = parseCsvRecord("A,", csvSettings);
+    REQUIRE( record == StringRecord{"A",""} );
+  }
+
+  SECTION("A,\\n")
+  {
+    record = parseCsvRecord("A,\n", csvSettings);
+    REQUIRE( record == StringRecord{"A",""} );
+  }
+
+  SECTION("AB,")
+  {
+    record = parseCsvRecord("AB,", csvSettings);
+    REQUIRE( record == StringRecord{"AB",""} );
   }
 
   SECTION("ABC")
   {
-    record = parseRecord("ABC", csvSettings);
+    record = parseCsvRecord("ABC", csvSettings);
     REQUIRE( record == StringRecord{"ABC"} );
   }
 
   SECTION("A,BC")
   {
-    record = parseRecord("A,BC", csvSettings);
+    record = parseCsvRecord("A,BC", csvSettings);
     REQUIRE( record == StringRecord{"A","BC"} );
   }
 
   SECTION("AB,C")
   {
-    record = parseRecord("AB,C", csvSettings);
+    record = parseCsvRecord("AB,C", csvSettings);
     REQUIRE( record == StringRecord{"AB","C"} );
   }
 
   SECTION("AB,CD")
   {
-    record = parseRecord("AB,CD", csvSettings);
+    record = parseCsvRecord("AB,CD", csvSettings);
     REQUIRE( record == StringRecord{"AB","CD"} );
   }
 
   SECTION("AB,CD\\n")
   {
-    record = parseRecord("AB,CD\n", csvSettings);
+    record = parseCsvRecord("AB,CD\n", csvSettings);
     REQUIRE( record == StringRecord{"AB","CD"} );
   }
 
   SECTION("AB,CD\\r\\n")
   {
-    record = parseRecord("AB,CD\r\n", csvSettings);
+    record = parseCsvRecord("AB,CD\r\n", csvSettings);
     REQUIRE( record == StringRecord{"AB","CD"} );
   }
 
   SECTION("\"AB\",CD")
   {
-    record = parseRecord("\"AB\",CD", csvSettings);
+    record = parseCsvRecord("\"AB\",CD", csvSettings);
     REQUIRE( record == StringRecord{"AB","CD"} );
   }
 
   SECTION("\"A,B\",CD")
   {
-    record = parseRecord("\"A,B\",CD", csvSettings);
+    record = parseCsvRecord("\"A,B\",CD", csvSettings);
     REQUIRE( record == StringRecord{"A,B","CD"} );
   }
 
   SECTION("\"A\\nB\",CD")
   {
-    record = parseRecord("\"A\nB\",CD", csvSettings);
+    record = parseCsvRecord("\"A\nB\",CD", csvSettings);
     REQUIRE( record == StringRecord{"A\nB","CD"} );
   }
 
   SECTION("\"A\\rB\",CD")
   {
-    record = parseRecord("\"A\rB\",CD", csvSettings);
+    record = parseCsvRecord("\"A\rB\",CD", csvSettings);
     REQUIRE( record == StringRecord{"A\rB","CD"} );
   }
 
   SECTION("\"A\\n,B\",CD")
   {
-    record = parseRecord("\"A\n,B\",CD", csvSettings);
+    record = parseCsvRecord("\"A\n,B\",CD", csvSettings);
     REQUIRE( record == StringRecord{"A\n,B","CD"} );
   }
 
   SECTION("A,BC,D,EFG")
   {
-    record = parseRecord("A,BC,D,EFG", csvSettings);
+    record = parseCsvRecord("A,BC,D,EFG", csvSettings);
     REQUIRE( record == StringRecord{"A","BC","D","EFG"} );
   }
 
   SECTION("A,BC,D,EFG\\n")
   {
-    record = parseRecord("A,BC,D,EFG\n", csvSettings);
+    record = parseCsvRecord("A,BC,D,EFG\n", csvSettings);
     REQUIRE( record == StringRecord{"A","BC","D","EFG"} );
   }
 }
 
-TEST_CASE("CsvFileRule")
+TEST_CASE("CsvFile")
 {
   StringTable table;
   CsvParserSettings csvSettings;
