@@ -115,7 +115,7 @@ namespace Mdt{ namespace PlainText{
      * \sa isOpen()
      * \sa atEnd()
      */
-    std::vector<std::string> readLine() const;
+    std::vector<std::string> readLine();
 
     /*! \brief Read all lines from the CSV file
      *
@@ -125,7 +125,7 @@ namespace Mdt{ namespace PlainText{
      * \sa isOpen()
      * \sa atEnd()
      */
-    std::vector< std::vector<std::string> > readAll() const;
+    std::vector< std::vector<std::string> > readAll();
 
     /*! \brief Close this file reader
      */

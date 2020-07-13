@@ -10,7 +10,9 @@
 #include "CsvParserTemplate.h"
 #include "CsvParserSettings.h"
 #include "FileOpenError.h"
+#include "CsvParseError.h"
 #include "mdt_plaintext_export.h"
+#include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
 #include <string>
 #include <cassert>
@@ -51,7 +53,11 @@ namespace Mdt{ namespace PlainText{
    * \code
    * MyRecord MyCsvFileReader::readLine() const
    * {
-   *   return mImpl->readLine<MyRecord>();
+   *   using SourceIterator = CsvFileReaderTemplate::const_iterator;
+   *
+   *   MyRecordRule<SourceIterator, MyRecord> rule( csvSettings() );
+   *
+   *   return mImpl->readLine<MyRecord>(rule);
    * }
    * \endcode
    *
@@ -59,10 +65,13 @@ namespace Mdt{ namespace PlainText{
    */
   class MDT_PLAINTEXT_EXPORT CsvFileReaderTemplate
   {
-    using SourceIterator = std::istreambuf_iterator<char>;
-    using MultiPassSourceIterator = boost::spirit::multi_pass<SourceIterator>;
+    using FileIterator = std::istreambuf_iterator<char>;
 
    public:
+
+    /*! \brief STL const iterator
+     */
+    using const_iterator = boost::spirit::multi_pass<FileIterator>;
 
     /*! \brief Construct a CSV file reader
      */
@@ -114,14 +123,14 @@ namespace Mdt{ namespace PlainText{
       assert( settings.isValid() );
       assert( !isOpen() );
 
-      mParser.setCsvSettings(settings);
+      mCsvSettings = settings;
     }
 
     /*! \brief Get CSV settings
      */
     const CsvParserSettings & csvSettings() const noexcept
     {
-      return mParser.csvSettings();
+      return mCsvSettings;
     }
 
     /*! \brief Open this CSV file reader
@@ -148,7 +157,7 @@ namespace Mdt{ namespace PlainText{
         throw FileOpenError(what);
       }
 
-      mFileIterator = boost::spirit::make_default_multi_pass( SourceIterator(mFileStream) );
+      mSourceIterator = boost::spirit::make_default_multi_pass( FileIterator(mFileStream) );
     }
 
     /*! \brief Check if this file reader is open
@@ -169,24 +178,33 @@ namespace Mdt{ namespace PlainText{
     {
       assert( isOpen() );
 
-      return mFileIterator == sourceIteratorEnd();
+      return mSourceIterator == sourceIteratorEnd();
     }
 
     /*! \brief Read a line from the CSV file
      *
-     * \exception CsvFileReadError
+     * \exception CsvParseError
      * \pre This file reader must be open
      * \pre This file reader must not be at end
      * \sa isOpen()
      * \sa atEnd()
      */
-    template<typename Record>
-    Record readLine() const
+    template<typename Record, typename Rule>
+    Record readLine(const Rule & rule)
     {
       assert( isOpen() );
       assert( !atEnd() );
 
-      return mParser.readLine<Record>( mFileIterator, sourceIteratorEnd() );
+      Record record;
+      const auto last = sourceIteratorEnd();
+
+      const bool ok = boost::spirit::qi::parse(mSourceIterator, last, rule, record);
+      if(!ok){
+        const std::string what = "reading file '" + mFilePath + "' failed";
+        throw CsvParseError(what);
+      }
+
+      return record;
     }
 
     /*! \brief Read all lines from the CSV file
@@ -197,13 +215,22 @@ namespace Mdt{ namespace PlainText{
      * \sa isOpen()
      * \sa atEnd()
      */
-    template<typename RecordList>
-    RecordList readAll() const
+    template<typename RecordList, typename Rule>
+    RecordList readAll(const Rule & rule)
     {
       assert( isOpen() );
       assert( !atEnd() );
 
-      return RecordList();
+      RecordList table;
+      const auto last = sourceIteratorEnd();
+
+      const bool ok = boost::spirit::qi::parse(mSourceIterator, last, rule, table);
+      if(!ok){
+        const std::string what = "reading file '" + mFilePath + "' failed";
+        throw CsvParseError(what);
+      }
+
+      return table;
     }
 
     /*! \brief Close this file reader
@@ -216,15 +243,15 @@ namespace Mdt{ namespace PlainText{
    private:
 
     static
-    MultiPassSourceIterator sourceIteratorEnd() noexcept
+    const_iterator sourceIteratorEnd() noexcept
     {
-      return boost::spirit::make_default_multi_pass( SourceIterator() );
+      return boost::spirit::make_default_multi_pass( FileIterator() );
     }
 
-    MultiPassSourceIterator mFileIterator;
-    CsvParserTemplate<MultiPassSourceIterator> mParser;
+    const_iterator mSourceIterator;
     std::ifstream mFileStream;
     std::string mFilePath;
+    CsvParserSettings mCsvSettings;
   };
 
 }} // namespace Mdt{ namespace PlainText{

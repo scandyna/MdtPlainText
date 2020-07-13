@@ -6,6 +6,8 @@
  */
 #include "CsvFileReader.h"
 #include "CsvFileReaderTemplate.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
 #include <cassert>
 
 namespace Mdt{ namespace PlainText{
@@ -64,20 +66,30 @@ bool CsvFileReader::atEnd() const noexcept
   return mImpl->atEnd();
 }
 
-std::vector<std::string> CsvFileReader::readLine() const
+std::vector<std::string> CsvFileReader::readLine()
 {
   assert( isOpen() );
   assert( !atEnd() );
 
-  return mImpl->readLine< std::vector<std::string> >();
+  using SourceIterator = CsvFileReaderTemplate::const_iterator;
+  using Record = std::vector<std::string>;
+
+  Grammar::Csv::CsvRecord<SourceIterator, Record> rule( csvSettings() );
+
+  return mImpl->readLine<Record>(rule);
 }
 
-std::vector< std::vector<std::string> > CsvFileReader::readAll() const
+std::vector< std::vector<std::string> > CsvFileReader::readAll()
 {
   assert( isOpen() );
   assert( !atEnd() );
 
-  return mImpl->readAll< std::vector< std::vector<std::string> > >();
+  using SourceIterator = CsvFileReaderTemplate::const_iterator;
+  using Table = std::vector< std::vector<std::string> >;
+
+  Grammar::Csv::CsvFile<SourceIterator, Table> rule( csvSettings() );
+
+  return mImpl->readAll<Table>(rule);
 }
 
 void CsvFileReader::close()
