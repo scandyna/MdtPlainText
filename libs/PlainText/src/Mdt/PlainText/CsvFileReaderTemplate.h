@@ -10,7 +10,7 @@
 #include "CsvParserTemplate.h"
 #include "CsvParserSettings.h"
 #include "FileOpenError.h"
-#include "CsvParseError.h"
+#include "CsvFileReadError.h"
 #include "mdt_plaintext_export.h"
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
@@ -183,7 +183,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Read a line from the CSV file
      *
-     * \exception CsvParseError
+     * \exception CsvFileReadError
      * \pre This file reader must be open
      * \pre This file reader must not be at end
      * \sa isOpen()
@@ -201,7 +201,7 @@ namespace Mdt{ namespace PlainText{
       const bool ok = boost::spirit::qi::parse(mSourceIterator, last, rule, record);
       if(!ok){
         const std::string what = "reading file '" + mFilePath + "' failed";
-        throw CsvParseError(what);
+        throw CsvFileReadError(what);
       }
 
       return record;
@@ -227,7 +227,7 @@ namespace Mdt{ namespace PlainText{
       const bool ok = boost::spirit::qi::parse(mSourceIterator, last, rule, table);
       if(!ok){
         const std::string what = "reading file '" + mFilePath + "' failed";
-        throw CsvParseError(what);
+        throw CsvFileReadError(what);
       }
 
       return table;
