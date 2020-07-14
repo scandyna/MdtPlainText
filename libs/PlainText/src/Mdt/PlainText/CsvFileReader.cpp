@@ -6,7 +6,7 @@
  */
 #include "CsvFileReader.h"
 #include "CsvFileReaderTemplate.h"
-#include "Mdt/PlainText/Grammar/Csv/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvFileLine.h"
 #include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
 #include <cassert>
 
@@ -74,7 +74,7 @@ std::vector<std::string> CsvFileReader::readLine()
   using SourceIterator = CsvFileReaderTemplate::const_iterator;
   using Record = std::vector<std::string>;
 
-  Grammar::Csv::CsvRecord<SourceIterator, Record> rule( csvSettings() );
+  Grammar::Csv::CsvFileLine<SourceIterator, Record> rule( csvSettings() );
 
   return mImpl->readLine<Record>(rule);
 }

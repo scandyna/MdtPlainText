@@ -11,6 +11,7 @@
 #include "Mdt/PlainText/Grammar/Csv/FieldColumn.h"
 #include "Mdt/PlainText/Grammar/Csv/NonEmptyFieldColumn.h"
 #include "Mdt/PlainText/Grammar/Csv/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvFileLine.h"
 #include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
 #include "Mdt/PlainText/CsvParserSettings"
 #include <boost/spirit/include/qi.hpp>
@@ -31,6 +32,7 @@ using ProtectedField = Grammar::Csv::ProtectedField<std::string::const_iterator,
 using FieldColumn = Grammar::Csv::FieldColumn<std::string::const_iterator, std::string>;
 using NonEmptyFieldColumn = Grammar::Csv::NonEmptyFieldColumn<std::string::const_iterator, std::string>;
 using CsvRecord = Grammar::Csv::CsvRecord<std::string::const_iterator, StringRecord>;
+using CsvFileLine = Grammar::Csv::CsvFileLine<std::string::const_iterator, StringRecord>;
 using CsvFile = Grammar::Csv::CsvFile<std::string::const_iterator, StringTable>;
 
 /*
@@ -163,6 +165,20 @@ StringRecord parseCsvRecord(const std::string & sourceString, const CsvParserSet
   assert( settings.isValid() );
 
   return parseToStringRecordRule<CsvRecord>(sourceString, settings);
+}
+
+bool parseCsvFileLineStringFails(const std::string & sourceString, const CsvParserSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return parseRuleFails<CsvFileLine>(sourceString, settings);
+}
+
+StringRecord parseCsvFileLineString(const std::string & sourceString, const CsvParserSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return parseToStringRecordRule<CsvFileLine>(sourceString, settings);
 }
 
 bool parseCsvFileStringFails(const std::string & sourceString, const CsvParserSettings & settings)

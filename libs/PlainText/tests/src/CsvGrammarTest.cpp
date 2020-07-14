@@ -490,6 +490,41 @@ TEST_CASE("CsvRecord")
   }
 }
 
+TEST_CASE("CsvFileLine")
+{
+  StringRecord record;
+  CsvParserSettings csvSettings;
+
+  SECTION("empty")
+  {
+    REQUIRE( parseCsvFileLineStringFails("", csvSettings) );
+  }
+
+  SECTION("A")
+  {
+    record = parseCsvFileLineString("A", csvSettings);
+    REQUIRE( record == StringRecord{"A"} );
+  }
+
+  SECTION("A\\n")
+  {
+    record = parseCsvFileLineString("A\n", csvSettings);
+    REQUIRE( record == StringRecord{"A"} );
+  }
+
+  SECTION("A,BC,D,EFG")
+  {
+    record = parseCsvFileLineString("A,BC,D,EFG", csvSettings);
+    REQUIRE( record == StringRecord{"A","BC","D","EFG"} );
+  }
+
+  SECTION("A,BC,D,EFG\\n")
+  {
+    record = parseCsvFileLineString("A,BC,D,EFG\n", csvSettings);
+    REQUIRE( record == StringRecord{"A","BC","D","EFG"} );
+  }
+}
+
 TEST_CASE("CsvFile")
 {
   StringTable table;

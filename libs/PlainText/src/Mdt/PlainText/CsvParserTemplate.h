@@ -9,7 +9,7 @@
 
 #include "CsvParserSettings.h"
 #include "CsvParseError.h"
-#include "Mdt/PlainText/Grammar/Csv/RecordRule.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvRecord.h"
 #include <boost/spirit/include/qi.hpp>
 #include <cassert>
 
@@ -27,6 +27,8 @@ namespace Mdt{ namespace PlainText{
    * \note Including directly this header in a project can slow down compilation time
    * \sa CsvStringParser
    * \sa CsvFileReader
+   * 
+   * \todo Seems not a usefull class ..
    */
   template <typename SourceIterator>
   class CsvParserTemplate
@@ -68,7 +70,7 @@ namespace Mdt{ namespace PlainText{
     Record readLine(const SourceIterator & first, const SourceIterator & last) const
     {
       Record record;
-      Grammar::Csv::RecordRule<SourceIterator, Record> rule(mCsvSettings);
+      Grammar::Csv::CsvRecord<SourceIterator, Record> rule(mCsvSettings);
 
       const bool ok = boost::spirit::qi::parse(first, last, rule, record);
       if(!ok){

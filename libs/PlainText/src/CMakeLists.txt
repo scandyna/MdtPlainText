@@ -15,6 +15,7 @@ add_library(Mdt_PlainText
   Mdt/PlainText/Grammar/Csv/FieldColumn.cpp
   Mdt/PlainText/Grammar/Csv/NonEmptyFieldColumn.cpp
   Mdt/PlainText/Grammar/Csv/CsvRecord.cpp
+  Mdt/PlainText/Grammar/Csv/CsvFileLine.cpp
   Mdt/PlainText/Grammar/Csv/CsvFile.cpp
   Mdt/PlainText/CsvParserSettings.cpp
   Mdt/PlainText/CsvParserTemplate.cpp
