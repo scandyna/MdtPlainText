@@ -27,6 +27,11 @@ TEST_CASE("open")
 
     setDirectoryPathToReader(dir, reader);
 
-    REQUIRE_THROWS_AS( reader.open(), FileOpenError );
+    try{
+      reader.open();
+    }catch(const FileOpenError &){
+      // Ok
+    }
+    REQUIRE( !reader.isOpen() );
   }
 }

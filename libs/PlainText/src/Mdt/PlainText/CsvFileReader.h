@@ -9,6 +9,7 @@
 
 #include "CsvParserSettings.h"
 #include "FileOpenError.h"
+#include "CsvFileReadError.h"
 #include "mdt_plaintext_export.h"
 #include <vector>
 #include <string>
