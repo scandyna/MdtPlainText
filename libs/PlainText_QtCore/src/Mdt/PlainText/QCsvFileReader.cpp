@@ -21,6 +21,8 @@
  ****************************************************************************/
 #include "QCsvFileReader.h"
 #include "QCsvFileReaderTemplate.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvFileLine.h"
+#include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
 
 namespace Mdt{ namespace PlainText{
 
@@ -90,20 +92,29 @@ bool QCsvFileReader::atEnd() const noexcept
   return mImpl->atEnd();
 }
 
-QStringList QCsvFileReader::readLine() const
+QStringList QCsvFileReader::readLine()
 {
   Q_ASSERT( isOpen() );
   Q_ASSERT( !atEnd() );
 
-  return mImpl->readLine<QStringList>();
+  using SourceIterator = QCsvFileReaderTemplate::const_iterator;
+
+  Grammar::Csv::CsvFileLine<SourceIterator, QStringList> rule( csvSettings() );
+
+  return mImpl->readLine<QStringList>(rule);
 }
 
-std::vector<QStringList> QCsvFileReader::readAll() const
+std::vector<QStringList> QCsvFileReader::readAll()
 {
   Q_ASSERT( isOpen() );
   Q_ASSERT( !atEnd() );
 
-  return mImpl->readAll< std::vector<QStringList> >();
+  using SourceIterator = QCsvFileReaderTemplate::const_iterator;
+  using Table = std::vector<QStringList>;
+
+  Grammar::Csv::CsvFile<SourceIterator, Table> rule( csvSettings() );
+
+  return mImpl->readAll<Table>(rule);
 }
 
 void QCsvFileReader::close()

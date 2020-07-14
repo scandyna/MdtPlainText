@@ -149,7 +149,7 @@ namespace Mdt{ namespace PlainText{
      * \sa isOpen()
      * \sa atEnd()
      */
-    QStringList readLine() const;
+    QStringList readLine();
 
     /*! \brief Read all lines from the CSV file
      *
@@ -159,7 +159,7 @@ namespace Mdt{ namespace PlainText{
      * \sa isOpen()
      * \sa atEnd()
      */
-    std::vector<QStringList> readAll() const;
+    std::vector<QStringList> readAll();
 
     /*! \brief Close this file reader
      */
