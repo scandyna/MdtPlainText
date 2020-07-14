@@ -167,7 +167,10 @@ namespace Mdt{ namespace PlainText{
        * See also: See https://stackoverflow.com/questions/9591036/ifstream-open-doesnt-set-error-bits-when-argument-is-a-directory
        */
       try{
-        mSourceIterator == sourceIteratorEnd();
+        volatile bool fakeAtEnd = ( mSourceIterator == sourceIteratorEnd() );
+        if(fakeAtEnd){
+          fakeAtEnd = false;
+        }
       }catch(...){
         close();
         const std::string what = "open file '" + mFilePath + "' failed";
