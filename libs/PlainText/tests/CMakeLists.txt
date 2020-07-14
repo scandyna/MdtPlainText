@@ -31,22 +31,6 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME CsvParserTemplateTest
-  TARGET csvParserTemplateTest
-  DEPENDENCIES Mdt::PlainText Boost::boost Mdt::Catch2Main
-  SOURCE_FILES
-    src/CsvParserTemplateTest.cpp
-)
-
-mdt_add_test(
-  NAME CsvParserTemplateErrorTest
-  TARGET csvParserTemplateErrorTest
-  DEPENDENCIES Mdt::PlainText Boost::boost Mdt::Catch2Main
-  SOURCE_FILES
-    src/CsvParserTemplateErrorTest.cpp
-)
-
-mdt_add_test(
   NAME CsvFileReaderTest
   TARGET csvFileReaderTest
   DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test Mdt::PlainText_TestLib

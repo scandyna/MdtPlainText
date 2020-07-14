@@ -7,7 +7,6 @@
 #ifndef MDT_PLAIN_TEXT_CSV_FILE_READER_TEMPLATE_H
 #define MDT_PLAIN_TEXT_CSV_FILE_READER_TEMPLATE_H
 
-#include "CsvParserTemplate.h"
 #include "CsvParserSettings.h"
 #include "FileOpenError.h"
 #include "CsvFileReadError.h"
