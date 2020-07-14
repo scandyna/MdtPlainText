@@ -44,7 +44,11 @@ namespace Mdt{ namespace PlainText{ namespace TestLib{
   inline
   std::vector< std::vector<std::string> > Wikipedia_USA_UK_example_ReferenceTable()
   {
-    return Wikipedia_European_UK_example_ReferenceTable();
+    return{
+      {"Year","Make","Model","Length"},
+      {"1997","Ford","E350","2,35"},
+      {"2000","Mercury","Cougar","2,38"}
+    };
   }
 
 }}} // namespace Mdt{ namespace PlainText{ namespace TestLib{
