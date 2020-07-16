@@ -155,27 +155,20 @@ namespace Mdt{ namespace PlainText{
         const std::string what = "open file '" + mFilePath + "' failed";
         throw FileOpenError(what);
       }
-
-      mSourceIterator = boost::spirit::make_default_multi_pass( FileIterator(mFileStream) );
-
       /*
        * On some systems, like Unix,
        * std::ifstream succeeds when open a directory.
-       * By such case, testing if we are at the end using iterators throws a exception.
-       * Hope this workaround will work..
        *
        * See also: See https://stackoverflow.com/questions/9591036/ifstream-open-doesnt-set-error-bits-when-argument-is-a-directory
        */
-      try{
-        volatile bool fakeAtEnd = ( mSourceIterator == sourceIteratorEnd() );
-        if(fakeAtEnd){
-          fakeAtEnd = false;
-        }
-      }catch(...){
-        close();
+      mFileStream.peek();
+      if( mFileStream.fail() ){
         const std::string what = "open file '" + mFilePath + "' failed";
+        mFileStream.close();
         throw FileOpenError(what);
       }
+
+      mSourceIterator = boost::spirit::make_default_multi_pass( FileIterator(mFileStream) );
     }
 
     /*! \brief Check if this file reader is open

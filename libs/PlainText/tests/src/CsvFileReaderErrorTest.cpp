@@ -15,11 +15,9 @@ TEST_CASE("open")
     reader.setFilePath("/some/non/exising/file.csv");
 
     REQUIRE_THROWS_AS( reader.open(), FileOpenError );
+    REQUIRE( !reader.isOpen() );
   }
 
-  /*
-   * See https://stackoverflow.com/questions/9591036/ifstream-open-doesnt-set-error-bits-when-argument-is-a-directory
-   */
   SECTION("Path refers to a directory")
   {
     QTemporaryDir dir;
@@ -27,11 +25,7 @@ TEST_CASE("open")
 
     setDirectoryPathToReader(dir, reader);
 
-    try{
-      reader.open();
-    }catch(const FileOpenError &){
-      // Ok
-    }
+    REQUIRE_THROWS_AS( reader.open(), FileOpenError );
     REQUIRE( !reader.isOpen() );
   }
 }
