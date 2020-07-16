@@ -197,7 +197,12 @@ namespace Mdt{ namespace PlainText{
         throw QFileOpenError(what);
       }
 
-      mSourceIterator = boost::spirit::make_default_multi_pass( BoostSpiritQTextFileInputConstIterator(&mFile, mFileEncoding) );
+      try{
+        mSourceIterator = boost::spirit::make_default_multi_pass( BoostSpiritQTextFileInputConstIterator(&mFile, mFileEncoding) );
+      }catch(const QTextCodecNotFoundError & error){
+        close();
+        throw error;
+      }
     }
 
     /*! \brief Check if this file reader is open

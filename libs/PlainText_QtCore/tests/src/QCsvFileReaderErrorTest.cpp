@@ -30,6 +30,7 @@ TEST_CASE("open")
     reader.setFilePath( QLatin1String("/some/non/exising/file.csv") );
 
     REQUIRE_THROWS_AS( reader.open(), QFileOpenError );
+    REQUIRE( !reader.isOpen() );
   }
 
   SECTION("Path refers to a directory")
@@ -40,6 +41,7 @@ TEST_CASE("open")
     setDirectoryPathToReader(dir, reader);
 
     REQUIRE_THROWS_AS( reader.open(), QFileOpenError );
+    REQUIRE( !reader.isOpen() );
   }
 
   SECTION("File encoding not supported")
@@ -53,5 +55,6 @@ TEST_CASE("open")
     setFilePathToReader(file, reader);
     reader.setFileEncoding("SomeUnknownEncoding");
     REQUIRE_THROWS_AS( reader.open(), QTextCodecNotFoundError );
+    REQUIRE( !reader.isOpen() );
   }
 }
