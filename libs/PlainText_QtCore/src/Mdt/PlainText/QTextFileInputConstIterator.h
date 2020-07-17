@@ -46,7 +46,7 @@ namespace Mdt{ namespace PlainText{
    * \code
    * using Mdt::PlainText::QTextFileInputConstIterator;
    *
-   * QTextFile file("file.txt");
+   * QFile file("file.txt");
    * if( !file.open(QIODevice::ReadOnly | QIODevice::Text) ){
    *   // Error handling
    * }
