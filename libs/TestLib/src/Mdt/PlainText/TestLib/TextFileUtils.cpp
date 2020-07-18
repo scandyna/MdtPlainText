@@ -30,6 +30,7 @@ bool writeTextFile(QFile & file, const QString & content)
   Q_ASSERT( file.isWritable() );
 
   QTextStream out(&file);
+  out.setCodec("UTF-8");
   out << content;
 
   return true;
