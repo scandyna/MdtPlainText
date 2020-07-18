@@ -6,6 +6,23 @@
  */
 #include "CsvFileReaderTestCommon.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#include <iostream>
+
+TEST_CASE("sandbox")
+{
+  struct stat sb;
+
+  if( stat("/tmp", &sb) == -1 ){
+    std::cerr << "stat() failed" << std::endl;
+    return;
+  }
+  std::cout << "is dir: " << S_ISDIR(sb.st_mode) << std::endl;
+}
+
 TEST_CASE("open")
 {
   CsvFileReader reader;

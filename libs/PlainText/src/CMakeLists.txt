@@ -18,9 +18,18 @@ add_library(Mdt_PlainText
   Mdt/PlainText/Grammar/Csv/CsvFileLine.cpp
   Mdt/PlainText/Grammar/Csv/CsvFile.cpp
   Mdt/PlainText/CsvParserSettings.cpp
+  Mdt/PlainText/OpenFstream.cpp
   Mdt/PlainText/CsvFileReaderTemplate.cpp
   Mdt/PlainText/CsvFileReader.cpp
 )
+
+if(UNIX)
+  target_sources(Mdt_PlainText
+    PRIVATE
+      Mdt/PlainText/BasicFileInfo_unix.cpp
+  )
+endif()
+
 add_library(Mdt::PlainText ALIAS Mdt_PlainText)
 
 target_link_libraries(Mdt_PlainText

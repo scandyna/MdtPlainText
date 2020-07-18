@@ -30,6 +30,16 @@ mdt_add_test(
     src/CsvGrammarErrorTest.cpp
 )
 
+if(UNIX)
+  mdt_add_test(
+    NAME BasicFileInfo_unix_Test
+    TARGET basicFileInfo_unix_Test
+    DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Core
+    SOURCE_FILES
+      src/BasicFileInfo_unix_Test.cpp
+  )
+endif()
+
 mdt_add_test(
   NAME CsvFileReaderTest
   TARGET csvFileReaderTest

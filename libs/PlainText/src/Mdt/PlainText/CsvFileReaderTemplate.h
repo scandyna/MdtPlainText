@@ -10,6 +10,7 @@
 #include "CsvParserSettings.h"
 #include "FileOpenError.h"
 #include "CsvFileReadError.h"
+#include "OpenFstream.h"
 #include "mdt_plaintext_export.h"
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
@@ -150,23 +151,7 @@ namespace Mdt{ namespace PlainText{
     {
       assert( !filePath().empty() );
 
-      mFileStream.open(mFilePath);
-      if( mFileStream.fail() ){
-        const std::string what = "open file '" + mFilePath + "' failed";
-        throw FileOpenError(what);
-      }
-      /*
-       * On some systems, like Unix,
-       * std::ifstream succeeds when open a directory.
-       *
-       * See also: See https://stackoverflow.com/questions/9591036/ifstream-open-doesnt-set-error-bits-when-argument-is-a-directory
-       */
-      mFileStream.peek();
-      if( mFileStream.fail() ){
-        const std::string what = "open file '" + mFilePath + "' failed";
-        mFileStream.close();
-        throw FileOpenError(what);
-      }
+      openIfstream(mFileStream, mFilePath);
 
       mSourceIterator = boost::spirit::make_default_multi_pass( FileIterator(mFileStream) );
     }

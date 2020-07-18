@@ -226,6 +226,9 @@ mdt_install_namespace_package_config_file(
 # Build definitions
 #######################
 
+if(UNIX)
+  add_definitions(-DMDT_OS_UNIX)
+endif()
 
 # TODO: not a target property, will it be propagated trough projects ??
 if(ENABLE_QT_SUPPORT)
