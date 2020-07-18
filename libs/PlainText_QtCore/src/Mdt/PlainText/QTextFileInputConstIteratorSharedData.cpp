@@ -22,18 +22,74 @@
 #include "QTextFileInputConstIteratorSharedData.h"
 #include "QFileReadError.h"
 #include <QTextCodec>
+#include <QCoreApplication>
 
 namespace Mdt{ namespace PlainText{
 
+namespace Impl{
+
+  int readFromFile(QIODevice & file, const QString & fileName, std::vector<char> & rawDataBuffer)
+  {
+    assert( rawDataBuffer.empty() );
+    assert( rawDataBuffer.capacity() > 0 );
+
+    if( !file.isOpen() ){
+      const QString what = QCoreApplication::translate("QTextFileInputConstIteratorSharedData", "Reading from file '%1' because it was closed")
+                          .arg(fileName);
+      throw QFileReadError(what);
+    }
+
+    rawDataBuffer.resize( rawDataBuffer.capacity() );
+    const int n = file.read( rawDataBuffer.data(), rawDataBuffer.size() );
+    if(n < 0){
+      const QString what = QCoreApplication::translate("QTextFileInputConstIteratorSharedData", "Reading from file '%1' failed: '%2'")
+                          .arg( fileName, file.errorString() );
+      throw QFileReadError(what);
+    }
+    assert( static_cast<std::size_t>(n) <= rawDataBuffer.capacity() );
+    rawDataBuffer.resize(n);
+
+    return n;
+  }
+
+  void decodeToUnicodeBuffer(QTextDecoder & decoder,  const std::vector<char> & rawDataBuffer, QString & unicodeBuffer)
+  {
+    assert( !rawDataBuffer.empty() );
+    assert( unicodeBuffer.isEmpty() );
+
+    decoder.toUnicode( &unicodeBuffer, rawDataBuffer.data(), rawDataBuffer.size() );
+  }
+
+  bool readFromFileAndDecode(QIODevice & file, const QString & fileName, QTextDecoder & decoder, std::vector<char> & rawDataBuffer, QString & unicodeBuffer)
+  {
+    assert( rawDataBuffer.empty() );
+    assert( unicodeBuffer.isEmpty() );
+
+    while( unicodeBuffer.isEmpty() ){
+      const int n = readFromFile(file, fileName, rawDataBuffer);
+      if(n < 1){
+        return false;
+      }
+      decodeToUnicodeBuffer(decoder, rawDataBuffer, unicodeBuffer);
+      rawDataBuffer.clear();
+    }
+
+    return true;
+  }
+
+} // namespace Impl{
+
+
 QTextFileInputConstIteratorSharedData::QTextFileInputConstIteratorSharedData(QFileDevice *file, const QByteArray & fileEncoding, int rawBufferCapacity)
   : QObject(nullptr),
-    mRawDataBuffer(rawBufferCapacity),
     mFile(file)
 {
-  Q_ASSERT( file != nullptr );
-  Q_ASSERT( file->isOpen() );
-  Q_ASSERT( fileOpenModeIsReadable(*file) );
-  Q_ASSERT( rawBufferCapacity > 0 );
+  assert( file != nullptr );
+  assert( file->isOpen() );
+  assert( fileOpenModeIsReadable(*file) );
+  assert( rawBufferCapacity > 0 );
+
+  mRawDataBuffer.reserve(rawBufferCapacity);
 
   /*
    * Find a codec for requested encoding
@@ -47,46 +103,20 @@ QTextFileInputConstIteratorSharedData::QTextFileInputConstIteratorSharedData(QFi
   }
 
   mDecoder.reset( codec->makeDecoder() );
-  Q_ASSERT( mDecoder.get() != nullptr );
+  assert( mDecoder.get() != nullptr );
 
   readMore();
   mCurrentPos = mUnicodeBuffer.cbegin();
 }
 
-qint64 QTextFileInputConstIteratorSharedData::readFromFile()
-{
-  Q_ASSERT(mFile);
-  Q_ASSERT(mRawDataBuffer.capacity() > 0);
-  Q_ASSERT( mRawDataBuffer.empty() );
-
-  const qint64 n = mFile->read( mRawDataBuffer.data(), mRawDataBuffer.capacity() );
-  if( n < 0 ){
-    const QString what = tr("Reading from file '%1' failed: '%2'")
-                         .arg( mFile->fileName(), mFile->errorString() );
-    throw QFileReadError(what);
-  }
-
-  return n;
-}
-
-void QTextFileInputConstIteratorSharedData::decodeToUnicodeBuffer(qint64 rawCharsCount)
-{
-  Q_ASSERT( mUnicodeBuffer.isEmpty() );
-  Q_ASSERT( mDecoder.get() != nullptr );
-
-  mDecoder->toUnicode(&mUnicodeBuffer, mRawDataBuffer.data(), rawCharsCount);
-  mCurrentPos = mUnicodeBuffer.cbegin();
-}
-
 void QTextFileInputConstIteratorSharedData::readMore()
 {
-  while( mUnicodeBuffer.isEmpty() ){
-    const auto n = readFromFile();
-    if( n < 1 ){
-      return;
-    }
-    decodeToUnicodeBuffer(n);
-  }
+  assert(mFile);
+  assert( mDecoder.get() != nullptr );
+  assert( mRawDataBuffer.empty() );
+  assert( mUnicodeBuffer.isEmpty() );
+
+  Impl::readFromFileAndDecode(*mFile, mFile->fileName(), *mDecoder, mRawDataBuffer, mUnicodeBuffer);
 }
 
 }} // namespace Mdt{ namespace PlainText{

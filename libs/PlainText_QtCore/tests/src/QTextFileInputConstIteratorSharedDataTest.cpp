@@ -20,11 +20,248 @@
  **
  ****************************************************************************/
 #include "QTextFileInputConstIteratorSharedDataTestCommon.h"
+#include <memory>
 
+int readFromFile(QBuffer & file, std::vector<char> & buffer)
+{
+  return Mdt::PlainText::Impl::readFromFile(file, QLatin1String("TestBuffer"), buffer);
+}
+
+bool readFromFileAndDecode(QBuffer & file, std::vector<char> & rawDataBuffer, QString & unicodeBuffer)
+{
+  QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+  assert( codec != nullptr );
+  std::unique_ptr<QTextDecoder> decoder( codec->makeDecoder() );
+  assert( decoder.get() != nullptr );
+
+  return Mdt::PlainText::Impl::readFromFileAndDecode(file, QLatin1String("TestBuffer"), *decoder, rawDataBuffer, unicodeBuffer);
+}
+
+int rawBufferSize(const std::vector<char> & buffer)
+{
+  return buffer.size();
+}
 
 TEST_CASE("Check UTF-8 support")
 {
   REQUIRE( QTextCodec::codecForName("UTF-8") != nullptr );
+}
+
+TEST_CASE("readFromFile")
+{
+  QBuffer file;
+
+  SECTION("Raw buffer capacity: 1")
+  {
+    std::vector<char> rawBuffer;
+    rawBuffer.reserve(1);
+
+    SECTION("A")
+    {
+      file.setData("A");
+      REQUIRE( openQBufferReadOnly(file) );
+
+      REQUIRE( readFromFile(file, rawBuffer) == 1 );
+      REQUIRE( file.atEnd() );
+      REQUIRE( rawBufferSize(rawBuffer) == 1 );
+      REQUIRE( rawBuffer[0] == 'A' );
+    }
+
+    SECTION("AB")
+    {
+      file.setData("AB");
+      REQUIRE( openQBufferReadOnly(file) );
+
+      REQUIRE( readFromFile(file, rawBuffer) == 1 );
+      REQUIRE( !file.atEnd() );
+      REQUIRE( rawBufferSize(rawBuffer) == 1 );
+      REQUIRE( rawBuffer[0] == 'A' );
+      rawBuffer.clear();
+
+      REQUIRE( readFromFile(file, rawBuffer) == 1 );
+      REQUIRE( file.atEnd() );
+      REQUIRE( rawBufferSize(rawBuffer) == 1 );
+      REQUIRE( rawBuffer[0] == 'B' );
+    }
+
+    SECTION("ABC")
+    {
+      file.setData("ABC");
+      REQUIRE( openQBufferReadOnly(file) );
+
+      REQUIRE( readFromFile(file, rawBuffer) == 1 );
+      REQUIRE( !file.atEnd() );
+      REQUIRE( rawBufferSize(rawBuffer) == 1 );
+      REQUIRE( rawBuffer[0] == 'A' );
+      rawBuffer.clear();
+
+      REQUIRE( readFromFile(file, rawBuffer) == 1 );
+      REQUIRE( !file.atEnd() );
+      REQUIRE( rawBufferSize(rawBuffer) == 1 );
+      REQUIRE( rawBuffer[0] == 'B' );
+      rawBuffer.clear();
+
+      REQUIRE( readFromFile(file, rawBuffer) == 1 );
+      REQUIRE( file.atEnd() );
+      REQUIRE( rawBufferSize(rawBuffer) == 1 );
+      REQUIRE( rawBuffer[0] == 'C' );
+    }
+  }
+
+  SECTION("Raw buffer capacity: 2")
+  {
+    std::vector<char> rawBuffer;
+    rawBuffer.reserve(2);
+
+    SECTION("A")
+    {
+      file.setData("A");
+      REQUIRE( openQBufferReadOnly(file) );
+
+      REQUIRE( readFromFile(file, rawBuffer) == 1 );
+      REQUIRE( file.atEnd() );
+      REQUIRE( rawBufferSize(rawBuffer) == 1 );
+      REQUIRE( rawBuffer[0] == 'A' );
+    }
+
+    SECTION("AB")
+    {
+      file.setData("AB");
+      REQUIRE( openQBufferReadOnly(file) );
+
+      REQUIRE( readFromFile(file, rawBuffer) == 2 );
+      REQUIRE( file.atEnd() );
+      REQUIRE( rawBufferSize(rawBuffer) == 2 );
+      REQUIRE( rawBuffer[0] == 'A' );
+      REQUIRE( rawBuffer[1] == 'B' );
+    }
+
+    SECTION("ABC")
+    {
+      file.setData("ABC");
+      REQUIRE( openQBufferReadOnly(file) );
+
+      REQUIRE( readFromFile(file, rawBuffer) == 2 );
+      REQUIRE( !file.atEnd() );
+      REQUIRE( rawBufferSize(rawBuffer) == 2 );
+      REQUIRE( rawBuffer[0] == 'A' );
+      REQUIRE( rawBuffer[1] == 'B' );
+      rawBuffer.clear();
+
+      REQUIRE( readFromFile(file, rawBuffer) == 1 );
+      REQUIRE( file.atEnd() );
+      REQUIRE( rawBufferSize(rawBuffer) == 1 );
+      REQUIRE( rawBuffer[0] == 'C' );
+    }
+  }
+}
+
+/*
+ * Extract this function to be able to test it reliably
+ * Because we don't know how many bytes QFile (which uses system read calls)
+ * returns, sporadic bugs have bee detected, not reproductible of my machine.
+ * See for example: https://gitlab.com/scandyna/mdtplaintext/-/jobs/638021363
+ *
+ * Here we try to emulate some scenarios
+ */
+TEST_CASE("readFromFileAndDecode")
+{
+  QString unicodeBuffer;
+  QBuffer file;
+
+  /*
+   * rawBuffer capacity: 1
+   *
+   * Initial:
+   * | rawBuffer | unicodeBuffer |
+   * -----------------------------
+   * | []        | []            |
+   *
+   * Read 1 from file:
+   * | rawBuffer | unicodeBuffer |
+   * -----------------------------
+   * | [A]       | []            |
+   *
+   * Decode 1 byte:
+   * | rawBuffer | unicodeBuffer |
+   * -----------------------------
+   * | []        | [A]           |
+   */
+  SECTION("A")
+  {
+    std::vector<char> rawBuffer;
+    rawBuffer.reserve(1);
+
+    file.setData("A");
+    REQUIRE( openQBufferReadOnly(file) );
+
+    REQUIRE( readFromFileAndDecode(file, rawBuffer, unicodeBuffer) );
+    REQUIRE( file.atEnd() );
+    REQUIRE( rawBuffer.empty() );
+    REQUIRE( unicodeBuffer == QLatin1String("A") );
+  }
+
+  SECTION("AB")
+  {
+    std::vector<char> rawBuffer;
+    rawBuffer.reserve(1);
+
+    file.setData("AB");
+    REQUIRE( openQBufferReadOnly(file) );
+
+    REQUIRE( readFromFileAndDecode(file, rawBuffer, unicodeBuffer) );
+    REQUIRE( !file.atEnd() );
+    REQUIRE( rawBuffer.empty() );
+    REQUIRE( unicodeBuffer == QLatin1String("A") );
+
+    unicodeBuffer.clear();
+    REQUIRE( readFromFileAndDecode(file, rawBuffer, unicodeBuffer) );
+    REQUIRE( file.atEnd() );
+    REQUIRE( rawBuffer.empty() );
+    REQUIRE( unicodeBuffer == QLatin1String("B") );
+  }
+
+  /*
+   * rawBuffer capacity: 1
+   *
+   * Initial:
+   * | rawBuffer | unicodeBuffer |
+   * -----------------------------
+   * | []        | []            |
+   *
+   * Read 1 from file:
+   * | rawBuffer | unicodeBuffer |
+   * -----------------------------
+   * | [0xC4]    | []            |
+   *
+   * Decode 1 byte (QTextDecoder holds its state):
+   * | rawBuffer | unicodeBuffer |
+   * -----------------------------
+   * | []        | []            |
+   *
+   * Read 1 from file:
+   * | rawBuffer | unicodeBuffer |
+   * -----------------------------
+   * | [0xB5]    | []            |
+   *
+   * Decode 1 byte:
+   * | rawBuffer | unicodeBuffer |
+   * -----------------------------
+   * | []        | [ĵ]           |
+   */
+  SECTION("ĵ")
+  {
+    std::vector<char> rawBuffer;
+    rawBuffer.reserve(1);
+
+    file.setData("\xC4\xB5");
+    REQUIRE( openQBufferReadOnly(file) );
+
+    REQUIRE( readFromFileAndDecode(file, rawBuffer, unicodeBuffer) );
+    REQUIRE( file.atEnd() );
+    REQUIRE( rawBuffer.empty() );
+    REQUIRE( unicodeBuffer == QString::fromUtf8("ĵ") );
+  }
 }
 
 TEST_CASE("atEnd")

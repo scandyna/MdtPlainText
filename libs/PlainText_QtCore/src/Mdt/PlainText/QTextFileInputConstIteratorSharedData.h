@@ -32,8 +32,24 @@
 #include <QPointer>
 #include <memory>
 #include <vector>
+#include <cassert>
 
 namespace Mdt{ namespace PlainText{
+
+  namespace Impl{
+
+    /*! \internal
+     */
+    MDT_PLAINTEXT_QTCORE_EXPORT
+    int readFromFile(QIODevice & file, const QString & fileName, std::vector<char> & rawDataBuffer);
+
+    /*! \internal
+     *
+     */
+    MDT_PLAINTEXT_QTCORE_EXPORT
+    bool readFromFileAndDecode(QIODevice & file, const QString & fileName, QTextDecoder & decoder, std::vector<char> & rawDataBuffer, QString & unicodeBuffer);
+
+  } // namespace Impl{
 
   /*! \internal Implementation part for QTextFileInputConstIterator
    */
@@ -69,7 +85,7 @@ namespace Mdt{ namespace PlainText{
      */
     bool atEnd() const
     {
-      Q_ASSERT(mFile);
+      assert(mFile);
 
       return atEndOfUnicodeBuffer() && mFile->atEnd();
     }
@@ -88,9 +104,9 @@ namespace Mdt{ namespace PlainText{
      */
     void advance()
     {
-      Q_ASSERT( !atEnd() );
-      Q_ASSERT(mFile);
-      Q_ASSERT( mDecoder.get() != nullptr );
+      assert( !atEnd() );
+      assert(mFile);
+      assert( mDecoder.get() != nullptr );
 
       ++mCurrentPos;
 
@@ -112,7 +128,7 @@ namespace Mdt{ namespace PlainText{
      */
     const QChar & get() const noexcept
     {
-      Q_ASSERT( !atEnd() );
+      assert( !atEnd() );
 
       return *mCurrentPos;
     }
@@ -136,8 +152,6 @@ namespace Mdt{ namespace PlainText{
       return mCurrentPos == mUnicodeBuffer.cend();
     }
 
-    qint64 readFromFile();
-    void decodeToUnicodeBuffer(qint64 rawCharsCount);
     void readMore();
 
     QString::const_iterator mCurrentPos;

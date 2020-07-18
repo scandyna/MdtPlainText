@@ -27,11 +27,22 @@
 #include <QLatin1String>
 #include <QLatin1Char>
 #include <QTextCodec>
+#include <QBuffer>
 
 using namespace Mdt::PlainText;
 using Mdt::PlainText::TestLib::writeTextFile;
 
+bool openIODeviceReadOnly(QIODevice & device)
+{
+  return device.open(QIODevice::ReadOnly | QIODevice::Text);
+}
+
+bool openQBufferReadOnly(QBuffer & buffer)
+{
+  return openIODeviceReadOnly(buffer);
+}
+
 bool openTextFileReadOnly(QFile & file)
 {
-  return file.open(QIODevice::ReadOnly | QIODevice::Text);
+  return openIODeviceReadOnly(file);
 }
