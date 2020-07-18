@@ -166,7 +166,7 @@ TEST_CASE("std_copy")
 
   SECTION("éöàäèü$£")
   {
-    const QString source = QString::fromUtf8("éöàäèü$£");
+    const QString source = QStringLiteral(u"\u00E9\u00F6\u00E0\u00E4\u00E8\u00FC$\u00A3");
     REQUIRE( writeTextFile(file, source) );
     file.close();
 

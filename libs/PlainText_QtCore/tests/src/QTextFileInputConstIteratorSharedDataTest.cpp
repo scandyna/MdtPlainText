@@ -316,7 +316,7 @@ TEST_CASE("get")
 
   SECTION("ö")
   {
-    REQUIRE( writeTextFile(file, QString::fromUtf8("ö")) );
+    REQUIRE( writeTextFile(file, QStringLiteral(u"\u00F6")) );
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
@@ -327,7 +327,7 @@ TEST_CASE("get")
 
   SECTION("ĵ")
   {
-    REQUIRE( writeTextFile(file, QString::fromUtf8("ĵ")) );
+    REQUIRE( writeTextFile(file, QStringLiteral(u"\u0135")) );
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
@@ -394,7 +394,7 @@ TEST_CASE("advance_get")
 
   SECTION("AöB")
   {
-    REQUIRE( writeTextFile(file, QString::fromUtf8("AöB")) );
+    REQUIRE( writeTextFile(file, QStringLiteral(u"A\u00F6B")) );
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );

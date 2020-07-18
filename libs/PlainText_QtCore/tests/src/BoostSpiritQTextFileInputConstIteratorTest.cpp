@@ -131,7 +131,7 @@ TEST_CASE("std_copy")
 
   SECTION("éöàäèü$£")
   {
-    const QString source = QString::fromUtf8("éöàäèü$£");
+    const QString source = QStringLiteral(u"\u00E9\u00F6\u00E0\u00E4\u00E8\u00FC$\u00A3");
     REQUIRE( writeTextFile(file, source) );
     file.close();
 
@@ -185,7 +185,7 @@ TEST_CASE("qi_parser_unicode_char_")
 
   SECTION("éöàäèü$£")
   {
-    const QString source = QString::fromUtf8("éöàäèü$£");
+    const QString source = QStringLiteral(u"\u00E9\u00F6\u00E0\u00E4\u00E8\u00FC$\u00A3");
     REQUIRE( writeTextFile(file, source) );
     file.close();
 
@@ -196,7 +196,7 @@ TEST_CASE("qi_parser_unicode_char_")
 
   SECTION("a𐐅ö")
   {
-    const QString source = QString::fromUtf8("a𐐅ö");
+    const QString source = QString::fromUtf8("a\xF0\x90\x90\x85\xC3\xB6");
     REQUIRE( writeTextFile(file, source) );
     file.close();
 
@@ -218,7 +218,7 @@ TEST_CASE("qi_parser_unicode_char_")
 
   SECTION("char_(ö)")
   {
-    REQUIRE( writeTextFile(file, QString::fromUtf8("ö")) );
+    REQUIRE( writeTextFile(file, QStringLiteral(u"\u00F6")) );
     file.close();
 
     QChar result;
