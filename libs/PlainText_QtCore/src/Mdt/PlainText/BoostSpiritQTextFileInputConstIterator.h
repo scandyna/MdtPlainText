@@ -44,11 +44,11 @@ namespace Mdt{ namespace PlainText{
    * avoiding to copy buffered data every time.
    */
   class MDT_PLAINTEXT_QTCORE_EXPORT BoostSpiritQTextFileInputConstIterator : public boost::iterator_adaptor<
-      BoostSpiritQTextFileInputConstIterator,  // Derived
-      QTextFileInputConstIterator,        // Base
-      uint32_t,                           // Value
-      boost::use_default,                 // CategoryOrTraversal
-      uint32_t                            // Reference
+      BoostSpiritQTextFileInputConstIterator, // Derived
+      QTextFileInputConstIterator,            // Base
+      uint32_t,                               // Value
+      boost::single_pass_traversal_tag,       // CategoryOrTraversal
+      uint32_t                                // Reference
     >
   {
    public:
