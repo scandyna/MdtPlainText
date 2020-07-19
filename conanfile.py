@@ -19,7 +19,7 @@ class MdtPlainTextConan(ConanFile):
                      "build_tests": False}
   requires = "MdtCMakeModules/[>=0.14.9]@scandyna/testing"
   generators = "cmake", "cmake_paths", "virtualenv"
-  exports_sources = "libs/*", "CMakeLists.txt", "conanfile.py", "LICENSE.txt", "COPYING", "COPYING.LESSER"
+  exports_sources = "libs/PlainText/*", "libs/PlainText_QtCore/*", "CMakeLists.txt", "conanfile.py", "LICENSE.txt", "COPYING", "COPYING.LESSER"
   # If no_copy_source is False, conan copies sources to build directory and does in-source build,
   # resulting having build files installed in the package
   # See also: https://github.com/conan-io/conan/issues/350
@@ -41,7 +41,7 @@ class MdtPlainTextConan(ConanFile):
       self.requires("Catch2/[>=2.11.1]@catchorg/stable")
 
     if self.options.use_conan_boost:
-      self.requires("boost/[>=1.65.1]@conan/stable")
+      self.requires("boost/[>=1.69.0]@conan/stable")
 
     # Building 5.14.x causes currently problems (8.04.2020)
     # As workaround, try fix a known version that we can build
