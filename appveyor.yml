@@ -68,6 +68,7 @@ before_build:
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - set PATH=%PATH:C:\Program Files (x86)\Git\bin;=%
   - set PATH=C:\Python38;C:\Python38\Scripts;%PATH%
+  - set BOOST_PREFIX_PATH=C:\Libraries\boost_1_69_0
   - echo %PATH%
 
 build_script:
@@ -75,7 +76,7 @@ build_script:
   - cd build
   - conan install --profile %CONAN_PROFILE% -s build_type=%configuration% -o build_tests=True ..
   - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_BUILD_TYPE=%configuration%
-          -DCMAKE_PREFIX_PATH="C:\Libraries\boost_1_69_0;%QT_PREFIX_PATH%"
+          -DCMAKE_PREFIX_PATH="%BOOST_PREFIX_PATH%;%QT_PREFIX_PATH%"
           -DBUILD_TESTS=ON -DBUILD_BENCHMARKS=OFF -DBUILD_EXAMPLES=ON -DWARNING_AS_ERROR=ON ..
   - cmake --build . --config %configuration%
 
@@ -86,5 +87,5 @@ test_script:
 # Easy tasks made difficult..
 # See https://github.com/appveyor/ci/issues/2042
 after_test:
-  - IF DEFINED APPVEYOR_REPO_TAG_NAME set PATH=%QT_PREFIX_PATH%\bin;%PATH% && cd .. && conan create . scandyna/testing --profile %CONAN_PROFILE% -o MdtPlainText:use_conan_boost=True -s build_type=%configuration% %conan_create_extra_args% && conan upload MdtPlainText/* --remote scandyna --all -c
+  - IF DEFINED APPVEYOR_REPO_TAG_NAME set PATH=%QT_PREFIX_PATH%\bin;%BOOST_PREFIX_PATH%;%PATH% && cd .. && conan create . scandyna/testing --profile %CONAN_PROFILE% -s build_type=%configuration% %conan_create_extra_args% && conan upload MdtPlainText/* --remote scandyna --all -c
 
