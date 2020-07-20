@@ -185,8 +185,6 @@ namespace Mdt{ namespace PlainText{
      * \pre A path to a file must have been set
      * \sa setFilePath()
      * \sa close()
-     *
-     * \todo Error handling has to be implemented
      */
     void open()
     {
