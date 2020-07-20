@@ -143,7 +143,7 @@ conan install --profile windows_gcc7_x86_64 -s build_type=Release --build=missin
 
 Configure the project:
 ```bash
-cmake -G"MinGW Makefiles" -DCMAKE_INSTALL_PREFIX=C:\some\path -DCMAKE_TOOLCHAIN_FILE=conan_paths.cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -G"MinGW Makefiles" -DCMAKE_INSTALL_PREFIX=C:\some\path -DCMAKE_BUILD_TYPE=Release ..
 cmake-gui .
 ```
 
