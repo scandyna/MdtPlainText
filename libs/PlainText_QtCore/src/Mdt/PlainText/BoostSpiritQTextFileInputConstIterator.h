@@ -26,9 +26,6 @@
 #include "mdt_plaintext_qtcore_export.h"
 #include <QFileDevice>
 #include <QByteArray>
-
-#include <boost/iterator/iterator_adaptor.hpp>
-
 #include <boost/iterator/iterator_facade.hpp>
 
 namespace Mdt{ namespace PlainText{
@@ -48,7 +45,6 @@ namespace Mdt{ namespace PlainText{
    */
   class MDT_PLAINTEXT_QTCORE_EXPORT BoostSpiritQTextFileInputConstIterator : public boost::iterator_facade<
       BoostSpiritQTextFileInputConstIterator, // Derived
-      /*QTextFileInputConstIterator, */           // Base
       uint32_t,                               // Value
       boost::single_pass_traversal_tag,       // CategoryOrTraversal
       uint32_t                                // Reference
@@ -59,10 +55,6 @@ namespace Mdt{ namespace PlainText{
     /*! \brief Construct a end-of-file iterator
      */
     BoostSpiritQTextFileInputConstIterator() noexcept = default;
-    /* : iterator_adaptor_( QTextFileInputConstIterator() )
-    {
-    }
-    */
 
     /*! \brief Construct a iterator that acts on a file
      *
@@ -76,7 +68,6 @@ namespace Mdt{ namespace PlainText{
      * \exception QFileReadError
      */
     BoostSpiritQTextFileInputConstIterator(QFileDevice *file, const QByteArray & fileEncoding)
-     /*: iterator_adaptor_( QTextFileInputConstIterator(file, fileEncoding) )*/
      : mIterator(file, fileEncoding)
     {
       Q_ASSERT( file != nullptr );
@@ -86,7 +77,6 @@ namespace Mdt{ namespace PlainText{
     /*! \brief Copy construct a iterator from \a other
      */
     BoostSpiritQTextFileInputConstIterator(const BoostSpiritQTextFileInputConstIterator & other) noexcept
-    /* : iterator_adaptor_( other.base() )*/
      : mIterator(other.mIterator)
     {
     }
@@ -108,7 +98,6 @@ namespace Mdt{ namespace PlainText{
     uint32_t dereference() const
     {
       return mIterator->unicode();
-      //return base_reference()->unicode();
     }
 
     QTextFileInputConstIterator mIterator;
