@@ -24,7 +24,11 @@
 
 #include "mdt_plaintext_qtcore_export.h"
 #include <QString>
+
 #include <boost/iterator/iterator_adaptor.hpp>
+
+#include <boost/iterator/iterator_facade.hpp>
+
 #include <cstdint>
 
 namespace Mdt{ namespace PlainText{
@@ -38,46 +42,52 @@ namespace Mdt{ namespace PlainText{
    *
    * \todo template to xx uint32_t, wchar. s_assert on size >= 16bits
    */
-  class MDT_PLAINTEXT_QTCORE_EXPORT BoostSpiritQStringConstIterator : public boost::iterator_adaptor<
+  class MDT_PLAINTEXT_QTCORE_EXPORT BoostSpiritQStringConstIterator : public boost::iterator_facade<
       BoostSpiritQStringConstIterator,  // Derived
-      QString::const_iterator,          // Base
-      uint32_t,                         // Value
-      boost::use_default,               // CategoryOrTraversal
-      const uint32_t &>                 // Reference, see dereference()
+      /*QString::const_iterator, */         // Base
+      const uint32_t,                         // Value
+      boost::random_access_traversal_tag,               // CategoryOrTraversal
+      const uint32_t &,                 // Reference, see dereference()
+      ptrdiff_t                       // Difference
+    >
   {
    public:
 
     /*! \brief Default constructor
      */
     BoostSpiritQStringConstIterator() noexcept
-     : iterator_adaptor_(nullptr)
+     /*: iterator_adaptor_(nullptr)*/
+     : mIterator(nullptr)
     {
     }
 
     /*! \brief Construct a iterator that points to \a it
      */
     BoostSpiritQStringConstIterator(QString::const_iterator it) noexcept
-     : iterator_adaptor_(it)
+//      : iterator_adaptor_(it)
+     : mIterator(it)
     {
     }
 
     /*! \brief Constrcut a const iterator from the non const iterator \a it
      */
     BoostSpiritQStringConstIterator(QString::iterator it) noexcept
-     : iterator_adaptor_(it)
+//      : iterator_adaptor_(it)
+     : mIterator(it)
     {
     }
 
     /*! \brief Copy construct a iterator from \a other
      */
     BoostSpiritQStringConstIterator(const BoostSpiritQStringConstIterator & other) noexcept
-     : iterator_adaptor_( other.base() )
+//      : iterator_adaptor_( other.base() )
+     : mIterator(other.mIterator)
     {
     }
 
     /*! \brief Get value by index
      */
-    uint32_t operator[](difference_type n) const
+    uint32_t operator[](ptrdiff_t n) const
     {
       return *(*this + n);
     }
@@ -85,6 +95,31 @@ namespace Mdt{ namespace PlainText{
   private:
 
     friend class boost::iterator_core_access;
+
+    bool equal(const BoostSpiritQStringConstIterator & other) const
+    {
+      return mIterator == other.mIterator;
+    }
+
+    void increment()
+    {
+      ++mIterator;
+    }
+
+    void decrement()
+    {
+      --mIterator;
+    }
+
+    ptrdiff_t distance_to(const BoostSpiritQStringConstIterator & other) const
+    {
+      return other.mIterator - mIterator;
+    }
+
+    void advance(ptrdiff_t n)
+    {
+      mIterator += n;
+    }
 
     /*! \internal
      *
@@ -97,11 +132,13 @@ namespace Mdt{ namespace PlainText{
      */
     const uint32_t & dereference() const
     {
-      mValue = this->base_reference()->unicode();
+//       mValue = this->base_reference()->unicode();
+      mValue = mIterator->unicode();
       return mValue;
     }
 
     mutable uint32_t mValue;
+    QString::const_iterator mIterator;
   };
 
 }} // namespace Mdt{ namespace PlainText{
