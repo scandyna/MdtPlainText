@@ -41,7 +41,7 @@ class MdtPlainTextConan(ConanFile):
       self.requires("Catch2/[>=2.11.1]@catchorg/stable")
 
     if self.options.use_conan_boost:
-      self.requires("boost/[>=1.69.0]@conan/stable")
+      self.requires("boost/[>=1.65.0]@conan/stable")
 
     # Building 5.14.x causes currently problems (8.04.2020)
     # As workaround, try fix a known version that we can build
