@@ -74,7 +74,7 @@ build_script:
   - mkdir build
   - cd build
   - conan install --profile %CONAN_PROFILE% -s build_type=%configuration% -o build_tests=True ..
-  - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=conan_paths.cmake -DCMAKE_BUILD_TYPE=%configuration%
+  - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_BUILD_TYPE=%configuration%
           -DCMAKE_PREFIX_PATH="C:\Libraries\boost_1_69_0;%QT_PREFIX_PATH%"
           -DBUILD_TESTS=ON -DBUILD_BENCHMARKS=OFF -DBUILD_EXAMPLES=ON -DWARNING_AS_ERROR=ON ..
   - cmake --build . --config %configuration%
