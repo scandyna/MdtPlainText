@@ -7,28 +7,74 @@
 
 /*! \mainpage Main
  *
+ * \tableofcontents
+ *
+ * \section introduction Introduction
+ *
+ * Provides some libraries to read and write simple plain text
+ * using the [boost Spirit](https://www.boost.org/doc/libs/1_73_0/libs/spirit/doc/html/index.html) library.
+ *
+ * It also provides some support to parse QString strings,
+ * as well as putting boost Spirit parsers attributes into a QString.
+ *
+ *
  * \section csv_parsers CSV parsers
+ *
+ * \todo Explain the problem of parsing CSV with text fields, also huge files, example of checking if a file contains at least 1 record
+ *
+ * \todo Write a basic example how to use CsvFileReader with the required includes,
+ *   then explain encoding support, finaly same example with QCsvFileReader
  *
  * Some CSV parsers can be used:
  * - Mdt::PlainText::CsvFileReader
  * - Mdt::PlainText::QCsvFileReader,
  *   which also supports reading files that have a different encoding than the machine locale one.
  *
- * \todo Document how to write a custom CsvFileParser, with int, float, ... fields
+ * \todo Document how to write a custom %CsvFileReader, with int, float, ... fields
+ *  Also document some tricks to make rules work, as encountered by CSV grammar.
  *
- * \section support Support
  *
- * \subsection iterators Iterators
+ * \section Qt_support Qt support
  *
- * \section QString_support
+ * \todo Explain that Spirit V2 qi uses uint32_t as unicode char
  *
- * \subsection QString_as_container
+ * \todo Document how to parse QString using BoostSpiritQStringConstIterator,
+ * notably using the undocumented unicode namespace for char parsers.
  *
- * \subsection parse_QString Parsing QString sources
+ * \subsection QString_as_container Use QString as output of a parser
+ *
+ * To be able to use QString as output of a parser:
+ * \code
+ * include <Mdt/PlainText/BoostSpiritQStringContainer>
+ * \endcode
+ *
+ * \subsection parse_from_QString Parse from a QString
+ *
+ * - Mdt::PlainText::BoostSpiritQStringConstIterator
+ *
+ * \subsection parse_file_with_encoding_using_Qt Parse files with encoding support using Qt
  *
  * Qt offers great unicode support, thanks to QString.
  * It is also possible to read sources with various encoding,
  * using QTextCodec and QTextDecoder.
+ *
+ * - Mdt::PlainText::QTextFileInputConstIterator
+ * - Mdt::PlainText::BoostSpiritQTextFileInputConstIterator
+ *
+ *
+ * \section reference Reference
+ *
+ * \todo ref to classes, ...
+ *
+ * \section references References
+ *
+ * \todo CSV 12xx + RFC xxxx here
+ *
+ * Maybe reference videos:
+ *  - James McNellis Unicode in C++
+ *  - Thiago String theory
+ *
+ * \section rationale Rationale
  *
  * \subsection parse_QString_first_attempt Parsing QString sources, first attempt (abandoned)
  *
@@ -47,21 +93,8 @@
  * https://gitlab.com/scandyna/mdtplaintext/-/blob/qstring-encoding/libs/PlainText_QtCore/src/Mdt/PlainText/BoostSpiritQStringEncoding.h
  *
  *
- * \todo Qt QString/QChar integration
- *  Also a exemple using it (....::qchar::char_)
- *
  * Also document to use explicit QChar/QString (QLatin1Char, QLatin1String, ..)
  * + warn to compile with
  * -DQT_NO_CAST_DEFINITIONS -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_BYTEARRAY
- *
- * \todo document the attempt to write a qchar encoding support,
- *  and why it did not work.
- *  Typically the case with int parsers, calling explicitly a function is ascii namespace.
- *  Avoid to retry such thing again and again every 3 years !!
- *
- * \todo Document how to parse QString using BoostSpiritQStringConstIterator,
- * notably using the undocumented unicode namespace for char parsers.
- * Maybe reference videos: James McNellis Unicode in C++ , Thiago String theory
- *
  *
  */
