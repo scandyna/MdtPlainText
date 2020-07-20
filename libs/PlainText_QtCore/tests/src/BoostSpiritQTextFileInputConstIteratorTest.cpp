@@ -223,7 +223,7 @@ TEST_CASE("qi_parser_unicode_char_")
 
     QChar result;
     REQUIRE( openTextFileReadOnly(file) );
-    REQUIRE( parse(file, char_(U'ö'), result) );
+    REQUIRE( parse(file, char_(U'\U000000F6'), result) );
     REQUIRE( result == QChar(0xF6) );
   }
 }

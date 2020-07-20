@@ -299,7 +299,7 @@ TEST_CASE("qi_parser_unicode_char_")
   {
     const QString source = QString::fromUtf8("ö");
     QChar result;
-    REQUIRE( parse(source, char_(U'ö'), result) );
+    REQUIRE( parse(source, char_(U'\U000000F6'), result) );
     REQUIRE( result == QChar(0xF6) );
   }
 }
