@@ -14,7 +14,7 @@ and
 # Usage
 
 For the available classes, functions, and their usage,
-see [the API documentation](https://scandyna.gitlab.io/projectname)
+see [the API documentation](https://scandyna.gitlab.io/mdtplaintext)
 
 ## Required tools and libraries
 
