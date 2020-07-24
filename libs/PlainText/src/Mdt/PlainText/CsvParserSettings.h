@@ -9,6 +9,7 @@
 
 #include "CsvParserSettingsValidity.h"
 #include "mdt_plaintext_export.h"
+#include <cassert>
 
 namespace Mdt{ namespace PlainText{
 
@@ -44,10 +45,14 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Set field (or column) separator
      *
+     * \pre \a separator must not be a end-of-line
+     * \sa isEndOfLine()
      * \sa fieldSeparator()
      */
     constexpr void setFieldSeparator(char separator) noexcept
     {
+      assert( !isEndOfLine(separator) );
+
       mFieldSeparator = separator;
     }
 
@@ -64,9 +69,14 @@ namespace Mdt{ namespace PlainText{
     }
 
     /*! \brief Set field payload protection
+     *
+     * \pre \a protection must not be a end-of-line
+     * \sa isEndOfLine()
      */
     constexpr void setFieldProtection(char protection) noexcept
     {
+      assert( !isEndOfLine(protection) );
+
       mFieldProtection = protection;
     }
 
@@ -142,6 +152,20 @@ namespace Mdt{ namespace PlainText{
     constexpr bool isValid() const noexcept
     {
       return validate() == CsvParserSettingsValidity::Valid;
+    }
+
+    /*! \brief Check if \a c is a end-of-line
+     */
+    static
+    constexpr bool isEndOfLine(char c) noexcept
+    {
+      if(c == '\n'){
+        return true;
+      }
+      if(c == '\r'){
+        return true;
+      }
+      return false;
     }
 
    private:

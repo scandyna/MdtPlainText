@@ -31,6 +31,39 @@ TEST_CASE("set_get")
   REQUIRE( !settings.parseExp() );
 }
 
+TEST_CASE("isEndOfLine")
+{
+  SECTION("\\n")
+  {
+    REQUIRE( CsvParserSettings::isEndOfLine('\n') );
+  }
+
+  SECTION("\\r")
+  {
+    REQUIRE( CsvParserSettings::isEndOfLine('\r') );
+  }
+
+  SECTION(",")
+  {
+    REQUIRE( !CsvParserSettings::isEndOfLine(',') );
+  }
+
+  SECTION(";")
+  {
+    REQUIRE( !CsvParserSettings::isEndOfLine(';') );
+  }
+
+  SECTION("'")
+  {
+    REQUIRE( !CsvParserSettings::isEndOfLine('\'') );
+  }
+
+  SECTION("\"")
+  {
+    REQUIRE( !CsvParserSettings::isEndOfLine('"') );
+  }
+}
+
 TEST_CASE("validate")
 {
   CsvParserSettings settings;
