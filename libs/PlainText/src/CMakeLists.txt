@@ -21,6 +21,8 @@ add_library(Mdt_PlainText
   Mdt/PlainText/OpenFstream.cpp
   Mdt/PlainText/CsvFileReaderTemplate.cpp
   Mdt/PlainText/CsvFileReader.cpp
+  Mdt/PlainText/CsvGeneratorSettings.cpp
+  Mdt/PlainText/CsvFileWriter.cpp
 )
 
 if(UNIX)

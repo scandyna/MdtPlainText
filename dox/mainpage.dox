@@ -18,7 +18,7 @@
  * as well as putting boost Spirit parsers attributes into a QString.
  *
  *
- * \section csv_parsers CSV parsers
+ * \section csv_file_io Reading and writing CSV files
  *
  * \todo Explain the problem of parsing CSV with text fields, also huge files, example of checking if a file contains at least 1 record
  *
@@ -33,6 +33,10 @@
  * \todo Document how to write a custom %CsvFileReader, with int, float, ... fields
  *  Also document some tricks to make rules work, as encountered by CSV grammar.
  *
+ * Some CSV parsers can be used:
+ * - Mdt::PlainText::CsvFileWriter
+ * - Mdt::PlainText::QCsvFileWriter,
+ *   which also supports reading files that have a different encoding than the machine locale one.
  *
  * \section Qt_support Qt support
  *
