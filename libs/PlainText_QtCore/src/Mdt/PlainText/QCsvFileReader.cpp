@@ -51,6 +51,7 @@ QString QCsvFileReader::filePath() const
 void QCsvFileReader::setFileEncoding(const QByteArray & encoding)
 {
   Q_ASSERT( !encoding.isEmpty() );
+  Q_ASSERT( !isOpen() );
 
   mImpl->setFileEncoding(encoding);
 }

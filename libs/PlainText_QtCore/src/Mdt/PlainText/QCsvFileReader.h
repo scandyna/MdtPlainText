@@ -29,6 +29,7 @@
 #include "mdt_plaintext_qtcore_export.h"
 #include <QString>
 #include <QStringList>
+#include <QByteArray>
 #include <vector>
 #include <memory>
 
@@ -92,6 +93,8 @@ namespace Mdt{ namespace PlainText{
      * The default encoding is UTF-8
      *
      * \pre \a encoding must not be empty
+     * \pre This file reader must not be open
+     * \sa isOpen()
      */
     void setFileEncoding(const QByteArray & encoding);
 
