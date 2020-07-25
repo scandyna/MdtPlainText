@@ -21,19 +21,67 @@
  ****************************************************************************/
 #include "TextFileUtils.h"
 #include <QTextStream>
+#include <QFileInfo>
+#include <QFile>
+#include <QDebug>
+#include <cassert>
 
 namespace Mdt{ namespace PlainText{ namespace TestLib{
 
+bool fileExists(const QString & filePath)
+{
+  return QFileInfo::exists(filePath);
+}
+
 bool writeTextFileUtf8(QFile & file, const QString & content)
 {
-  Q_ASSERT( file.isOpen() );
-  Q_ASSERT( file.isWritable() );
+  assert( file.isOpen() );
+  assert( file.isWritable() );
 
   QTextStream out(&file);
   out.setCodec("UTF-8");
   out << content;
 
   return true;
+}
+
+bool writeTextFileUtf8(const QString & filePath, const QString & content)
+{
+  assert( !filePath.isEmpty() );
+
+  QFile file(filePath);
+  if( !file.open(QIODevice::WriteOnly | QIODevice::Text) ){
+    qWarning() << "Mdt::PlainText::TestLib::writeTextFileUtf8(): open file '" << filePath << "' failed: " << file.errorString();
+    return false;
+  }
+  if( !writeTextFileUtf8(file, content) ){
+    return false;
+  }
+  file.close();
+
+  return true;
+}
+
+QString readTextFileUtf8(const QString & filePath)
+{
+  assert( !filePath.isEmpty() );
+
+  QString content;
+
+  QFile file(filePath);
+  if( !file.open(QIODevice::ReadOnly | QIODevice::Text) ){
+    qWarning() << "Mdt::PlainText::TestLib::readTextFileUtf8(): open file '" << filePath << "' failed: " << file.errorString();
+    return content;
+  }
+
+  QTextStream in(&file);
+  in.setCodec("UTF-8");
+  while (!in.atEnd()) {
+    QString line = in.readLine();
+    content += line;
+  }
+
+  return content;
 }
 
 }}} // namespace Mdt{ namespace PlainText{ namespace TestLib{

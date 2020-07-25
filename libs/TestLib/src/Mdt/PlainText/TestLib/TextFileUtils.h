@@ -28,10 +28,25 @@
 
 namespace Mdt{ namespace PlainText{ namespace TestLib{
 
+  /*! \internal Check if a file exists
+   */
+  MDT_PLAINTEXT_TESTLIB_EXPORT
+  bool fileExists(const QString & filePath);
+
   /*! \internal Write a text file
    */
   MDT_PLAINTEXT_TESTLIB_EXPORT
   bool writeTextFileUtf8(QFile & file, const QString & content);
+
+  /*! \internal Write a text file
+   */
+  MDT_PLAINTEXT_TESTLIB_EXPORT
+  bool writeTextFileUtf8(const QString & filePath, const QString & content);
+
+  /*! \internal Read a text file
+   */
+  MDT_PLAINTEXT_TESTLIB_EXPORT
+  QString readTextFileUtf8(const QString & filePath);
 
 }}} // namespace Mdt{ namespace PlainText{ namespace TestLib{
 
