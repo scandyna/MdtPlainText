@@ -57,6 +57,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME CsvGeneratorFieldTest
+  TARGET csvGeneratorFieldTest
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/CsvGeneratorFieldTest.cpp
+)
+
+mdt_add_test(
   NAME CsvFileWriterTest
   TARGET csvFileWriterTest
   DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test Mdt::PlainText_TestLib

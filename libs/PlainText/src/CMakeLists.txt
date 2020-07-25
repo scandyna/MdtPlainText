@@ -22,6 +22,7 @@ add_library(Mdt_PlainText
   Mdt/PlainText/CsvFileReaderTemplate.cpp
   Mdt/PlainText/CsvFileReader.cpp
   Mdt/PlainText/CsvGeneratorSettings.cpp
+  Mdt/PlainText/CsvGeneratorField.cpp
   Mdt/PlainText/CsvFileWriterTemplate.cpp
   Mdt/PlainText/CsvFileWriter.cpp
 )
