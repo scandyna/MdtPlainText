@@ -13,8 +13,11 @@
 #include "FileWriteOpenMode.h"
 #include "mdt_plaintext_export.h"
 #include <string>
+#include <memory>
 
 namespace Mdt{ namespace PlainText{
+
+  class CsvFileWriterTemplate;
 
   /*! \brief CSV file writer
    *
@@ -85,7 +88,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Open this CSV file writer
      *
-     * If this file reader is allready open,
+     * If this file writer is allready open,
      * it will be closed first().
      *
      * Open the file set with setFilePath().
@@ -121,6 +124,10 @@ namespace Mdt{ namespace PlainText{
     /*! \brief Close this file writer
      */
     void close();
+
+   private:
+
+    std::unique_ptr<CsvFileWriterTemplate> mImpl;
   };
 
 }} // namespace Mdt{ namespace PlainText{

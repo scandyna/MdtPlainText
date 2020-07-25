@@ -5,11 +5,13 @@
  * https://www.boost.org/LICENSE_1_0.txt)
  */
 #include "CsvFileWriter.h"
+#include "CsvFileWriterTemplate.h"
 #include <cassert>
 
 namespace Mdt{ namespace PlainText{
 
 CsvFileWriter::CsvFileWriter()
+ : mImpl( std::make_unique<CsvFileWriterTemplate>() )
 {
 }
 
@@ -21,43 +23,56 @@ void CsvFileWriter::setFilePath(const std::string & filePath)
 {
   assert( !filePath.empty() );
   assert( !isOpen() );
+
+  mImpl->setFilePath(filePath);
 }
 
 const std::string & CsvFileWriter::filePath() const noexcept
 {
+  return mImpl->filePath();
 }
 
 void CsvFileWriter::setCsvSettings(const CsvGeneratorSettings & settings) noexcept
 {
   assert( settings.isValid() );
   assert( !isOpen() );
+
+  mImpl->setCsvSettings(settings);
 }
 
 const CsvGeneratorSettings & CsvFileWriter::csvSettings() const noexcept
 {
+  return mImpl->csvSettings();
 }
 
 void CsvFileWriter::setOpenMode(FileWriteOpenMode mode)
 {
   assert( !isOpen() );
+
+  mImpl->setOpenMode(mode);
 }
 
 FileWriteOpenMode CsvFileWriter::openMode() const noexcept
 {
+  return mImpl->openMode();
 }
 
 void CsvFileWriter::open()
 {
   assert( !filePath().empty() );
+
+  mImpl->open();
 }
 
 bool CsvFileWriter::isOpen() const
 {
+  return mImpl->isOpen();
 }
 
 
 void CsvFileWriter::close()
 {
+  mImpl->close();
 }
 
 }} // namespace Mdt{ namespace PlainText{
