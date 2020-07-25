@@ -30,7 +30,6 @@
 #include <QBuffer>
 
 using namespace Mdt::PlainText;
-using Mdt::PlainText::TestLib::writeTextFile;
 
 bool openIODeviceReadOnly(QIODevice & device)
 {
@@ -45,4 +44,9 @@ bool openQBufferReadOnly(QBuffer & buffer)
 bool openTextFileReadOnly(QFile & file)
 {
   return openIODeviceReadOnly(file);
+}
+
+bool writeTextFile(QFile & file, const QString & content)
+{
+  return Mdt::PlainText::TestLib::writeTextFileUtf8(file, content);
 }

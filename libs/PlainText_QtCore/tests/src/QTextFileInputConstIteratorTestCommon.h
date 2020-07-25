@@ -29,9 +29,13 @@
 #include <algorithm>
 
 using namespace Mdt::PlainText;
-using Mdt::PlainText::TestLib::writeTextFile;
 
 bool openTextFileReadOnly(QFile & file)
 {
   return file.open(QIODevice::ReadOnly | QIODevice::Text);
+}
+
+bool writeTextFile(QFile & file, const QString & content)
+{
+  return Mdt::PlainText::TestLib::writeTextFileUtf8(file, content);
 }

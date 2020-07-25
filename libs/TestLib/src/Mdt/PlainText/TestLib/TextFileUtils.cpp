@@ -24,7 +24,7 @@
 
 namespace Mdt{ namespace PlainText{ namespace TestLib{
 
-bool writeTextFile(QFile & file, const QString & content)
+bool writeTextFileUtf8(QFile & file, const QString & content)
 {
   Q_ASSERT( file.isOpen() );
   Q_ASSERT( file.isWritable() );

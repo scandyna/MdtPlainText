@@ -37,7 +37,11 @@
 
 using namespace Mdt::PlainText;
 using namespace Mdt::PlainText::TestLib;
-using Mdt::PlainText::TestLib::writeTextFile;
+
+bool writeTextFile(QFile & file, const QString & content)
+{
+  return Mdt::PlainText::TestLib::writeTextFileUtf8(file, content);
+}
 
 bool writeSimpleCsvFile(QFile & file)
 {

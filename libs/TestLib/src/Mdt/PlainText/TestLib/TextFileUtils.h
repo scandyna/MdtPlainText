@@ -31,7 +31,7 @@ namespace Mdt{ namespace PlainText{ namespace TestLib{
   /*! \internal Write a text file
    */
   MDT_PLAINTEXT_TESTLIB_EXPORT
-  bool writeTextFile(QFile & file, const QString & content);
+  bool writeTextFileUtf8(QFile & file, const QString & content);
 
 }}} // namespace Mdt{ namespace PlainText{ namespace TestLib{
 

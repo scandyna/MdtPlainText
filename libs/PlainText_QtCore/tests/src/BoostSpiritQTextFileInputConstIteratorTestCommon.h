@@ -33,7 +33,6 @@
 #include <algorithm>
 
 using namespace Mdt::PlainText;
-using Mdt::PlainText::TestLib::writeTextFile;
 
 bool openTextFileReadOnly(QFile & file)
 {
@@ -52,4 +51,9 @@ bool parse(QFile & file, const Grammar & grammar, Result & destination)
   MultiPassIterator last = make_default_multi_pass( BoostSpiritQTextFileInputConstIterator() );
 
   return boost::spirit::qi::parse(first, last, grammar, destination);
+}
+
+bool writeTextFile(QFile & file, const QString & content)
+{
+  return Mdt::PlainText::TestLib::writeTextFileUtf8(file, content);
 }
