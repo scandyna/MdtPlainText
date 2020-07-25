@@ -40,7 +40,29 @@ void openIfstream(std::ifstream & stream, const std::string & path)
     throw FileOpenError(what);
   }
 #endif // #if defined(MDT_OS_UNIX)
+}
 
+void openOfstream(std::ofstream & stream, const std::string & path, FileWriteOpenMode mode)
+{
+  assert( !stream.is_open() );
+  assert( !path.empty() );
+
+  std::ios_base::openmode openMode;
+  switch(mode){
+    case FileWriteOpenMode::Append:
+      openMode = std::ios_base::out | std::ios_base::binary | std::ios_base::app;
+      break;
+    case FileWriteOpenMode::Truncate:
+      openMode = std::ios_base::out | std::ios_base::binary | std::ios_base::trunc;
+      break;
+  }
+
+  stream.open(path, openMode);
+  if( stream.bad() || stream.fail() ){
+    stream.close();
+    const std::string what = "open file '" + path + "' failed";
+    throw FileOpenError(what);
+  }
 }
 
 }} // namespace Mdt{ namespace PlainText{

@@ -8,6 +8,7 @@
 #define MDT_PLAIN_TEXT_OPEN_FSTREAM_H
 
 #include "FileOpenError.h"
+#include "FileWriteOpenMode.h"
 #include "mdt_plaintext_export.h"
 #include <fstream>
 #include <string>
@@ -27,6 +28,15 @@ namespace Mdt{ namespace PlainText{
    */
   MDT_PLAINTEXT_EXPORT
   void openIfstream(std::ifstream & stream, const std::string & path);
+
+  /*! \internal Open \a stream
+   *
+   * \pre \a stream must not allready be open
+   * \pre \a path must not be empty
+   * \exception FileOpenError
+   */
+  MDT_PLAINTEXT_EXPORT
+  void openOfstream(std::ofstream & stream, const std::string & path, FileWriteOpenMode mode);
 
 }} // namespace Mdt{ namespace PlainText{
 
