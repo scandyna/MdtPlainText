@@ -38,6 +38,25 @@
  * - Mdt::PlainText::QCsvFileWriter,
  *   which also supports reading files that have a different encoding than the machine locale one.
  *
+ * To write CSV files, some fields, like text fields, should be coted in the file,
+ * others, like numbers, should not.
+ *
+ * A possible way to could be to define a custom record, for example:
+ * \code
+ * struct
+ * {
+ *   int number,
+ *   std::string text
+ * };
+ * \endcode
+ *
+ * Then implement a boost Spirit Karma rule,
+ * then create a custom CSV file writer using Mdt::PlainText::CsvFileWriterTemplate.
+ *
+ * A other way could be to convert all our data to its string representation,
+ * then use Mdt::PlainText::CsvFileWriter with Mdt::PlainText::CsvGeneratorField,
+ * which lets us tell if a field must be quoted or not in the resulting CSV file.
+ *
  * \section Qt_support Qt support
  *
  * \todo Explain that Spirit V2 qi uses uint32_t as unicode char
