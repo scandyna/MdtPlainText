@@ -15,6 +15,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME BoostSpiritQStringIteratorTest
+  TARGET boostSpiritQStringIteratorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
+  SOURCE_FILES
+    src/BoostSpiritQStringIteratorTest.cpp
+)
+
+mdt_add_test(
   NAME BoostSpiritQStringConstIteratorTest
   TARGET boostSpiritQStringConstIteratorTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
@@ -100,4 +108,36 @@ mdt_add_test(
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
   SOURCE_FILES
     src/QCsvFileReaderErrorTest.cpp
+)
+
+mdt_add_test(
+  NAME QCsvKarmaGrammarTest
+  TARGET qCsvKarmaGrammarTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/QCsvKarmaGrammarTest.cpp
+)
+
+mdt_add_test(
+  NAME QCsvKarmaGrammarErrorTest
+  TARGET qCsvKarmaGrammarErrorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/QCsvKarmaGrammarErrorTest.cpp
+)
+
+mdt_add_test(
+  NAME QCsvFileWriterTest
+  TARGET qCsvFileWriterTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/QCsvFileWriterTest.cpp
+)
+
+mdt_add_test(
+  NAME QCsvFileWriterErrorTest
+  TARGET qCsvFileWriterErrorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/QCsvFileWriterErrorTest.cpp
 )

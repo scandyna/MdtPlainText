@@ -175,8 +175,17 @@ namespace Mdt{ namespace PlainText{
       return mFileStream.is_open();
     }
 
-    /*! \brief Append a record to this CSV file
+    /*! \brief Append a line to this CSV file
+     *
+     * \exception CsvFileWriteError
+     * \pre This file reader must be open
+     * \sa isOpen()
      */
+    template<typename Record, typename Rule>
+    void appendLine(const Record & record, const Rule & rule)
+    {
+      assert( isOpen() );
+    }
 
     /*! \brief Close this file writer
      */

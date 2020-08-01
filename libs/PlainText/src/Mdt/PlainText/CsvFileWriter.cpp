@@ -69,6 +69,10 @@ bool CsvFileWriter::isOpen() const
   return mImpl->isOpen();
 }
 
+void CsvFileWriter::appendLine(const std::vector<CsvGeneratorField> & record)
+{
+  assert( isOpen() );
+}
 
 void CsvFileWriter::close()
 {

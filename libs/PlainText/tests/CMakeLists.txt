@@ -65,6 +65,22 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME CsvKarmaGrammarTest
+  TARGET csvKarmaGrammarTest
+  DEPENDENCIES Mdt::PlainText Boost::boost Mdt::Catch2Main
+  SOURCE_FILES
+    src/CsvKarmaGrammarTest.cpp
+)
+
+mdt_add_test(
+  NAME CsvKarmaGrammarErrorTest
+  TARGET csvKarmaGrammarErrorTest
+  DEPENDENCIES Mdt::PlainText Boost::boost Mdt::Catch2Main
+  SOURCE_FILES
+    src/CsvKarmaGrammarErrorTest.cpp
+)
+
+mdt_add_test(
   NAME CsvFileWriterTest
   TARGET csvFileWriterTest
   DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Qt5::Test Mdt::PlainText_TestLib

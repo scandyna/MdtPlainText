@@ -45,8 +45,8 @@ QString parseFieldColumn(const QString & sourceString, const CsvParserSettings &
   QString data;
   Mdt::PlainText::Grammar::Csv::FieldColumn<BoostSpiritQStringConstIterator, QString> rule(settings);
 
-  BoostSpiritQStringConstIterator first( sourceString.cbegin() );
-  BoostSpiritQStringConstIterator last( sourceString.cend() );
+  BoostSpiritQStringConstIterator first( sourceString.cbegin(), sourceString.cend() );
+  BoostSpiritQStringConstIterator last( sourceString.cend(), sourceString.cend() );
   const bool ok = boost::spirit::qi::parse(first, last, rule, data);
   if(!ok){
     const QString what = QLatin1String("Failed to parse a field column from ") + sourceString;
@@ -63,8 +63,8 @@ QStringList parseRecord(const QString & sourceString, const CsvParserSettings & 
   QStringList record;
   Mdt::PlainText::Grammar::Csv::CsvRecord<BoostSpiritQStringConstIterator, QStringList> rule(settings);
 
-  BoostSpiritQStringConstIterator first( sourceString.cbegin() );
-  BoostSpiritQStringConstIterator last( sourceString.cend() );
+  BoostSpiritQStringConstIterator first( sourceString.cbegin(), sourceString.cend() );
+  BoostSpiritQStringConstIterator last( sourceString.cend(), sourceString.cend() );
   const bool ok = boost::spirit::qi::parse(first, last, rule, record);
   if(!ok){
     const QString what = QLatin1String("Failed to parse a record from ") + sourceString;
@@ -95,8 +95,8 @@ StringTable parseCsvFileRuleString(const QString & sourceString, const CsvParser
   StringTable table;
   Mdt::PlainText::Grammar::Csv::CsvFile<BoostSpiritQStringConstIterator, StringTable> rule(settings);
 
-  BoostSpiritQStringConstIterator first( sourceString.cbegin() );
-  BoostSpiritQStringConstIterator last( sourceString.cend() );
+  BoostSpiritQStringConstIterator first( sourceString.cbegin(), sourceString.cend() );
+  BoostSpiritQStringConstIterator last( sourceString.cend(), sourceString.cend() );
   const bool ok = boost::spirit::qi::parse(first, last, rule, table);
   if(!ok){
     const QString what = QLatin1String("Failed to parse table from ") + sourceString;

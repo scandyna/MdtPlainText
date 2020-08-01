@@ -9,12 +9,17 @@ include(MdtInstallLibrary)
 
 add_library(Mdt_PlainText_QtCore
   Mdt/PlainText/BoostSpiritQStringContainer.cpp
+  Mdt/PlainText/BoostSpiritKarmaQStringContainer.cpp
+  Mdt/PlainText/BoostSpiritQStringIteratorTemplate.cpp
+  Mdt/PlainText/BoostSpiritQStringIterator.cpp
   Mdt/PlainText/BoostSpiritQStringConstIterator.cpp
   Mdt/PlainText/QTextFileInputConstIteratorSharedData.cpp
   Mdt/PlainText/QTextFileInputConstIterator.cpp
   Mdt/PlainText/BoostSpiritQTextFileInputConstIterator.cpp
   Mdt/PlainText/QCsvFileReaderTemplate.cpp
   Mdt/PlainText/QCsvFileReader.cpp
+  Mdt/PlainText/QCsvFileWriterTemplate.cpp
+  Mdt/PlainText/QCsvFileWriter.cpp
 )
 add_library(Mdt::PlainText_QtCore ALIAS Mdt_PlainText_QtCore)
 

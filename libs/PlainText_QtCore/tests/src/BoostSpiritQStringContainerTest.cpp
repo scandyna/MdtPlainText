@@ -21,26 +21,45 @@
  ****************************************************************************/
 #include "TestCommon.h"
 #include "Mdt/PlainText/BoostSpiritQStringContainer.h"
+#include "Mdt/PlainText/BoostSpiritKarmaQStringContainer.h"
 #include <QChar>
 #include <QLatin1Char>
 #include <QString>
 #include <QLatin1String>
 #include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/karma.hpp>
 #include <string>
 
-template<typename Grammar>
-bool parseFromStdString(const std::string & source, const Grammar & grammar, QString & destination)
+template<typename Rule>
+bool parseFromStdString(const std::string & source, const Rule & rule, QString & destination)
 {
-  return boost::spirit::qi::parse(source.cbegin(), source.cend(), grammar, destination);
+  return boost::spirit::qi::parse(source.cbegin(), source.cend(), rule, destination);
 }
 
-template<typename Grammar>
-bool parseFromStdu32String(const std::u32string & source, const Grammar & grammar, QString & destination)
+template<typename Rule>
+bool parseFromStdu32String(const std::u32string & source, const Rule & rule, QString & destination)
 {
-  return boost::spirit::qi::parse(source.cbegin(), source.cend(), grammar, destination);
+  return boost::spirit::qi::parse(source.cbegin(), source.cend(), rule, destination);
 }
 
-TEST_CASE("standard_char_")
+template<typename Rule>
+bool generateToStdString(const QString & source, const Rule & rule, std::string & destination)
+{
+  const Mdt::PlainText::BoostSpiritKarmaQStringContainer sourceContainer(source);
+
+  return boost::spirit::karma::generate(std::back_inserter(destination), rule, sourceContainer);
+}
+
+template<typename Rule>
+bool generateToStdu32String(const QString & source, const Rule & rule, std::u32string & destination)
+{
+  const Mdt::PlainText::BoostSpiritKarmaQStringContainer sourceContainer(source);
+
+  return boost::spirit::karma::generate(std::back_inserter(destination), rule, sourceContainer);
+}
+
+
+TEST_CASE("qi_parse_standard_char_")
 {
   using boost::spirit::standard::char_;
 
@@ -65,7 +84,32 @@ TEST_CASE("standard_char_")
   }
 }
 
-TEST_CASE("unicode_char_")
+TEST_CASE("karma_generate_standard_char_")
+{
+  using boost::spirit::standard::char_;
+
+  std::string result;
+
+  SECTION("A")
+  {
+    REQUIRE( generateToStdString(QLatin1String("A"), *char_, result) );
+    REQUIRE( result == "A" );
+  }
+
+  SECTION("AB")
+  {
+    REQUIRE( generateToStdString(QLatin1String("AB"), *char_, result) );
+    REQUIRE( result == "AB" );
+  }
+
+  SECTION("ABC")
+  {
+    REQUIRE( generateToStdString(QLatin1String("ABC"), *char_, result) );
+    REQUIRE( result == "ABC" );
+  }
+}
+
+TEST_CASE("qi_parse_unicode_char_")
 {
   using boost::spirit::unicode::char_;
 
@@ -105,5 +149,48 @@ TEST_CASE("unicode_char_")
   {
     REQUIRE( parseFromStdu32String(U"\U00010405", *char_, result) );
     REQUIRE( result == QString::fromUtf8("𐐅") );
+  }
+}
+
+TEST_CASE("karma_generate_unicode_char_")
+{
+  using boost::spirit::unicode::char_;
+
+  std::u32string result;
+
+  SECTION("A")
+  {
+    REQUIRE( generateToStdu32String(QLatin1String("A"), *char_, result) );
+    REQUIRE( result == U"A" );
+  }
+
+  SECTION("ö")
+  {
+    REQUIRE( generateToStdu32String(QString::fromUtf8("ö"), *char_, result) );
+    REQUIRE( result == U"\U000000f6" );
+  }
+
+  SECTION("ĵ")
+  {
+    REQUIRE( generateToStdu32String(QString::fromUtf8("ĵ"), *char_, result) );
+    REQUIRE( result == U"\U00000135" );
+  }
+
+  SECTION("�")
+  {
+    REQUIRE( generateToStdu32String(QString::fromUtf8("�"), *char_, result) );
+    REQUIRE( result == U"\U0000fffd" );
+  }
+
+  SECTION("𐀀")
+  {
+    REQUIRE( generateToStdu32String(QString::fromUtf8("𐀀"), *char_, result) );
+    REQUIRE( result == U"\U00010000" );
+  }
+
+  SECTION("𐐅")
+  {
+    REQUIRE( generateToStdu32String(QString::fromUtf8("𐐅"), *char_, result) );
+    REQUIRE( result == U"\U00010405" );
   }
 }

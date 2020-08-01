@@ -32,10 +32,11 @@
 
 namespace boost { namespace spirit { namespace traits{
 
-  /*! \internal Make Qi recognize QString as a container
+  /*! \internal Make Spirit recognize QString as a container
    */
   template<>
   struct is_container<QString> : mpl::true_ {};
+
 
   /*! \internal Expose the container's (QString's) value_type
    *
@@ -45,12 +46,13 @@ namespace boost { namespace spirit { namespace traits{
   template<>
   struct container_value<QString> : mpl::identity<uint32_t> {};
 
-  /*! \internal Define how to insert a new element at the end of the container (QString)
+  /*! \internal Define how to insert a new element at the end of a QString (Qi)
    */
   template<>
   struct push_back_container<QString, uint32_t>
   {
-    static bool call(QString& c, const uint32_t & val)
+    static
+    bool call(QString& c, const uint32_t & val)
     {
       if(val <= 0xffff){
         c.append( QChar(val) );
