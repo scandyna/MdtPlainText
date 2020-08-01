@@ -35,8 +35,8 @@ bool iteratorValueEqualsToLatin1Char(const BoostSpiritQStringConstIterator & it,
 template<typename Grammar>
 bool parse(const QString & source, const Grammar & grammar, QString & destination)
 {
-  BoostSpiritQStringConstIterator first( source.cbegin() );
-  BoostSpiritQStringConstIterator last( source.cend() );
+  BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
+  BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
 
   return boost::spirit::qi::parse(first, last, grammar, destination);
 }
@@ -44,8 +44,8 @@ bool parse(const QString & source, const Grammar & grammar, QString & destinatio
 template<typename Grammar>
 bool parse(const QString & source, const Grammar & grammar, QChar & destination)
 {
-  BoostSpiritQStringConstIterator first( source.cbegin() );
-  BoostSpiritQStringConstIterator last( source.cend() );
+  BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
+  BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
 
   return boost::spirit::qi::parse(first, last, grammar, destination);
 }
@@ -53,8 +53,8 @@ bool parse(const QString & source, const Grammar & grammar, QChar & destination)
 template<typename Grammar, typename Result>
 bool parseNumber(const QString & source, const Grammar & grammar, Result & destination)
 {
-  BoostSpiritQStringConstIterator first( source.cbegin() );
-  BoostSpiritQStringConstIterator last( source.cend() );
+  BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
+  BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
 
   return boost::spirit::qi::parse(first, last, grammar, destination);
 }
@@ -69,20 +69,63 @@ static_assert( std::is_destructible<BoostSpiritQStringConstIterator>::value , ""
 
 TEST_CASE("copy_construct")
 {
-  const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator a( str.cbegin() );
-  REQUIRE( iteratorValueEqualsToLatin1Char(a, 'A') );
+  SECTION("A")
+  {
+    const QString str = QLatin1String("A");
+    BoostSpiritQStringConstIterator a( str.cbegin(), str.cend() );
+    REQUIRE( *a == U'A' );
 
-  BoostSpiritQStringConstIterator b(a);
-  REQUIRE( iteratorValueEqualsToLatin1Char(b, 'A') );
+    BoostSpiritQStringConstIterator b(a);
+    REQUIRE( *b == U'A' );
+  }
+
+  SECTION("AB")
+  {
+    const QString str = QLatin1String("AB");
+    BoostSpiritQStringConstIterator a( str.cbegin(), str.cend() );
+    REQUIRE( *a == U'A' );
+
+    BoostSpiritQStringConstIterator b(a);
+    REQUIRE( *b == U'A' );
+  }
+
+  SECTION("ABC")
+  {
+    const QString str = QLatin1String("ABC");
+    BoostSpiritQStringConstIterator a( str.cbegin(), str.cend() );
+    REQUIRE( *a == U'A' );
+
+    BoostSpiritQStringConstIterator b(a);
+    REQUIRE( *b == U'A' );
+  }
+
+  SECTION("ö")
+  {
+    const QString str = QString::fromUtf8("ö");
+    BoostSpiritQStringConstIterator a( str.cbegin(), str.cend() );
+    REQUIRE( *a == U'ö' );
+
+    BoostSpiritQStringConstIterator b(a);
+    REQUIRE( *b == U'ö' );
+  }
+
+  SECTION("𐐅")
+  {
+    const QString str = QString::fromUtf8("𐐅");
+    BoostSpiritQStringConstIterator a( str.cbegin(), str.cend() );
+    REQUIRE( *a == U'𐐅' );
+
+    BoostSpiritQStringConstIterator b(a);
+    REQUIRE( *b == U'𐐅' );
+  }
 }
 
 TEST_CASE("assign")
 {
   const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator a, b;
+  BoostSpiritQStringConstIterator b;
 
-  a = str.cbegin();
+  BoostSpiritQStringConstIterator a( str.cbegin(), str.cend() );
   REQUIRE( iteratorValueEqualsToLatin1Char(a, 'A') );
   b = a;
   REQUIRE( iteratorValueEqualsToLatin1Char(b, 'A') );
@@ -91,18 +134,39 @@ TEST_CASE("assign")
 TEST_CASE("dereference")
 {
   const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator it( str.cbegin() );
+  BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
 
   REQUIRE( iteratorValueEqualsToLatin1Char(it, 'A') );
 }
 
 TEST_CASE("pre-increment")
 {
-  const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator it( str.cbegin() );
+  SECTION("AB")
+  {
+    const QString str = QLatin1String("AB");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
 
-  ++it;
-  REQUIRE( iteratorValueEqualsToLatin1Char(it, 'B') );
+    ++it;
+    REQUIRE( *it == U'B' );
+  }
+
+  SECTION("A𐐅")
+  {
+    const QString str = QString::fromUtf8("A𐐅");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+
+    ++it;
+    REQUIRE( *it == U'𐐅' );
+  }
+
+  SECTION("𐐅A")
+  {
+    const QString str = QString::fromUtf8("𐐅A");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+
+    ++it;
+    REQUIRE( *it == U'A' );
+  }
 }
 
 /*
@@ -112,7 +176,7 @@ TEST_CASE("pre-increment")
 TEST_CASE("comparison")
 {
   const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator a( str.cbegin() );
+  BoostSpiritQStringConstIterator a( str.cbegin(), str.cend() );
   auto b = a;
 
   REQUIRE( a == b );
@@ -122,7 +186,7 @@ TEST_CASE("comparison")
 TEST_CASE("post-increment")
 {
   const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator it( str.cbegin() );
+  BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
 
   it++;
   REQUIRE( iteratorValueEqualsToLatin1Char(it, 'B') );
@@ -137,7 +201,7 @@ static_assert( std::is_default_constructible<BoostSpiritQStringConstIterator>::v
 TEST_CASE("multipass")
 {
   const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator a( str.cbegin() );
+  BoostSpiritQStringConstIterator a( str.cbegin(), str.cend() );
   auto b = a;
 
   REQUIRE( a == b );
@@ -157,7 +221,7 @@ TEST_CASE("multipass")
 TEST_CASE("decrement")
 {
   const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator it( str.cbegin() );
+  BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
 
   ++it;
   ++it;
@@ -167,6 +231,42 @@ TEST_CASE("decrement")
   REQUIRE( iteratorValueEqualsToLatin1Char(it, 'B') );
   it--;
   REQUIRE( iteratorValueEqualsToLatin1Char(it, 'A') );
+
+  SECTION("AB")
+  {
+    const QString str = QLatin1String("AB");
+    BoostSpiritQStringConstIterator it( str.cbegin() + 1, str.cend() );
+    REQUIRE( *it == U'B' );
+
+    --it;
+    REQUIRE( *it == U'A' );
+
+    ++it;
+    REQUIRE( *it == U'B' );
+
+    it--;
+    REQUIRE( *it == U'A' );
+  }
+
+  SECTION("A𐐅")
+  {
+    const QString str = QString::fromUtf8("A𐐅");
+    BoostSpiritQStringConstIterator it( str.cbegin() + 1, str.cend() );
+    REQUIRE( *it == U'𐐅' );
+
+    --it;
+    REQUIRE( *it == U'A' );
+  }
+
+  SECTION("𐐅A")
+  {
+    const QString str = QString::fromUtf8("𐐅A");
+    BoostSpiritQStringConstIterator it( str.cbegin() + 1, str.cend() );
+    REQUIRE( *it == U'A' );
+
+    --it;
+    REQUIRE( *it == U'𐐅' );
+  }
 }
 
 /*
@@ -176,7 +276,7 @@ TEST_CASE("decrement")
 TEST_CASE("distance")
 {
   const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator it( str.cbegin() );
+  BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
 
   REQUIRE( iteratorValueEqualsToLatin1Char(it, 'A') );
   REQUIRE( iteratorValueEqualsToLatin1Char(it + 2, 'C') );
@@ -200,10 +300,60 @@ TEST_CASE("distance")
   REQUIRE( (b - a) == 2 );
 }
 
+TEST_CASE("random_access")
+{
+  SECTION("ABCD")
+  {
+    const QString str = QLatin1String("ABCD");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+
+    REQUIRE( *it == U'A' );
+
+    it += 2;
+    REQUIRE( *it == U'C' );
+
+    it -= 2;
+    REQUIRE( *it == U'A' );
+  }
+
+  SECTION("A𐐅ĵ")
+  {
+    const QString str = QString::fromUtf8("A𐐅ĵ");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+
+    REQUIRE( *it == U'A' );
+
+    it += 2;
+    REQUIRE( *it == U'ĵ' );
+
+    it -= 2;
+    REQUIRE( *it == U'A' );
+  }
+}
+
+TEST_CASE("operator_square_bracket")
+{
+  SECTION("ABCD")
+  {
+    const QString str = QLatin1String("ABCD");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+
+    REQUIRE( it[3] == U'D' );
+  }
+
+  SECTION("A𐐅ĵ")
+  {
+    const QString str = QString::fromUtf8("A𐐅ĵ");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+
+    REQUIRE( it[2] == U'ĵ' );
+  }
+}
+
 TEST_CASE("lt_gt_comparison")
 {
   const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator a( str.cbegin() );
+  BoostSpiritQStringConstIterator a( str.cbegin(), str.cend() );
   auto b = a + 1;
 
   REQUIRE( a < b );
@@ -213,6 +363,51 @@ TEST_CASE("lt_gt_comparison")
   REQUIRE( b >= a );
 }
 
+TEST_CASE("Unicode")
+{
+  SECTION("A")
+  {
+    const QString str = QString::fromUtf8("A");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+    REQUIRE( *it == U'A' );
+  }
+
+  SECTION("ö")
+  {
+    const QString str = QString::fromUtf8("ö");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+    REQUIRE( *it == U'ö' );
+  }
+
+  SECTION("ĵ")
+  {
+    const QString str = QString::fromUtf8("ĵ");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+    REQUIRE( *it == U'ĵ' );
+  }
+
+  SECTION("�")
+  {
+    const QString str = QString::fromUtf8("�");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+    REQUIRE( *it == U'�' );
+  }
+
+  SECTION("𐀀")
+  {
+    const QString str = QString::fromUtf8("𐀀");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+    REQUIRE( *it == U'𐀀' );
+  }
+
+  SECTION("𐐅")
+  {
+    const QString str = QString::fromUtf8("𐐅");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+    REQUIRE( *it == U'𐐅' );
+  }
+}
+
 /*
  * Tests with some STL functions
  */
@@ -220,30 +415,28 @@ TEST_CASE("lt_gt_comparison")
 TEST_CASE("std_copy")
 {
   QString destination;
-  BoostSpiritQStringConstIterator first;
-  BoostSpiritQStringConstIterator last;
 
   SECTION("abcd")
   {
     const QString source = QLatin1String("abcd");
-    first = source.cbegin();
-    last = source.cend();
+    BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
+    BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
     std::copy( first, last, std::back_inserter(destination) );
     REQUIRE( destination == source );
   }
 
-  SECTION("éöàäèü$£")
+  SECTION("éöàäèü$£𐐅")
   {
-    const QString source = QString::fromUtf8("éöàäèü$£");
-    first = source.cbegin();
-    last = source.cend();
+    const QString source = QString::fromUtf8("éöàäèü$£𐐅");
+    BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
+    BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
     std::copy( first, last, std::back_inserter(destination) );
     REQUIRE( destination == source );
   }
 }
 
 /*
- * Tests with some Sprit parsers
+ * Tests with some Spirit parsers
  */
 
 TEST_CASE("qi_parser_int_")

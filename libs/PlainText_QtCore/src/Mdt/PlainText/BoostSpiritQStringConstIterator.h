@@ -54,17 +54,27 @@ namespace Mdt{ namespace PlainText{
     }
 
     /*! \brief Construct a iterator that points to \a it
+     *
+     * \note Surprisingly, the \a end iterator is required here.
+     *  This is because the codepoint value (uint32_t) can be a composition
+     *  of 2 UTF16 (QChar) codepoints.
      */
-    BoostSpiritQStringConstIterator(QString::const_iterator it) noexcept
+    BoostSpiritQStringConstIterator(QString::const_iterator it, QString::const_iterator end) noexcept
      : mIterator(it)
     {
+      setValueAndUpdatePositionIfRequired();
     }
 
     /*! \brief Constrcut a const iterator from the non const iterator \a it
+     *
+     * \note Surprisingly, the \a end iterator is required here.
+     *  This is because the codepoint value (uint32_t) can be a composition
+     *  of 2 UTF16 (QChar) codepoints.
      */
-    BoostSpiritQStringConstIterator(QString::iterator it) noexcept
+    BoostSpiritQStringConstIterator(QString::iterator it, QString::iterator end) noexcept
      : mIterator(it)
     {
+      setValueAndUpdatePositionIfRequired();
     }
 
     /*! \brief Copy construct a iterator from \a other
@@ -72,6 +82,7 @@ namespace Mdt{ namespace PlainText{
     BoostSpiritQStringConstIterator(const BoostSpiritQStringConstIterator & other) noexcept
      : mIterator(other.mIterator)
     {
+      setValueAndUpdatePositionIfRequired();
     }
 
     /*! \brief Get value by index
@@ -93,11 +104,13 @@ namespace Mdt{ namespace PlainText{
     void increment()
     {
       ++mIterator;
+      setValueAndUpdatePositionIfRequired();
     }
 
     void decrement()
     {
       --mIterator;
+      setValueAndUpdatePositionIfRequired();
     }
 
     ptrdiff_t distance_to(const BoostSpiritQStringConstIterator & other) const
@@ -108,6 +121,7 @@ namespace Mdt{ namespace PlainText{
     void advance(ptrdiff_t n)
     {
       mIterator += n;
+      setValueAndUpdatePositionIfRequired();
     }
 
     /*! \internal
@@ -119,13 +133,17 @@ namespace Mdt{ namespace PlainText{
      *
      * \sa https://github.com/boostorg/iterator/issues/47
      */
-    const uint32_t & dereference() const
+    const uint32_t & dereference() const noexcept
     {
-      mValue = mIterator->unicode();
       return mValue;
     }
 
-    mutable uint32_t mValue;
+    void setValueAndUpdatePositionIfRequired()
+    {
+      mValue = mIterator->unicode();
+    }
+
+    uint32_t mValue;
     QString::const_iterator mIterator;
   };
 
