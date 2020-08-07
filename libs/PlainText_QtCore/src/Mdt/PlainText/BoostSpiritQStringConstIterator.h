@@ -24,22 +24,158 @@
 
 #include "mdt_plaintext_qtcore_export.h"
 #include <QString>
+#include <QChar>
 #include <boost/iterator/iterator_facade.hpp>
 #include <cstdint>
+#include <cassert>
 
 namespace Mdt{ namespace PlainText{
 
-  /*! \brief Iterator adapter to QString::const_iterator
+  namespace Impl{
+
+    /*! \internal
+     */
+    struct BoostSpiritQStringConstIteratorData
+    {
+      uint32_t value = 0;
+      QString::const_iterator begin = nullptr;
+      QString::const_iterator position = nullptr;
+      QString::const_iterator end = nullptr;
+
+      constexpr
+      BoostSpiritQStringConstIteratorData() noexcept = default;
+
+      constexpr
+      BoostSpiritQStringConstIteratorData(QString::const_iterator begin, QString::const_iterator pos, QString::const_iterator end) noexcept
+       : begin(begin),
+         position(pos),
+         end(end)
+      {
+      }
+
+      constexpr
+      BoostSpiritQStringConstIteratorData(const BoostSpiritQStringConstIteratorData & other) noexcept = default;
+
+      constexpr
+      BoostSpiritQStringConstIteratorData & operator=(const BoostSpiritQStringConstIteratorData & other) noexcept = default;
+
+      constexpr
+      BoostSpiritQStringConstIteratorData(BoostSpiritQStringConstIteratorData && other) noexcept = default;
+
+      constexpr
+      BoostSpiritQStringConstIteratorData & operator=(BoostSpiritQStringConstIteratorData && other) noexcept = default;
+
+      constexpr
+      bool hasNext() const noexcept
+      {
+        return position < (end - 1);
+      }
+
+      constexpr
+      bool hasPrevious() const noexcept
+      {
+        return position > begin;
+      }
+
+      constexpr
+      bool atEnd() const noexcept
+      {
+        return position == end;
+      }
+
+      constexpr
+      bool atBegin() const noexcept
+      {
+        return position == begin;
+      }
+
+      constexpr
+      bool isDereferencable() const noexcept
+      {
+        if( position == nullptr ){
+          return false;
+        }
+        assert( begin != nullptr );
+        assert( end != nullptr );
+
+        return position != end;
+      }
+
+      void increment()
+      {
+        assert( !atEnd() );
+
+        ++position;
+        if( isDereferencable() ){
+          if( position->isLowSurrogate() ){
+            assert( !atEnd() );
+            ++position;
+          }
+        }
+      }
+
+      void decrement()
+      {
+        assert( !atBegin() );
+
+        --position;
+        if( isDereferencable() ){
+          if( position->isLowSurrogate() ){
+            assert( !atBegin() );
+            --position;
+          }
+        }
+      }
+
+      void extractCodePoint()
+      {
+        assert( isDereferencable() );
+
+        if( position->isHighSurrogate() ){
+          assert( hasNext() );
+          value = QChar::surrogateToUcs4( *position, *(position+1) );
+        }else{
+          assert( !position->isSurrogate() );
+          value = position->unicode();
+        }
+      }
+    };
+
+  } // namespace Impl{
+
+  /*! \brief QString const iterator
    *
-   * Iterator that can be used by parsers based on Boost.Spirit
-   *  to be able to parse QString directly.
+   * QString::const_iterator is a pointer to a QChar,
+   * which gives access to each code unit in a QString,
+   * not the code point.
+   *
+   * QStringConstIterator travels code points in a QString,
+   * and return it as a 32bit unicode value.
+   *
+   * \code
+   * using Mdt::PlainText::QStringConstIterator;
+   *
+   * QStringConstIterator first( str.cbegin(), str.cend() );
+   * QStringConstIterator last( str.cend(), str.cend() );
+   * \endcode
+   *
+   * Because it has to check each UTF-16 code unit to know
+   * if it is a surrogate pair, this iterator cannot be random acces,
+   * so it is a [bidirectional iterator](https://en.cppreference.com/w/cpp/named_req/BidirectionalIterator).
+   *
+   * \note At each point, this iterator must know if it can be dereferenced
+   * to check if the current position is part of a surrogate pair.
+   * This is why it requires to know the end of the string.
+   *
+   * This code is inspired from a private class available in Qt:
+   * \sa https://www.kdab.com/a-little-hidden-gem-qstringiterator
    *
    * \sa https://stackoverflow.com/questions/57461106/how-can-i-use-boostspirit-x3-in-conjunction-with-qstring
    */
   class MDT_PLAINTEXT_QTCORE_EXPORT BoostSpiritQStringConstIterator : public boost::iterator_facade<
       BoostSpiritQStringConstIterator,    // Derived
       const uint32_t,                     // Value
-      boost::random_access_traversal_tag, // CategoryOrTraversal
+      boost::bidirectional_traversal_tag, // CategoryOrTraversal
       const uint32_t &,                   // Reference, see dereference()
       ptrdiff_t                           // Difference
     >
@@ -48,10 +184,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Default constructor
      */
-    BoostSpiritQStringConstIterator() noexcept
-     : mIterator(nullptr)
-    {
-    }
+    BoostSpiritQStringConstIterator() noexcept = default;
 
     /*! \brief Construct a iterator that points to \a it
      *
@@ -59,10 +192,10 @@ namespace Mdt{ namespace PlainText{
      *  This is because the codepoint value (uint32_t) can be a composition
      *  of 2 UTF16 (QChar) codepoints.
      */
-    BoostSpiritQStringConstIterator(QString::const_iterator it, QString::const_iterator end) noexcept
-     : mIterator(it)
+    BoostSpiritQStringConstIterator(QString::const_iterator it, QString::const_iterator end)
+     : mData(it, it, end)
     {
-      setValueAndUpdatePositionIfRequired();
+      extractCodePointIfDereferencable();
     }
 
     /*! \brief Constrcut a const iterator from the non const iterator \a it
@@ -71,26 +204,15 @@ namespace Mdt{ namespace PlainText{
      *  This is because the codepoint value (uint32_t) can be a composition
      *  of 2 UTF16 (QChar) codepoints.
      */
-    BoostSpiritQStringConstIterator(QString::iterator it, QString::iterator end) noexcept
-     : mIterator(it)
+    BoostSpiritQStringConstIterator(QString::iterator it, QString::iterator end)
+     : mData(it, it, end)
     {
-      setValueAndUpdatePositionIfRequired();
+      extractCodePointIfDereferencable();
     }
 
     /*! \brief Copy construct a iterator from \a other
      */
-    BoostSpiritQStringConstIterator(const BoostSpiritQStringConstIterator & other) noexcept
-     : mIterator(other.mIterator)
-    {
-      setValueAndUpdatePositionIfRequired();
-    }
-
-    /*! \brief Get value by index
-     */
-    uint32_t operator[](ptrdiff_t n) const
-    {
-      return *(*this + n);
-    }
+    BoostSpiritQStringConstIterator(const BoostSpiritQStringConstIterator & other) noexcept = default;
 
   private:
 
@@ -98,35 +220,31 @@ namespace Mdt{ namespace PlainText{
 
     bool equal(const BoostSpiritQStringConstIterator & other) const
     {
-      return mIterator == other.mIterator;
+      return mData.position == other.mData.position;
     }
 
     void increment()
     {
-      ++mIterator;
-      setValueAndUpdatePositionIfRequired();
+      mData.increment();
+      extractCodePointIfDereferencable();
     }
 
     void decrement()
     {
-      --mIterator;
-      setValueAndUpdatePositionIfRequired();
+      mData.decrement();
+      extractCodePointIfDereferencable();
     }
 
-    ptrdiff_t distance_to(const BoostSpiritQStringConstIterator & other) const
+    void extractCodePointIfDereferencable()
     {
-      return other.mIterator - mIterator;
-    }
-
-    void advance(ptrdiff_t n)
-    {
-      mIterator += n;
-      setValueAndUpdatePositionIfRequired();
+      if( mData.isDereferencable() ){
+        mData.extractCodePoint();
+      }
     }
 
     /*! \internal
      *
-     * To be recognized as a random access iterator,
+     * \note To be recognized as a random access iterator,
      * the reference type MUST be a reference.
      * If not doing so, boost::iterator_facade will
      * tell that this iterator is a input iterator (!)
@@ -135,16 +253,10 @@ namespace Mdt{ namespace PlainText{
      */
     const uint32_t & dereference() const noexcept
     {
-      return mValue;
+      return mData.value;
     }
 
-    void setValueAndUpdatePositionIfRequired()
-    {
-      mValue = mIterator->unicode();
-    }
-
-    uint32_t mValue;
-    QString::const_iterator mIterator;
+    Impl::BoostSpiritQStringConstIteratorData mData;
   };
 
 }} // namespace Mdt{ namespace PlainText{

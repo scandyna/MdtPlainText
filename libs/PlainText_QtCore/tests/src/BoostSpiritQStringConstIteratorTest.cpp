@@ -26,6 +26,7 @@
 #include <iterator>
 
 using Mdt::PlainText::BoostSpiritQStringConstIterator;
+using Mdt::PlainText::Impl::BoostSpiritQStringConstIteratorData;
 
 bool iteratorValueEqualsToLatin1Char(const BoostSpiritQStringConstIterator & it, char c)
 {
@@ -57,6 +58,594 @@ bool parseNumber(const QString & source, const Grammar & grammar, Result & desti
   BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
 
   return boost::spirit::qi::parse(first, last, grammar, destination);
+}
+
+/*
+ * Private implementation tests
+ */
+
+BoostSpiritQStringConstIteratorData iteratorDataFromString(const QString & str)
+{
+  return BoostSpiritQStringConstIteratorData( str.cbegin(), str.cbegin(), str.cend() );
+//   return makeIteratorData( str.cbegin(), str.cend() );
+}
+
+BoostSpiritQStringConstIteratorData iteratorDataFromStringWithPos(const QString & str, QString::const_iterator pos)
+{
+  BoostSpiritQStringConstIteratorData data;
+
+  data.begin = str.cbegin();
+  data.position = pos;
+  data.end = str.cend();
+
+  return data;
+}
+
+TEST_CASE("Impl_hasNext")
+{
+  SECTION("empty")
+  {
+    const QString str;
+    const auto data = iteratorDataFromString(str);
+    REQUIRE( !data.hasNext() );
+  }
+
+  SECTION("A")
+  {
+    const QString str = QLatin1String("A");
+    const auto data = iteratorDataFromString(str);
+    REQUIRE( !data.hasNext() );
+  }
+
+  SECTION("AB")
+  {
+    const QString str = QLatin1String("AB");
+    const auto data = iteratorDataFromString(str);
+    REQUIRE( data.hasNext() );
+  }
+}
+
+TEST_CASE("Impl_hasPrevious")
+{
+  SECTION("empty")
+  {
+    const QString str;
+    const auto data = iteratorDataFromString(str);
+    REQUIRE( !data.hasPrevious() );
+  }
+
+  SECTION("A")
+  {
+    const QString str = QLatin1String("A");
+    const auto data = iteratorDataFromString(str);
+    REQUIRE( !data.hasPrevious() );
+  }
+
+  SECTION("AB - at beginning")
+  {
+    const QString str = QLatin1String("AB");
+    const auto data = iteratorDataFromString(str);
+    REQUIRE( !data.hasPrevious() );
+  }
+
+  SECTION("AB - at end")
+  {
+    const QString str = QLatin1String("AB");
+    auto data = iteratorDataFromString(str);
+    ++data.position;
+    REQUIRE( data.hasPrevious() );
+  }
+}
+
+TEST_CASE("Impl_atEnd")
+{
+  SECTION("empty")
+  {
+    const QString str;
+    const auto data = iteratorDataFromString(str);
+    REQUIRE( data.atEnd() );
+  }
+
+  SECTION("A")
+  {
+    const QString str = QLatin1String("A");
+    auto data = iteratorDataFromString(str);
+    REQUIRE( !data.atEnd() );
+
+    ++data.position;
+    REQUIRE( data.atEnd() );
+  }
+}
+
+TEST_CASE("Impl_atBegin")
+{
+  SECTION("empty")
+  {
+    const QString str;
+    const auto data = iteratorDataFromString(str);
+    REQUIRE( data.atBegin() );
+  }
+
+  SECTION("A")
+  {
+    const QString str = QLatin1String("A");
+    auto data = iteratorDataFromString(str);
+    REQUIRE( data.atBegin() );
+
+    ++data.position;
+    REQUIRE( !data.atBegin() );
+  }
+}
+
+TEST_CASE("Impl_isDereferencable")
+{
+  SECTION("Default constructed iterator is not dereferencable")
+  {
+    BoostSpiritQStringConstIteratorData data;
+    data.begin = nullptr;
+    data.position = nullptr;
+    data.end = nullptr;
+    REQUIRE( !data.isDereferencable() );
+  }
+
+  SECTION("empty")
+  {
+    const QString str;
+    const auto data = iteratorDataFromString(str);
+    REQUIRE( !data.isDereferencable() );
+  }
+
+  SECTION("Single char A is dereferencable, then increment, then its not")
+  {
+    const QString str = QLatin1String("A");
+    auto data = iteratorDataFromString(str);
+    REQUIRE( data.isDereferencable() );
+
+    ++data.position;
+    REQUIRE( !data.isDereferencable() );
+  }
+}
+
+TEST_CASE("Impl_increment")
+{
+  SECTION("A")
+  {
+    const QString str = QLatin1String("A");
+    auto data = iteratorDataFromString(str);
+    REQUIRE( data.position == str.cbegin() );
+
+    data.increment();
+    REQUIRE( data.position == str.cend() );
+    REQUIRE( data.atEnd() );
+  }
+
+  SECTION("AB")
+  {
+    const QString str = QLatin1String("AB");
+    auto data = iteratorDataFromString(str);
+    REQUIRE( data.position == str.cbegin() );
+
+    data.increment();
+    REQUIRE( data.position == str.cbegin()+1 );
+
+    data.increment();
+    REQUIRE( data.position == str.cend() );
+  }
+
+  SECTION("Single code unit char: ĵ (U+0135)")
+  {
+    const QString str = QString::fromUtf8("ĵ");
+    auto data = iteratorDataFromString(str);
+    REQUIRE( data.position == str.cbegin() );
+
+    data.increment();
+    REQUIRE( data.position == str.cend() );
+  }
+
+  SECTION("Code point requiring 2 UTF-16 units: 𐐅")
+  {
+    const QString str = QString::fromUtf8("𐐅");
+    auto data = iteratorDataFromString(str);
+
+    /*
+     * Code point | 𐐅 |
+     * Surrogate  |H|L|
+     *             ^
+     */
+    REQUIRE( data.position == str.cbegin() );
+
+    /*
+     * Code point | 𐐅 |
+     * Surrogate  |H|L|
+     *                 ^
+     */
+    data.increment();
+    REQUIRE( data.position == str.cend() );
+  }
+
+  SECTION("A𐐅")
+  {
+    const QString str = QString::fromUtf8("A𐐅");
+    auto data = iteratorDataFromString(str);
+
+    /*
+     * Code point |A| 𐐅 |
+     * Surrogate  | |H|L|
+     *             ^
+     */
+    REQUIRE( data.position == str.cbegin() );
+
+    /*
+     * Code point |A| 𐐅 |
+     * Surrogate  | |H|L|
+     *               ^
+     */
+    data.increment();
+    REQUIRE( data.position == str.cbegin()+1 );
+
+    /*
+     * Code point |A| 𐐅 |
+     * Surrogate  | |H|L|
+     *                   ^
+     */
+    data.increment();
+    REQUIRE( data.position == str.cend() );
+  }
+
+  SECTION("𐐅A")
+  {
+    const QString str = QString::fromUtf8("𐐅A");
+    auto data = iteratorDataFromString(str);
+
+    /*
+     * Code point | 𐐅 |A|
+     * Surrogate  |H|L| |
+     *             ^
+     */
+    REQUIRE( data.position == str.cbegin() );
+
+    /*
+     * Code point | 𐐅 |A|
+     * Surrogate  |H|L| |
+     *                 ^
+     */
+    data.increment();
+    REQUIRE( data.position == str.cbegin()+2 );
+
+    /*
+     * Code point | 𐐅 |A|
+     * Surrogate  |H|L| |
+     *                   ^
+     */
+    data.increment();
+    REQUIRE( data.position == str.cend() );
+  }
+
+  SECTION("𐐅𝛀 (U+10405 U+1D6C0)")
+  {
+    const QString str = QString::fromUtf8("𐐅𝛀");
+    auto data = iteratorDataFromString(str);
+
+    /*
+     * Code point | 𐐅 | 𝛀 |
+     * Surrogate  |H|L|H|L|
+     *             ^
+     */
+    REQUIRE( data.position == str.cbegin() );
+
+    /*
+     * Code point | 𐐅 | 𝛀 |
+     * Surrogate  |H|L|H|L|
+     *                 ^
+     */
+    data.increment();
+    REQUIRE( data.position == str.cbegin()+2 );
+
+    /*
+     * Code point | 𐐅 | 𝛀 |
+     * Surrogate  |H|L|H|L|
+     *                     ^
+     */
+    data.increment();
+    REQUIRE( data.position == str.cend() );
+  }
+}
+
+TEST_CASE("Impl_decrement")
+{
+  SECTION("A")
+  {
+    const QString str = QLatin1String("A");
+
+    /*
+     * Code point |A|
+     * Surrogate  | |
+     *               ^
+     */
+    auto data = iteratorDataFromStringWithPos( str, str.cend() );
+    REQUIRE( data.position == str.cend() );
+
+    /*
+     * Code point |A|
+     * Surrogate  | |
+     *             ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin() );
+  }
+
+  SECTION("AB")
+  {
+    const QString str = QLatin1String("AB");
+
+    /*
+     * Code point |A|B|
+     * Surrogate  | | |
+     *                 ^
+     */
+    auto data = iteratorDataFromStringWithPos( str, str.cend() );
+    REQUIRE( data.position == str.cend() );
+
+    /*
+     * Code point |A|B|
+     * Surrogate  | | |
+     *               ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin()+1 );
+
+    /*
+     * Code point |A|B|
+     * Surrogate  | | |
+     *             ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin() );
+  }
+
+  SECTION("Single code unit char: ĵ (U+0135)")
+  {
+    const QString str = QString::fromUtf8("ĵ");
+
+    /*
+     * Code point |ĵ|
+     * Surrogate  | |
+     *               ^
+     */
+    auto data = iteratorDataFromStringWithPos( str, str.cend() );
+    REQUIRE( data.position == str.cend() );
+
+    /*
+     * Code point |ĵ|
+     * Surrogate  | |
+     *             ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin() );
+  }
+
+  SECTION("Code point requiring 2 UTF-16 units: 𐐅")
+  {
+    const QString str = QString::fromUtf8("𐐅");
+
+    /*
+     * Code point | 𐐅 |
+     * Surrogate  |H|L|
+     *                 ^
+     */
+    auto data = iteratorDataFromStringWithPos( str, str.cend() );
+    REQUIRE( data.position == str.cend() );
+
+    /*
+     * Code point | 𐐅 |
+     * Surrogate  |H|L|
+     *             ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin() );
+  }
+
+  SECTION("A𐐅")
+  {
+    const QString str = QString::fromUtf8("A𐐅");
+
+    /*
+     * Code point |A| 𐐅 |
+     * Surrogate  | |H|L|
+     *                   ^
+     */
+    auto data = iteratorDataFromStringWithPos( str, str.cend() );
+    REQUIRE( data.position == str.cend() );
+
+    /*
+     * Code point |A| 𐐅 |
+     * Surrogate  | |H|L|
+     *               ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin()+1 );
+
+    /*
+     * Code point |A| 𐐅 |
+     * Surrogate  | |H|L|
+     *             ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin() );
+  }
+
+  SECTION("𐐅A")
+  {
+    const QString str = QString::fromUtf8("𐐅A");
+
+    /*
+     * Code point | 𐐅 |A|
+     * Surrogate  |H|L| |
+     *                   ^
+     */
+    auto data = iteratorDataFromStringWithPos( str, str.cend() );
+    REQUIRE( data.position == str.cend() );
+
+    /*
+     * Code point | 𐐅 |A|
+     * Surrogate  |H|L| |
+     *                 ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin()+2 );
+
+    /*
+     * Code point | 𐐅 |A|
+     * Surrogate  |H|L| |
+     *             ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin() );
+  }
+
+  SECTION("𐐅𝛀 (U+10405 U+1D6C0)")
+  {
+    const QString str = QString::fromUtf8("𐐅𝛀");
+
+    /*
+     * Code point | 𐐅 | 𝛀 |
+     * Surrogate  |H|L|H|L|
+     *                     ^
+     */
+    auto data = iteratorDataFromStringWithPos( str, str.cend() );
+    REQUIRE( data.position == str.cend() );
+
+    /*
+     * Code point | 𐐅 | 𝛀 |
+     * Surrogate  |H|L|H|L|
+     *                 ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin()+2 );
+
+    /*
+     * Code point | 𐐅 | 𝛀 |
+     * Surrogate  |H|L|H|L|
+     *             ^
+     */
+    data.decrement();
+    REQUIRE( data.position == str.cbegin() );
+  }
+}
+
+TEST_CASE("Impl_extractCodePoint")
+{
+  SECTION("A")
+  {
+    const QString str = QLatin1String("A");
+    auto data = iteratorDataFromString(str);
+
+    data.extractCodePoint();
+    REQUIRE( data.value == U'A' );
+  }
+
+  SECTION("AB")
+  {
+    const QString str = QLatin1String("AB");
+    auto data = iteratorDataFromString(str);
+
+    data.extractCodePoint();
+    REQUIRE( data.value == U'A' );
+
+    data.increment();
+    data.extractCodePoint();
+    REQUIRE( data.value == U'B' );
+  }
+
+  SECTION("ĵ")
+  {
+    const QString str = QString::fromUtf8("ĵ");
+    auto data = iteratorDataFromString(str);
+
+    data.extractCodePoint();
+    REQUIRE( data.value == U'ĵ' );
+  }
+
+  SECTION("𐐅")
+  {
+    const QString str = QString::fromUtf8("𐐅");
+    auto data = iteratorDataFromString(str);
+
+    data.extractCodePoint();
+    REQUIRE( data.value == U'𐐅' );
+  }
+
+  SECTION("A𐐅")
+  {
+    const QString str = QString::fromUtf8("A𐐅");
+    auto data = iteratorDataFromString(str);
+
+    data.extractCodePoint();
+    REQUIRE( data.value == U'A' );
+
+    data.increment();
+    data.extractCodePoint();
+    REQUIRE( data.value == U'𐐅' );
+  }
+
+  SECTION("𐐅A")
+  {
+    const QString str = QString::fromUtf8("𐐅A");
+    auto data = iteratorDataFromString(str);
+
+    data.extractCodePoint();
+    REQUIRE( data.value == U'𐐅' );
+
+    data.increment();
+    data.extractCodePoint();
+    REQUIRE( data.value == U'A' );
+  }
+
+  SECTION("𐐅𝛀 (U+10405 U+1D6C0)")
+  {
+    const QString str = QString::fromUtf8("𐐅𝛀");
+    auto data = iteratorDataFromString(str);
+
+    data.extractCodePoint();
+    REQUIRE( data.value == U'𐐅' );
+
+    data.increment();
+    data.extractCodePoint();
+    REQUIRE( data.value == U'𝛀' );
+  }
+}
+
+/*
+ * Iterator interface tests
+ */
+
+TEST_CASE("construct")
+{
+  SECTION("Begin from QString::const_iterator, A")
+  {
+    const QString str = QLatin1String("A");
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+    REQUIRE( *it == U'A' );
+  }
+
+  SECTION("End from QString::const_iterator, A")
+  {
+    const QString str = QLatin1String("A");
+    BoostSpiritQStringConstIterator it( str.cend(), str.cend() );
+  }
+
+  SECTION("Begin from QString::iterator, A")
+  {
+    QString str = QLatin1String("A");
+    BoostSpiritQStringConstIterator it( str.begin(), str.end() );
+    REQUIRE( *it == U'A' );
+  }
+
+  SECTION("End from QString::iterator, A")
+  {
+    QString str = QLatin1String("A");
+    BoostSpiritQStringConstIterator it( str.end(), str.end() );
+  }
 }
 
 /*
@@ -235,7 +824,8 @@ TEST_CASE("decrement")
   SECTION("AB")
   {
     const QString str = QLatin1String("AB");
-    BoostSpiritQStringConstIterator it( str.cbegin() + 1, str.cend() );
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+    ++it;
     REQUIRE( *it == U'B' );
 
     --it;
@@ -251,7 +841,8 @@ TEST_CASE("decrement")
   SECTION("A𐐅")
   {
     const QString str = QString::fromUtf8("A𐐅");
-    BoostSpiritQStringConstIterator it( str.cbegin() + 1, str.cend() );
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+    ++it;
     REQUIRE( *it == U'𐐅' );
 
     --it;
@@ -261,7 +852,8 @@ TEST_CASE("decrement")
   SECTION("𐐅A")
   {
     const QString str = QString::fromUtf8("𐐅A");
-    BoostSpiritQStringConstIterator it( str.cbegin() + 1, str.cend() );
+    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
+    ++it;
     REQUIRE( *it == U'A' );
 
     --it;
@@ -269,99 +861,6 @@ TEST_CASE("decrement")
   }
 }
 
-/*
- * Tests for LegacyRandomAccessIterator requirements
- */
-
-TEST_CASE("distance")
-{
-  const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
-
-  REQUIRE( iteratorValueEqualsToLatin1Char(it, 'A') );
-  REQUIRE( iteratorValueEqualsToLatin1Char(it + 2, 'C') );
-  REQUIRE( iteratorValueEqualsToLatin1Char(2 + it, 'C') );
-
-  auto & r = it;
-
-  r += 3;
-  REQUIRE( iteratorValueEqualsToLatin1Char(r, 'D') );
-
-  r -= 2;
-  REQUIRE( iteratorValueEqualsToLatin1Char(r, 'B') );
-
-  --r;
-  REQUIRE( iteratorValueEqualsToLatin1Char(it, 'A') );
-
-  REQUIRE( it[2] == QLatin1Char('C') );
-
-  auto a = it;
-  auto b = it + 2;
-  REQUIRE( (b - a) == 2 );
-}
-
-TEST_CASE("random_access")
-{
-  SECTION("ABCD")
-  {
-    const QString str = QLatin1String("ABCD");
-    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
-
-    REQUIRE( *it == U'A' );
-
-    it += 2;
-    REQUIRE( *it == U'C' );
-
-    it -= 2;
-    REQUIRE( *it == U'A' );
-  }
-
-  SECTION("A𐐅ĵ")
-  {
-    const QString str = QString::fromUtf8("A𐐅ĵ");
-    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
-
-    REQUIRE( *it == U'A' );
-
-    it += 2;
-    REQUIRE( *it == U'ĵ' );
-
-    it -= 2;
-    REQUIRE( *it == U'A' );
-  }
-}
-
-TEST_CASE("operator_square_bracket")
-{
-  SECTION("ABCD")
-  {
-    const QString str = QLatin1String("ABCD");
-    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
-
-    REQUIRE( it[3] == U'D' );
-  }
-
-  SECTION("A𐐅ĵ")
-  {
-    const QString str = QString::fromUtf8("A𐐅ĵ");
-    BoostSpiritQStringConstIterator it( str.cbegin(), str.cend() );
-
-    REQUIRE( it[2] == U'ĵ' );
-  }
-}
-
-TEST_CASE("lt_gt_comparison")
-{
-  const QString str = QLatin1String("ABCD");
-  BoostSpiritQStringConstIterator a( str.cbegin(), str.cend() );
-  auto b = a + 1;
-
-  REQUIRE( a < b );
-  REQUIRE( a <= b );
-
-  REQUIRE( b > a );
-  REQUIRE( b >= a );
-}
 
 TEST_CASE("Unicode")
 {
