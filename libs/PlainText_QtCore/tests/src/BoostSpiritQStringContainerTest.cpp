@@ -19,7 +19,7 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#include "TestCommon.h"
+#include "catch2/catch.hpp"
 #include "Mdt/PlainText/BoostSpiritQStringContainer.h"
 #include "Mdt/PlainText/BoostSpiritKarmaQStringContainer.h"
 #include <QChar>
