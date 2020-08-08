@@ -11,7 +11,6 @@ add_library(Mdt_PlainText_QtCore
   Mdt/PlainText/BoostSpiritQStringContainer.cpp
   Mdt/PlainText/BoostSpiritKarmaQStringContainer.cpp
   Mdt/PlainText/BoostSpiritQStringIteratorTemplate.cpp
-  Mdt/PlainText/BoostSpiritQStringIterator.cpp
   Mdt/PlainText/BoostSpiritQStringConstIterator.cpp
   Mdt/PlainText/QTextFileInputConstIteratorSharedData.cpp
   Mdt/PlainText/QTextFileInputConstIterator.cpp
