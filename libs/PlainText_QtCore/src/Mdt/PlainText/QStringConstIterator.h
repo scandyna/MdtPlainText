@@ -19,8 +19,8 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_CONST_ITERATOR_H
-#define MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_CONST_ITERATOR_H
+#ifndef MDT_PLAIN_TEXT_QSTRING_CONST_ITERATOR_H
+#define MDT_PLAIN_TEXT_QSTRING_CONST_ITERATOR_H
 
 #include "mdt_plaintext_qtcore_export.h"
 #include <QString>
@@ -35,7 +35,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \internal
      */
-    struct BoostSpiritQStringConstIteratorData
+    struct QStringConstIteratorData
     {
       uint32_t value = 0;
       QString::const_iterator begin = nullptr;
@@ -43,10 +43,10 @@ namespace Mdt{ namespace PlainText{
       QString::const_iterator end = nullptr;
 
       constexpr
-      BoostSpiritQStringConstIteratorData() noexcept = default;
+      QStringConstIteratorData() noexcept = default;
 
       constexpr
-      BoostSpiritQStringConstIteratorData(QString::const_iterator begin, QString::const_iterator pos, QString::const_iterator end) noexcept
+      QStringConstIteratorData(QString::const_iterator begin, QString::const_iterator pos, QString::const_iterator end) noexcept
        : begin(begin),
          position(pos),
          end(end)
@@ -54,16 +54,16 @@ namespace Mdt{ namespace PlainText{
       }
 
       constexpr
-      BoostSpiritQStringConstIteratorData(const BoostSpiritQStringConstIteratorData & other) noexcept = default;
+      QStringConstIteratorData(const QStringConstIteratorData & other) noexcept = default;
 
       constexpr
-      BoostSpiritQStringConstIteratorData & operator=(const BoostSpiritQStringConstIteratorData & other) noexcept = default;
+      QStringConstIteratorData & operator=(const QStringConstIteratorData & other) noexcept = default;
 
       constexpr
-      BoostSpiritQStringConstIteratorData(BoostSpiritQStringConstIteratorData && other) noexcept = default;
+      QStringConstIteratorData(QStringConstIteratorData && other) noexcept = default;
 
       constexpr
-      BoostSpiritQStringConstIteratorData & operator=(BoostSpiritQStringConstIteratorData && other) noexcept = default;
+      QStringConstIteratorData & operator=(QStringConstIteratorData && other) noexcept = default;
 
       constexpr
       bool hasNext() const noexcept
@@ -256,9 +256,9 @@ namespace Mdt{ namespace PlainText{
       return mData.value;
     }
 
-    Impl::BoostSpiritQStringConstIteratorData mData;
+    Impl::QStringConstIteratorData mData;
   };
 
 }} // namespace Mdt{ namespace PlainText{
 
-#endif // #ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_CONST_ITERATOR_H
+#endif // #ifndef MDT_PLAIN_TEXT_QSTRING_CONST_ITERATOR_H

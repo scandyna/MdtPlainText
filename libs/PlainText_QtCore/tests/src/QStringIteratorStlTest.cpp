@@ -26,7 +26,7 @@
 #include <iterator>
 
 using Mdt::PlainText::QStringConstIterator;
-using Mdt::PlainText::Impl::BoostSpiritQStringConstIteratorData;
+using Mdt::PlainText::Impl::QStringConstIteratorData;
 
 
 TEST_CASE("std_copy")

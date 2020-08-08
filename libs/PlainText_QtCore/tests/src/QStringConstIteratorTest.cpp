@@ -26,20 +26,20 @@
 #include <iterator>
 
 using Mdt::PlainText::QStringConstIterator;
-using Mdt::PlainText::Impl::BoostSpiritQStringConstIteratorData;
+using Mdt::PlainText::Impl::QStringConstIteratorData;
 
 /*
  * Private implementation tests
  */
 
-BoostSpiritQStringConstIteratorData iteratorDataFromString(const QString & str)
+QStringConstIteratorData iteratorDataFromString(const QString & str)
 {
-  return BoostSpiritQStringConstIteratorData( str.cbegin(), str.cbegin(), str.cend() );
+  return QStringConstIteratorData( str.cbegin(), str.cbegin(), str.cend() );
 }
 
-BoostSpiritQStringConstIteratorData iteratorDataFromStringWithPos(const QString & str, QString::const_iterator pos)
+QStringConstIteratorData iteratorDataFromStringWithPos(const QString & str, QString::const_iterator pos)
 {
-  BoostSpiritQStringConstIteratorData data;
+    QStringConstIteratorData data;
 
   data.begin = str.cbegin();
   data.position = pos;
@@ -148,7 +148,7 @@ TEST_CASE("Impl_isDereferencable")
 {
   SECTION("Default constructed iterator is not dereferencable")
   {
-    BoostSpiritQStringConstIteratorData data;
+        QStringConstIteratorData data;
     data.begin = nullptr;
     data.position = nullptr;
     data.end = nullptr;
