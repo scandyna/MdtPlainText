@@ -173,7 +173,7 @@ namespace Mdt{ namespace PlainText{
    * \sa https://stackoverflow.com/questions/57461106/how-can-i-use-boostspirit-x3-in-conjunction-with-qstring
    */
   class MDT_PLAINTEXT_QTCORE_EXPORT QStringConstIterator : public boost::iterator_facade<
-      QStringConstIterator,    // Derived
+      QStringConstIterator,               // Derived
       const uint32_t,                     // Value
       boost::bidirectional_traversal_tag, // CategoryOrTraversal
       const uint32_t &,                   // Reference, see dereference()
