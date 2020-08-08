@@ -20,12 +20,12 @@
  **
  ****************************************************************************/
 #include "catch2/catch.hpp"
-#include "Mdt/PlainText/BoostSpiritQStringConstIterator.h"
+#include "Mdt/PlainText/QStringConstIterator.h"
 #include <QString>
 #include <QLatin1String>
 #include <iterator>
 
-using Mdt::PlainText::BoostSpiritQStringConstIterator;
+using Mdt::PlainText::QStringConstIterator;
 using Mdt::PlainText::Impl::BoostSpiritQStringConstIteratorData;
 
 
@@ -36,8 +36,8 @@ TEST_CASE("std_copy")
   SECTION("abcd")
   {
     const QString source = QLatin1String("abcd");
-    BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
-    BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
+        QStringConstIterator first( source.cbegin(), source.cend() );
+        QStringConstIterator last( source.cend(), source.cend() );
     std::copy( first, last, std::back_inserter(destination) );
     REQUIRE( destination == source );
   }
@@ -45,8 +45,8 @@ TEST_CASE("std_copy")
   SECTION("éöàäèü$£𐐅")
   {
     const QString source = QString::fromUtf8("éöàäèü$£𐐅");
-    BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
-    BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
+        QStringConstIterator first( source.cbegin(), source.cend() );
+        QStringConstIterator last( source.cend(), source.cend() );
     std::copy( first, last, std::back_inserter(destination) );
     REQUIRE( destination == source );
   }

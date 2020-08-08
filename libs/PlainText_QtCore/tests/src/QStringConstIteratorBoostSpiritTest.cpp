@@ -20,18 +20,18 @@
  **
  ****************************************************************************/
 #include "catch2/catch.hpp"
-#include "Mdt/PlainText/BoostSpiritQStringConstIterator.h"
+#include "Mdt/PlainText/QStringConstIterator.h"
 #include "Mdt/PlainText/BoostSpiritQStringContainer.h"
 #include <boost/spirit/include/qi.hpp>
 #include <QString>
 
-using Mdt::PlainText::BoostSpiritQStringConstIterator;
+using Mdt::PlainText::QStringConstIterator;
 
 template<typename Grammar>
 bool parse(const QString & source, const Grammar & grammar, QString & destination)
 {
-  BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
-  BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
+    QStringConstIterator first( source.cbegin(), source.cend() );
+    QStringConstIterator last( source.cend(), source.cend() );
 
   return boost::spirit::qi::parse(first, last, grammar, destination);
 }
@@ -39,8 +39,8 @@ bool parse(const QString & source, const Grammar & grammar, QString & destinatio
 template<typename Grammar>
 bool parse(const QString & source, const Grammar & grammar, QChar & destination)
 {
-  BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
-  BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
+    QStringConstIterator first( source.cbegin(), source.cend() );
+    QStringConstIterator last( source.cend(), source.cend() );
 
   return boost::spirit::qi::parse(first, last, grammar, destination);
 }
@@ -48,8 +48,8 @@ bool parse(const QString & source, const Grammar & grammar, QChar & destination)
 template<typename Grammar, typename Result>
 bool parseNumber(const QString & source, const Grammar & grammar, Result & destination)
 {
-  BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
-  BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
+    QStringConstIterator first( source.cbegin(), source.cend() );
+    QStringConstIterator last( source.cend(), source.cend() );
 
   return boost::spirit::qi::parse(first, last, grammar, destination);
 }

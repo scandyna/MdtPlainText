@@ -23,7 +23,7 @@
 #include "Mdt/PlainText/Grammar/Csv/FieldColumn.h"
 #include "Mdt/PlainText/Grammar/Csv/CsvRecord.h"
 #include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
-#include "Mdt/PlainText/BoostSpiritQStringConstIterator.h"
+#include "Mdt/PlainText/QStringConstIterator.h"
 #include "Mdt/PlainText/BoostSpiritQStringContainer.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include "Mdt/PlainText/QRuntimeError.h"
@@ -43,10 +43,10 @@ QString parseFieldColumn(const QString & sourceString, const CsvParserSettings &
   Q_ASSERT( settings.isValid() );
 
   QString data;
-  Mdt::PlainText::Grammar::Csv::FieldColumn<BoostSpiritQStringConstIterator, QString> rule(settings);
+  Mdt::PlainText::Grammar::Csv::FieldColumn<QStringConstIterator, QString> rule(settings);
 
-  BoostSpiritQStringConstIterator first( sourceString.cbegin(), sourceString.cend() );
-  BoostSpiritQStringConstIterator last( sourceString.cend(), sourceString.cend() );
+  QStringConstIterator first( sourceString.cbegin(), sourceString.cend() );
+  QStringConstIterator last( sourceString.cend(), sourceString.cend() );
   const bool ok = boost::spirit::qi::parse(first, last, rule, data);
   if(!ok){
     const QString what = QLatin1String("Failed to parse a field column from ") + sourceString;
@@ -61,10 +61,10 @@ QStringList parseRecord(const QString & sourceString, const CsvParserSettings & 
   assert( settings.isValid() );
 
   QStringList record;
-  Mdt::PlainText::Grammar::Csv::CsvRecord<BoostSpiritQStringConstIterator, QStringList> rule(settings);
+  Mdt::PlainText::Grammar::Csv::CsvRecord<QStringConstIterator, QStringList> rule(settings);
 
-  BoostSpiritQStringConstIterator first( sourceString.cbegin(), sourceString.cend() );
-  BoostSpiritQStringConstIterator last( sourceString.cend(), sourceString.cend() );
+  QStringConstIterator first( sourceString.cbegin(), sourceString.cend() );
+  QStringConstIterator last( sourceString.cend(), sourceString.cend() );
   const bool ok = boost::spirit::qi::parse(first, last, rule, record);
   if(!ok){
     const QString what = QLatin1String("Failed to parse a record from ") + sourceString;
@@ -93,10 +93,10 @@ bool qStringListEqualsUtf8StringList(const QStringList & list, const std::vector
 StringTable parseCsvFileRuleString(const QString & sourceString, const CsvParserSettings & settings)
 {
   StringTable table;
-  Mdt::PlainText::Grammar::Csv::CsvFile<BoostSpiritQStringConstIterator, StringTable> rule(settings);
+  Mdt::PlainText::Grammar::Csv::CsvFile<QStringConstIterator, StringTable> rule(settings);
 
-  BoostSpiritQStringConstIterator first( sourceString.cbegin(), sourceString.cend() );
-  BoostSpiritQStringConstIterator last( sourceString.cend(), sourceString.cend() );
+  QStringConstIterator first( sourceString.cbegin(), sourceString.cend() );
+  QStringConstIterator last( sourceString.cend(), sourceString.cend() );
   const bool ok = boost::spirit::qi::parse(first, last, rule, table);
   if(!ok){
     const QString what = QLatin1String("Failed to parse table from ") + sourceString;

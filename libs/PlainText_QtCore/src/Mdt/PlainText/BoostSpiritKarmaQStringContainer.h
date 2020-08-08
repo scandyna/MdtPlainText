@@ -22,7 +22,7 @@
 #ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_CONTAINER_H
 #define MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_CONTAINER_H
 
-#include "BoostSpiritQStringConstIterator.h"
+#include "QStringConstIterator.h"
 #include <QString>
 #include <boost/spirit/include/karma.hpp>
 #include <cstdint>
@@ -37,7 +37,7 @@ namespace Mdt{ namespace PlainText{
   {
    public:
 
-    using const_iterator = BoostSpiritQStringConstIterator;
+    using const_iterator = QStringConstIterator;
 
     using value_type = uint32_t;
 
@@ -83,8 +83,8 @@ namespace Mdt{ namespace PlainText{
 
    private:
 
-    BoostSpiritQStringConstIterator mBegin;
-    BoostSpiritQStringConstIterator mEnd;
+    QStringConstIterator mBegin;
+    QStringConstIterator mEnd;
   };
 
 }} // namespace Mdt{ namespace PlainText{

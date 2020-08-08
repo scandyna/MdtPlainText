@@ -172,8 +172,8 @@ namespace Mdt{ namespace PlainText{
    *
    * \sa https://stackoverflow.com/questions/57461106/how-can-i-use-boostspirit-x3-in-conjunction-with-qstring
    */
-  class MDT_PLAINTEXT_QTCORE_EXPORT BoostSpiritQStringConstIterator : public boost::iterator_facade<
-      BoostSpiritQStringConstIterator,    // Derived
+  class MDT_PLAINTEXT_QTCORE_EXPORT QStringConstIterator : public boost::iterator_facade<
+      QStringConstIterator,    // Derived
       const uint32_t,                     // Value
       boost::bidirectional_traversal_tag, // CategoryOrTraversal
       const uint32_t &,                   // Reference, see dereference()
@@ -184,7 +184,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Default constructor
      */
-    BoostSpiritQStringConstIterator() noexcept = default;
+    QStringConstIterator() noexcept = default;
 
     /*! \brief Construct a iterator that points to \a it
      *
@@ -192,7 +192,7 @@ namespace Mdt{ namespace PlainText{
      *  This is because the codepoint value (uint32_t) can be a composition
      *  of 2 UTF16 (QChar) codepoints.
      */
-    BoostSpiritQStringConstIterator(QString::const_iterator it, QString::const_iterator end)
+    QStringConstIterator(QString::const_iterator it, QString::const_iterator end)
      : mData(it, it, end)
     {
       extractCodePointIfDereferencable();
@@ -204,7 +204,7 @@ namespace Mdt{ namespace PlainText{
      *  This is because the codepoint value (uint32_t) can be a composition
      *  of 2 UTF16 (QChar) codepoints.
      */
-    BoostSpiritQStringConstIterator(QString::iterator it, QString::iterator end)
+    QStringConstIterator(QString::iterator it, QString::iterator end)
      : mData(it, it, end)
     {
       extractCodePointIfDereferencable();
@@ -212,13 +212,13 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Copy construct a iterator from \a other
      */
-    BoostSpiritQStringConstIterator(const BoostSpiritQStringConstIterator & other) noexcept = default;
+    QStringConstIterator(const QStringConstIterator & other) noexcept = default;
 
   private:
 
     friend class boost::iterator_core_access;
 
-    bool equal(const BoostSpiritQStringConstIterator & other) const
+    bool equal(const QStringConstIterator & other) const
     {
       return mData.position == other.mData.position;
     }
