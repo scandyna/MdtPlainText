@@ -31,11 +31,19 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME BoostSpiritQStringConstIteratorTest
-  TARGET boostSpiritQStringConstIteratorTest
+  NAME QStringConstIteratorBoostSpiritTest
+  TARGET qStringConstIteratorBoostSpiritTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
   SOURCE_FILES
-    src/BoostSpiritQStringConstIteratorTest.cpp
+    src/QStringConstIteratorBoostSpiritTest.cpp
+)
+
+mdt_add_test(
+  NAME QStringIteratorStlTest
+  TARGET qStringIteratorStlTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
+  SOURCE_FILES
+    src/QStringIteratorStlTest.cpp
 )
 
 mdt_add_test(

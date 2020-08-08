@@ -19,14 +19,13 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#include "TestCommon.h"
+#include "catch2/catch.hpp"
 #include "Mdt/PlainText/BoostSpiritQStringConstIterator.h"
 #include "Mdt/PlainText/BoostSpiritQStringContainer.h"
-#include <type_traits>
-#include <iterator>
+#include <boost/spirit/include/qi.hpp>
+#include <QString>
 
 using Mdt::PlainText::BoostSpiritQStringConstIterator;
-using Mdt::PlainText::Impl::BoostSpiritQStringConstIteratorData;
 
 template<typename Grammar>
 bool parse(const QString & source, const Grammar & grammar, QString & destination)
@@ -55,36 +54,6 @@ bool parseNumber(const QString & source, const Grammar & grammar, Result & desti
   return boost::spirit::qi::parse(first, last, grammar, destination);
 }
 
-/*
- * Tests with some STL functions
- */
-
-TEST_CASE("std_copy")
-{
-  QString destination;
-
-  SECTION("abcd")
-  {
-    const QString source = QLatin1String("abcd");
-    BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
-    BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
-    std::copy( first, last, std::back_inserter(destination) );
-    REQUIRE( destination == source );
-  }
-
-  SECTION("éöàäèü$£𐐅")
-  {
-    const QString source = QString::fromUtf8("éöàäèü$£𐐅");
-    BoostSpiritQStringConstIterator first( source.cbegin(), source.cend() );
-    BoostSpiritQStringConstIterator last( source.cend(), source.cend() );
-    std::copy( first, last, std::back_inserter(destination) );
-    REQUIRE( destination == source );
-  }
-}
-
-/*
- * Tests with some Spirit parsers
- */
 
 TEST_CASE("qi_parser_int_")
 {
