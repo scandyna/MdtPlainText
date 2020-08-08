@@ -15,14 +15,6 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME BoostSpiritQStringIteratorTest
-  TARGET boostSpiritQStringIteratorTest
-  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
-  SOURCE_FILES
-    src/BoostSpiritQStringIteratorTest.cpp
-)
-
-mdt_add_test(
   NAME QStringConstIteratorTest
   TARGET qStringConstIteratorTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
