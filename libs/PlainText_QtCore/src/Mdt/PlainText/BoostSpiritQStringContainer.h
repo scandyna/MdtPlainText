@@ -25,6 +25,7 @@
 #ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_CONTAINER_H
 #define MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_CONTAINER_H
 
+#include "Mdt/PlainText/Impl/AddCodePointToQString.h"
 #include <boost/spirit/include/qi.hpp>
 #include <QChar>
 #include <QString>
@@ -54,11 +55,7 @@ namespace boost { namespace spirit { namespace traits{
     static
     bool call(QString& c, const uint32_t & val)
     {
-      if(val <= 0xffff){
-        c.append( QChar(val) );
-      }else{
-        c.append( QString::fromUcs4(&val, 1) );
-      }
+      Mdt::PlainText::Impl::addCodePointToQString(val, c);
 
       return true;
     }
