@@ -27,8 +27,6 @@
 #include <boost/spirit/include/karma.hpp>
 #include <cstdint>
 
-#include <QDebug>
-
 namespace Mdt{ namespace PlainText{
 
   /*! \brief QString wrapper to be passed as attribute to a boost Spirit Karma generator
