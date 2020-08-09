@@ -43,7 +43,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Construct a container from \a str
      */
-    BoostSpiritKarmaQStringContainer(const QString & str) noexcept
+    explicit BoostSpiritKarmaQStringContainer(const QString & str) noexcept
      : mBegin( str.cbegin(), str.cend() ),
        mEnd( str.cend(), str.cend() )
     {
