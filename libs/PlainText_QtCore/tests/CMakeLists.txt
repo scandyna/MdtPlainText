@@ -7,6 +7,14 @@
 include(MdtAddTest)
 
 mdt_add_test(
+  NAME AddCodePointToQStringTest
+  TARGET addCodePointToQStringTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
+  SOURCE_FILES
+    src/AddCodePointToQStringTest.cpp
+)
+
+mdt_add_test(
   NAME BoostSpiritQStringContainerTest
   TARGET boostSpiritQStringContainerTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
@@ -28,6 +36,14 @@ mdt_add_test(
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
   SOURCE_FILES
     src/QStringConstIteratorBoostSpiritTest.cpp
+)
+
+mdt_add_test(
+  NAME QStringBackInsertIteratorTest
+  TARGET qStringBackInsertIteratorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
+  SOURCE_FILES
+    src/QStringBackInsertIteratorTest.cpp
 )
 
 mdt_add_test(

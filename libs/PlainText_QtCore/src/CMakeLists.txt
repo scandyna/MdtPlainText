@@ -8,7 +8,9 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_PlainText_QtCore
+  Mdt/PlainText/Impl/AddCodePointToQString.cpp
   Mdt/PlainText/QStringConstIterator.cpp
+  Mdt/PlainText/QStringBackInsertIterator.cpp
   Mdt/PlainText/BoostSpiritQStringContainer.cpp
   Mdt/PlainText/BoostSpiritKarmaQStringContainer.cpp
   Mdt/PlainText/QTextFileInputConstIteratorSharedData.cpp
