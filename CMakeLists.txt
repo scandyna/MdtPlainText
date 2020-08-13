@@ -244,7 +244,7 @@ if(ENABLE_QT_SUPPORT)
 endif()
 
 if(BOOST_SPIRIT_DEBUG)
-  add_definitions(-DBOOST_SPIRIT_DEBUG)
+  add_definitions(-DBOOST_SPIRIT_DEBUG -DBOOST_SPIRIT_KARMA_DEBUG)
 endif()
 
 set(CMAKE_AUTOMOC ON)
