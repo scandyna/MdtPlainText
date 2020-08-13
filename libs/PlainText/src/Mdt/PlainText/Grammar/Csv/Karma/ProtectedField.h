@@ -64,7 +64,10 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace 
       // Character collections
       mAnychar = mChar | char_(fieldSep) | (char_(fieldQuote) << lit(fieldQuote)) | space; // space matches space, CR, LF and other See std::isspace()
       mChar = mSafeChar | char_(0x20);  // 0x20 == SPACE char
-      mSafeChar = char_(0x21) | char_(0x23, 0x2B) | char_(0x2D, 0xFF);
+
+      const std::u32string exclude = std::u32string(U"\n\t\r") + static_cast<char32_t>(fieldSep) + static_cast<char32_t>(fieldQuote);
+      mSafeChar = ~char_(exclude);
+//       mSafeChar = char_(0x21) | char_(0x23, 0x2B) | char_(0x2D, 0xFF);
 
       BOOST_SPIRIT_DEBUG_NODE(mProtectedField);
       BOOST_SPIRIT_DEBUG_NODE(mFieldPayload);
