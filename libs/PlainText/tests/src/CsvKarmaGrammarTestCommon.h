@@ -6,13 +6,17 @@
  */
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/CsvGeneratorSettings.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/UnprotectedField.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/SafeChar.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/ProtectedField.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/FieldColumn.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/CsvFileLine.h"
 #include <boost/spirit/include/karma.hpp>
 #include <string>
 #include <vector>
 #include <iterator>
 #include <cassert>
+
 
 using namespace Mdt::PlainText;
 
@@ -21,40 +25,27 @@ using namespace Mdt::PlainText;
 using StringRecord = std::vector<std::string>;
 using StringTable = std::vector<StringRecord>;
 
+using SafeChar = Grammar::Csv::Karma::SafeChar< std::back_insert_iterator<std::string>, uint32_t >;
+using UnprotectedField = Grammar::Csv::Karma::UnprotectedField<std::back_insert_iterator<std::string>, std::string>;
 using ProtectedField = Grammar::Csv::Karma::ProtectedField<std::back_insert_iterator<std::string>, std::string>;
+using FieldColumn = Grammar::Csv::Karma::FieldColumn<std::back_insert_iterator<std::string>, std::string>;
 using CsvFileLine = Grammar::Csv::Karma::CsvFileLine<std::back_insert_iterator<std::string>, StringRecord>;
 
 
 
-template<typename Rule>
-bool generateRuleFails(const std::string & data, const CsvGeneratorSettings & settings)
-{
-  assert( settings.isValid() );
-
-  Rule rule(settings);
-
-  return !boost::spirit::karma::generate(rule, data);
-}
-
-template<typename Rule>
-std::string generateFromStringRule(const std::string & data, const CsvGeneratorSettings & settings)
+template<typename Rule, typename AttributeData>
+bool generateRuleFails(const AttributeData & data, const CsvGeneratorSettings & settings)
 {
   assert( settings.isValid() );
 
   std::string result;
   Rule rule(settings);
 
-  const bool ok = boost::spirit::karma::generate(std::back_inserter(result), rule, data);
-  if(!ok){
-    const std::string what = "Rule '" + rule.name() + "' failed to generate from '" + data + "'";
-    throw std::runtime_error(what);
-  }
-
-  return result;
+  return !boost::spirit::karma::generate(std::back_inserter(result), rule, data);
 }
 
-template<typename Rule>
-std::string generateFromStringRecordRule(const StringRecord & data, const CsvGeneratorSettings & settings)
+template<typename Rule, typename AttributeData>
+std::string generateFromRule(const AttributeData & data, const CsvGeneratorSettings & settings)
 {
   assert( settings.isValid() );
 
@@ -71,6 +62,37 @@ std::string generateFromStringRecordRule(const StringRecord & data, const CsvGen
 }
 
 
+bool generateSafeCharFails(uint32_t codePoint, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateRuleFails<SafeChar>(codePoint, settings);
+}
+
+std::string generateSafeChar(uint32_t codePoint, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateFromRule<SafeChar>(codePoint, settings);
+}
+
+bool generateUnprotectedFieldFails(const std::string & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateRuleFails<UnprotectedField>(data, settings);
+}
+
+std::string generateUnprotectedField(const std::string & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  std::string result;
+  UnprotectedField rule(settings);
+
+  return generateFromRule<UnprotectedField>(data, settings);
+}
+
 bool generateProtectedFieldFails(const std::string & data, const CsvGeneratorSettings & settings)
 {
   assert( settings.isValid() );
@@ -82,12 +104,19 @@ std::string generateProtectedField(const std::string & data, const CsvGeneratorS
 {
   assert( settings.isValid() );
 
-  return generateFromStringRule<ProtectedField>(data, settings);
+  return generateFromRule<ProtectedField>(data, settings);
+}
+
+std::string generateFieldColumn(const std::string & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateFromRule<FieldColumn>(data, settings);
 }
 
 std::string generateCsvFileLineString(const StringRecord & data, const CsvGeneratorSettings & settings)
 {
   assert( settings.isValid() );
 
-  return generateFromStringRecordRule<CsvFileLine>(data, settings);
+  return generateFromRule<CsvFileLine>(data, settings);
 }

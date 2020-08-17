@@ -22,8 +22,13 @@
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/CsvGeneratorSettings.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/ProtectedField.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/UnprotectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/CsvFileLine.h"
-#include "Mdt/PlainText/BoostSpiritQStringContainer.h"
+#include "Mdt/PlainText/BoostSpiritKarmaQStringContainer.h"
+#include "Mdt/PlainText/QStringBackInsertIterator.h"
+
+// #include "Mdt/PlainText/BoostSpiritQStringContainer.h"
+
 #include <boost/spirit/include/karma.hpp>
 #include <QString>
 #include <QLatin1String>
@@ -33,7 +38,9 @@
 
 using namespace Mdt::PlainText;
 
-using ProtectedField = Grammar::Csv::Karma::ProtectedField<std::back_insert_iterator<QString>, QString>;
+using UnprotectedField = Grammar::Csv::Karma::UnprotectedField<QStringBackInsertIterator, BoostSpiritKarmaQStringContainer>;
+// using ProtectedField = Grammar::Csv::Karma::ProtectedField<QStringBackInsertIterator, QString>;
+using ProtectedField = Grammar::Csv::Karma::ProtectedField<QStringBackInsertIterator, BoostSpiritKarmaQStringContainer>;
 
 
 template<typename Rule>
@@ -41,39 +48,55 @@ bool generateRuleFails(const QString & data, const CsvGeneratorSettings & settin
 {
   assert( settings.isValid() );
 
+  QString result;
   Rule rule(settings);
+//   const BoostSpiritKarmaQStringContainer sourceContainer(data);
 
-  return !boost::spirit::karma::generate(rule, data);
+  return !boost::spirit::karma::generate( QStringBackInsertIterator(result), rule, BoostSpiritKarmaQStringContainer(data) );
 }
 
-// template<typename Rule>
-// QString generateFromQStringRule(const QString & data, const CsvGeneratorSettings & settings)
-// {
-//   assert( settings.isValid() );
-// 
-//   QString result;
-//   Rule rule(settings);
-// 
-//   const bool ok = boost::spirit::karma::generate(std::back_inserter(result), rule, data);
-//   if(!ok){
-//     const std::string what = "Rule '" + rule.name() + "' failed to generate from '" + data + "'";
-//     throw std::runtime_error(what);
-//   }
-// 
-//   return result;
-// }
+template<typename Rule>
+QString generateFromQStringRule(const QString & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  QString result;
+  Rule rule(settings);
+
+  const bool ok = boost::spirit::karma::generate( QStringBackInsertIterator(result), rule, BoostSpiritKarmaQStringContainer(data) );
+  if(!ok){
+    const std::string what = "Rule '" + rule.name() + "' failed to generate from '" + data.toStdString() + "'";
+    throw std::runtime_error(what);
+  }
+
+  return result;
+}
 
 
-// bool generateProtectedFieldFails(const QString & data, const CsvGeneratorSettings & settings)
-// {
-//   assert( settings.isValid() );
-// 
-//   return generateRuleFails<ProtectedField>(data, settings);
-// }
+bool generateUnprotectedFieldFails(const QString & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
 
-// QString generateProtectedField(const QString & data, const CsvGeneratorSettings & settings)
-// {
-//   assert( settings.isValid() );
-// 
-//   return generateFromQStringRule<ProtectedField>(data, settings);
-// }
+  return generateRuleFails<UnprotectedField>(data, settings);
+}
+
+QString generateUnprotectedField(const QString & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateFromQStringRule<UnprotectedField>(data, settings);
+}
+
+bool generateProtectedFieldFails(const QString & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateRuleFails<ProtectedField>(data, settings);
+}
+
+QString generateProtectedField(const QString & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateFromQStringRule<ProtectedField>(data, settings);
+}
