@@ -7,7 +7,7 @@
 #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_H
 #define MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_H
 
-#include "SafeChar.h"
+#include "Char.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include <boost/spirit/include/qi.hpp>
 #include <cstdint>
@@ -25,15 +25,13 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
   template <typename SourceIterator, typename DestinationString>
   struct ProtectedField : boost::spirit::qi::grammar<SourceIterator, DestinationString()>
   {
-    using Char = uint32_t;
-
     /*! \brief Constructor
      *
      * \pre \a settings must be valid
      */
     ProtectedField(const CsvParserSettings & settings) noexcept
      : ProtectedField::base_type(mProtectedField, "ProtectedField"),
-       mSafeChar(settings)
+       mChar(settings)
     {
       assert( settings.isValid() );
 
@@ -57,29 +55,24 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
       mFieldPayload = *mAnychar;
       // Character collections
       mAnychar = mChar | char_(fieldSep) | (char_(fieldQuote) >> lit(fieldQuote)) | space; // space matches space, CR, LF and other See std::isspace()
-      mChar = mSafeChar | char_(0x20);  // 0x20 == SPACE char
 
       BOOST_SPIRIT_DEBUG_NODE(mProtectedField);
       BOOST_SPIRIT_DEBUG_NODE(mFieldPayload);
       BOOST_SPIRIT_DEBUG_NODE(mAnychar);
-      BOOST_SPIRIT_DEBUG_NODE(mChar);
     }
 
    private:
 
     void nameRules()
     {
-      mProtectedField.name("ProtectedField");
       mFieldPayload.name("FieldPayload");
       mAnychar.name("Anychar");
-      mChar.name("Char");
     }
 
     boost::spirit::qi::rule<SourceIterator, DestinationString()> mProtectedField;
     boost::spirit::qi::rule<SourceIterator, DestinationString()> mFieldPayload;
-    boost::spirit::qi::rule<SourceIterator, Char()> mAnychar;
-    boost::spirit::qi::rule<SourceIterator, Char()> mChar;
-    SafeChar<SourceIterator, Char> mSafeChar;
+    boost::spirit::qi::rule<SourceIterator, uint32_t()> mAnychar;
+    Char<SourceIterator, uint32_t> mChar;
   };
 
 }}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{

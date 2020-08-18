@@ -5,6 +5,7 @@
  * https://www.boost.org/LICENSE_1_0.txt)
  */
 #include "catch2/catch.hpp"
+#include "Mdt/PlainText/Grammar/Csv/SafeChar.h"
 #include "Mdt/PlainText/Grammar/Csv/UnprotectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/NonEmptyUnprotectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/ProtectedField.h"
@@ -26,6 +27,7 @@ using namespace Mdt::PlainText;
 using StringRecord = std::vector<std::string>;
 using StringTable = std::vector<StringRecord>;
 
+using SafeChar = Grammar::Csv::SafeChar<std::string::const_iterator, uint32_t>;
 using UnprotectedField = Grammar::Csv::UnprotectedField<std::string::const_iterator, std::string>;
 using NonEmptyUnprotectedField = Grammar::Csv::NonEmptyUnprotectedField<std::string::const_iterator, std::string>;
 using ProtectedField = Grammar::Csv::ProtectedField<std::string::const_iterator, std::string>;
@@ -89,6 +91,29 @@ StringRecord parseToStringRecordRule(const std::string & sourceString, const Csv
   return record;
 }
 
+
+bool parseSafeCharFails(const std::string & sourceString, const CsvParserSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return parseRuleFails<SafeChar>(sourceString, settings);
+}
+
+uint32_t parseSafeChar(const std::string & sourceString, const CsvParserSettings & settings)
+{
+  assert( settings.isValid() );
+
+  uint32_t codePoint;
+  SafeChar rule(settings);
+
+  const bool ok = boost::spirit::qi::parse(sourceString.cbegin(), sourceString.cend(), rule, codePoint);
+  if(!ok){
+    const std::string what = "Rule '" + rule.name() + "' failed to parse '" + sourceString + "'";
+    throw std::runtime_error(what);
+  }
+
+  return codePoint;
+}
 
 bool parseUnprotectedFieldFails(const std::string & sourceString, const CsvParserSettings & settings)
 {

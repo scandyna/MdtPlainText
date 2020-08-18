@@ -9,6 +9,7 @@ include(MdtInstallLibrary)
 
 add_library(Mdt_PlainText
   Mdt/PlainText/Grammar/Csv/SafeChar.cpp
+  Mdt/PlainText/Grammar/Csv/Char.cpp
   Mdt/PlainText/Grammar/Csv/UnprotectedField.cpp
   Mdt/PlainText/Grammar/Csv/NonEmptyUnprotectedField.cpp
   Mdt/PlainText/Grammar/Csv/ProtectedField.cpp
@@ -17,7 +18,10 @@ add_library(Mdt_PlainText
   Mdt/PlainText/Grammar/Csv/CsvRecord.cpp
   Mdt/PlainText/Grammar/Csv/CsvFileLine.cpp
   Mdt/PlainText/Grammar/Csv/CsvFile.cpp
+  Mdt/PlainText/Grammar/Csv/Karma/SafeChar.cpp
+  Mdt/PlainText/Grammar/Csv/Karma/UnprotectedField.cpp
   Mdt/PlainText/Grammar/Csv/Karma/ProtectedField.cpp
+  Mdt/PlainText/Grammar/Csv/Karma/FieldColumn.cpp
   Mdt/PlainText/Grammar/Csv/Karma/CsvFileLine.cpp
   Mdt/PlainText/CsvParserSettings.cpp
   Mdt/PlainText/OpenFstream.cpp

@@ -6,6 +6,27 @@
  */
 #include "CsvGrammarTestCommon.h"
 
+TEST_CASE("SafeChar")
+{
+  uint32_t result;
+  CsvParserSettings csvSettings;
+
+  SECTION("A")
+  {
+    result = parseSafeChar("A", csvSettings);
+    REQUIRE( result == 'A' );
+  }
+
+  SECTION(",")
+  {
+    REQUIRE( parseSafeCharFails(",", csvSettings) );
+  }
+
+  SECTION("space")
+  {
+    REQUIRE( parseSafeCharFails(" ", csvSettings) );
+  }
+}
 
 TEST_CASE("UnprotectedField")
 {
@@ -16,6 +37,54 @@ TEST_CASE("UnprotectedField")
   {
     data = parseUnprotectedField("", csvSettings);
     REQUIRE( data == "" );
+  }
+
+  SECTION(",")
+  {
+    data = parseUnprotectedField(",", csvSettings);
+    REQUIRE( data == "" );
+  }
+
+  SECTION("A,")
+  {
+    data = parseUnprotectedField("A,", csvSettings);
+    REQUIRE( data == "A" );
+  }
+
+  SECTION("AB,")
+  {
+    data = parseUnprotectedField("AB,", csvSettings);
+    REQUIRE( data == "AB" );
+  }
+
+  SECTION(",A")
+  {
+    data = parseUnprotectedField(",A", csvSettings);
+    REQUIRE( data == "" );
+  }
+
+  SECTION(",AB")
+  {
+    data = parseUnprotectedField(",AB", csvSettings);
+    REQUIRE( data == "" );
+  }
+
+  SECTION("A,B")
+  {
+    data = parseUnprotectedField("A,B", csvSettings);
+    REQUIRE( data == "A" );
+  }
+
+  SECTION("\"")
+  {
+    data = parseUnprotectedField("\"", csvSettings);
+    REQUIRE( data == "" );
+  }
+
+  SECTION("A B")
+  {
+    data = parseUnprotectedField("A B", csvSettings);
+    REQUIRE( data == "A B" );
   }
 }
 
@@ -28,6 +97,50 @@ TEST_CASE("NonEmptyUnprotectedField")
   {
     REQUIRE( parseNonEmptyUnprotectedFieldFails("", csvSettings) );
   }
+
+  SECTION(",")
+  {
+    REQUIRE( parseNonEmptyUnprotectedFieldFails(",", csvSettings) );
+  }
+
+  SECTION("A,")
+  {
+    data = parseNonEmptyUnprotectedField("A,", csvSettings);
+    REQUIRE( data == "A" );
+  }
+
+  SECTION("AB,")
+  {
+    data = parseNonEmptyUnprotectedField("AB,", csvSettings);
+    REQUIRE( data == "AB" );
+  }
+
+  SECTION(",A")
+  {
+    REQUIRE( parseNonEmptyUnprotectedFieldFails(",A", csvSettings) );
+  }
+
+  SECTION(",AB")
+  {
+    REQUIRE( parseNonEmptyUnprotectedFieldFails(",AB", csvSettings) );
+  }
+
+  SECTION("A,B")
+  {
+    data = parseNonEmptyUnprotectedField("A,B", csvSettings);
+    REQUIRE( data == "A" );
+  }
+
+  SECTION("\"")
+  {
+    REQUIRE( parseNonEmptyUnprotectedFieldFails("\"", csvSettings) );
+  }
+
+  SECTION("A B")
+  {
+    data = parseNonEmptyUnprotectedField("A B", csvSettings);
+    REQUIRE( data == "A B" );
+  }
 }
 
 TEST_CASE("UnprotectedField_NonEmptyUnprotectedField")
@@ -39,7 +152,9 @@ TEST_CASE("UnprotectedField_NonEmptyUnprotectedField")
       {"A","A"},
       {"AB","AB"},
       {"ABC","ABC"},
-      {"ABCD","ABCD"}
+      {"ABCD","ABCD"},
+      {"A B","A B"},
+      {"A B  C","A B  C"},
     })
   );
 
@@ -487,6 +602,24 @@ TEST_CASE("CsvRecord")
   {
     record = parseCsvRecord("A,BC,D,EFG\n", csvSettings);
     REQUIRE( record == StringRecord{"A","BC","D","EFG"} );
+  }
+
+  SECTION("A B")
+  {
+    record = parseCsvRecord("A B", csvSettings);
+    REQUIRE( record == StringRecord{"A B"} );
+  }
+
+  SECTION("A  B")
+  {
+    record = parseCsvRecord("A  B", csvSettings);
+    REQUIRE( record == StringRecord{"A  B"} );
+  }
+
+  SECTION("A B,C")
+  {
+    record = parseCsvRecord("A B,C", csvSettings);
+    REQUIRE( record == StringRecord{"A B", "C"} );
   }
 }
 
