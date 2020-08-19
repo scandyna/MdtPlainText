@@ -9,7 +9,7 @@
 
 #include "Mdt/PlainText/CsvGeneratorSettings.h"
 #include <boost/spirit/include/karma.hpp>
-#include <cstdint>
+// #include <cstdint>
 #include <string>
 #include <cassert>
 
@@ -21,8 +21,8 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace 
    *       \li CSV-1203 available here: https://idoc.pub/documents/csv-file-format-specification-standard-csv-1203-6nq88y5xr9nw
    *       \li RFC 4180 available here: https://tools.ietf.org/html/rfc4180
    */
-  template <typename DestinationIterator>
-  struct SafeChar : boost::spirit::karma::grammar<DestinationIterator, uint32_t()>
+  template <typename DestinationIterator, typename SourceChar>
+  struct SafeChar : boost::spirit::karma::grammar<DestinationIterator, SourceChar()>
   {
     /*! \brief Constructor
      *
@@ -40,7 +40,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace 
 
       nameRules();
 
-      const std::u32string exclude = std::u32string(U"\n\t\r") + static_cast<char32_t>(fieldSep) + static_cast<char32_t>(fieldQuote);
+      const std::u32string exclude = std::u32string(U"\n\t\r ") + static_cast<char32_t>(fieldSep) + static_cast<char32_t>(fieldQuote);
       mSafeChar = ~char_(exclude);
 //       mSafeChar = char_(0x21) | char_(0x23, 0x2B) | char_(0x2D, 0xFF);
 
@@ -54,7 +54,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace 
       mSafeChar.name("SafeChar");
     }
 
-    boost::spirit::karma::rule<DestinationIterator, uint32_t()> mSafeChar;
+    boost::spirit::karma::rule<DestinationIterator, SourceChar()> mSafeChar;
   };
 
 }}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Karma{

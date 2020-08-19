@@ -83,6 +83,12 @@ TEST_CASE("UnprotectedField")
     REQUIRE( result == "ABC" );
   }
 
+  SECTION("A B  C")
+  {
+    result = generateUnprotectedField("A B  C", csvSettings);
+    REQUIRE( result == "A B  C" );
+  }
+
   SECTION("A,B")
   {
     REQUIRE( generateUnprotectedFieldFails("A,B", csvSettings) );
@@ -205,6 +211,24 @@ TEST_CASE("ProtectedField")
     REQUIRE( result == "\"ABCD\"" );
   }
 
+  SECTION("A B")
+  {
+    result = generateProtectedField("A B", csvSettings);
+    REQUIRE( result == "\"A B\"" );
+  }
+
+  SECTION("A B  C")
+  {
+    result = generateProtectedField("A B  C", csvSettings);
+    REQUIRE( result == "\"A B  C\"" );
+  }
+
+  SECTION("A,B")
+  {
+    result = generateProtectedField("A,B", csvSettings);
+    REQUIRE( result == "\"A,B\"" );
+  }
+
   SECTION("1")
   {
     result = generateProtectedField("1", csvSettings);
@@ -305,6 +329,12 @@ TEST_CASE("FieldColumn")
   std::string result;
   CsvGeneratorSettings csvSettings;
 
+  SECTION("empty")
+  {
+    result = generateFieldColumn("", csvSettings);
+    REQUIRE( result == "" );
+  }
+
   SECTION("A")
   {
     result = generateFieldColumn("A", csvSettings);
@@ -321,6 +351,12 @@ TEST_CASE("FieldColumn")
   {
     result = generateFieldColumn("ABC", csvSettings);
     REQUIRE( result == "ABC" );
+  }
+
+  SECTION("A B  C")
+  {
+    result = generateFieldColumn("A B  C", csvSettings);
+    REQUIRE( result == "A B  C" );
   }
 
   SECTION("\\n")

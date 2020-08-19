@@ -23,6 +23,7 @@
 #include "Mdt/PlainText/CsvGeneratorSettings.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/ProtectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/UnprotectedField.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/FieldColumn.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/CsvFileLine.h"
 #include "Mdt/PlainText/BoostSpiritKarmaQStringContainer.h"
 #include "Mdt/PlainText/QStringBackInsertIterator.h"
@@ -41,6 +42,7 @@ using namespace Mdt::PlainText;
 using UnprotectedField = Grammar::Csv::Karma::UnprotectedField<QStringBackInsertIterator, BoostSpiritKarmaQStringContainer>;
 // using ProtectedField = Grammar::Csv::Karma::ProtectedField<QStringBackInsertIterator, QString>;
 using ProtectedField = Grammar::Csv::Karma::ProtectedField<QStringBackInsertIterator, BoostSpiritKarmaQStringContainer>;
+using FieldColumn = Grammar::Csv::Karma::FieldColumn<QStringBackInsertIterator, BoostSpiritKarmaQStringContainer>;
 
 
 template<typename Rule>
@@ -99,4 +101,18 @@ QString generateProtectedField(const QString & data, const CsvGeneratorSettings 
   assert( settings.isValid() );
 
   return generateFromQStringRule<ProtectedField>(data, settings);
+}
+
+bool generateFieldColumnFails(const QString & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateRuleFails<FieldColumn>(data, settings);
+}
+
+QString generateFieldColumn(const QString & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateFromQStringRule<FieldColumn>(data, settings);
 }

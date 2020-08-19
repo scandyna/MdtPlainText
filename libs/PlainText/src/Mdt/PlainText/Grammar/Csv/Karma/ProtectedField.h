@@ -86,7 +86,7 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace 
     boost::spirit::karma::rule<DestinationIterator, SourceString()> mFieldPayload;
     boost::spirit::karma::rule<DestinationIterator, Char()> mAnychar;
     boost::spirit::karma::rule<DestinationIterator, Char()> mChar;
-    SafeChar<DestinationIterator> mSafeChar;
+    SafeChar<DestinationIterator, uint32_t> mSafeChar;
   };
 
 }}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Karma{

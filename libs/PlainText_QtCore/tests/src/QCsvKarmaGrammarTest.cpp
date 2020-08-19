@@ -173,3 +173,33 @@ TEST_CASE("ProtectedField")
     REQUIRE( result == QString::fromUtf8("\"a𐐅,ö\"") );
   }
 }
+
+TEST_CASE("FieldColumn")
+{
+  QString result;
+  CsvGeneratorSettings csvSettings;
+
+  SECTION("empty")
+  {
+    result = generateFieldColumn(QLatin1String(""), csvSettings);
+    REQUIRE( result == QLatin1String("") );
+  }
+
+  SECTION("A")
+  {
+    result = generateFieldColumn(QLatin1String("A"), csvSettings);
+    REQUIRE( result == QLatin1String("A") );
+  }
+
+  SECTION("a𐐅ö")
+  {
+    result = generateFieldColumn(QString::fromUtf8("a𐐅ö"), csvSettings);
+    REQUIRE( result == QString::fromUtf8("a𐐅ö") );
+  }
+
+  SECTION("a𐐅,ö")
+  {
+    result = generateFieldColumn(QString::fromUtf8("a𐐅,ö"), csvSettings);
+    REQUIRE( result == QString::fromUtf8("\"a𐐅,ö\"") );
+  }
+}
