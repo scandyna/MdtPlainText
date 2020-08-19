@@ -10,7 +10,6 @@
 #include "FileOpenError.h"
 #include "EndOfLine.h"
 #include "CsvGeneratorSettings.h"
-#include "CsvGeneratorField.h"
 #include "FileWriteOpenMode.h"
 #include "mdt_plaintext_export.h"
 #include <string>
@@ -114,7 +113,7 @@ namespace Mdt{ namespace PlainText{
      * \pre This file reader must be open
      * \sa isOpen()
      */
-    void appendLine(const std::vector<CsvGeneratorField> & record);
+    void appendLine(const std::vector<std::string> & record);
 
     /*! \brief Close this file writer
      */

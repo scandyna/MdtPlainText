@@ -22,13 +22,12 @@ add_library(Mdt_PlainText
   Mdt/PlainText/Grammar/Csv/Karma/UnprotectedField.cpp
   Mdt/PlainText/Grammar/Csv/Karma/ProtectedField.cpp
   Mdt/PlainText/Grammar/Csv/Karma/FieldColumn.cpp
-  Mdt/PlainText/Grammar/Csv/Karma/CsvFileLine.cpp
+  Mdt/PlainText/Grammar/Csv/Karma/CsvRecord.cpp
   Mdt/PlainText/CsvParserSettings.cpp
   Mdt/PlainText/OpenFstream.cpp
   Mdt/PlainText/CsvFileReaderTemplate.cpp
   Mdt/PlainText/CsvFileReader.cpp
   Mdt/PlainText/CsvGeneratorSettings.cpp
-  Mdt/PlainText/CsvGeneratorField.cpp
   Mdt/PlainText/CsvFileWriterTemplate.cpp
   Mdt/PlainText/CsvFileWriter.cpp
 )
