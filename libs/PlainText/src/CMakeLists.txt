@@ -39,6 +39,17 @@ if(UNIX)
   )
 endif()
 
+# Set the native end of line
+# target_compile_definitions(Mdt_PlainText
+#   PUBLIC
+#     MDT_PLAIN_TEXT_END_OF_LINE_LF=1 MDT_PLAIN_TEXT_END_OF_LINE_CRLF=2 MDT_PLAIN_TEXT_END_OF_LINE_CR=3
+# )
+if(WIN32 OR CYGWIN)
+  target_compile_definitions(Mdt_PlainText PUBLIC MDT_PLAIN_TEXT_OS_WINDOWS=1)
+elseif(UNIX)
+  target_compile_definitions(Mdt_PlainText PUBLIC MDT_PLAIN_TEXT_OS_UNIX=1)
+endif()
+
 add_library(Mdt::PlainText ALIAS Mdt_PlainText)
 
 target_link_libraries(Mdt_PlainText
