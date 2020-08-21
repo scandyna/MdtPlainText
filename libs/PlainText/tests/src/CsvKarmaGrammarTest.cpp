@@ -418,25 +418,92 @@ TEST_CASE("FieldColumn")
   }
 }
 
-TEST_CASE("CsvFileLine")
+TEST_CASE("CsvRecord")
 {
   std::string result;
   StringRecord record;
   CsvGeneratorSettings csvSettings;
 
-  SECTION("A")
+  SECTION("Check content (with LF EOL)")
   {
-    record = {"A"};
-    result = generateCsvFileLineString(record, csvSettings);
-    REQUIRE( result == "A" );
+    csvSettings.setEndOfLine(EndOfLine::Lf);
+
+    SECTION("A")
+    {
+      record = {"A"};
+      result = generateCsvRecord(record, csvSettings);
+      REQUIRE( result == "A\n" );
+    }
+
+    SECTION("A|B")
+    {
+      record = {"A","B"};
+      result = generateCsvRecord(record, csvSettings);
+      REQUIRE( result == "A,B\n" );
+    }
+
+    SECTION("AB|C")
+    {
+      record = {"AB","C"};
+      result = generateCsvRecord(record, csvSettings);
+      REQUIRE( result == "AB,C\n" );
+    }
+
+    SECTION("A,B|C")
+    {
+      record = {"A,B","C"};
+      result = generateCsvRecord(record, csvSettings);
+      REQUIRE( result == "\"A,B\",C\n" );
+    }
+
+    SECTION("AB|C\\nD")
+    {
+      record = {"AB","C\nD"};
+      result = generateCsvRecord(record, csvSettings);
+      REQUIRE( result == "AB,\"C\nD\"\n" );
+    }
   }
 
-  SECTION("A,B")
+  SECTION("Check CRLF EOL")
   {
-    record = {"A","B"};
-    result = generateCsvFileLineString(record, csvSettings);
-    REQUIRE( result == "A,B" );
+    csvSettings.setEndOfLine(EndOfLine::CrLf);
+
+    SECTION("A|B")
+    {
+      record = {"A","B"};
+      result = generateCsvRecord(record, csvSettings);
+      REQUIRE( result == "A,B\r\n" );
+    }
+
+    SECTION("AB|C\\r\\nD")
+    {
+      record = {"AB","C\r\nD"};
+      result = generateCsvRecord(record, csvSettings);
+      REQUIRE( result == "AB,\"C\r\nD\"\r\n" );
+    }
   }
 
-  REQUIRE(false);
+  SECTION("Check CR EOL")
+  {
+    csvSettings.setEndOfLine(EndOfLine::Cr);
+
+    SECTION("A|B")
+    {
+      record = {"A","B"};
+      result = generateCsvRecord(record, csvSettings);
+      REQUIRE( result == "A,B\r" );
+    }
+  }
+
+  SECTION("Check native EOL")
+  {
+    csvSettings.setEndOfLine(EndOfLine::Native);
+
+    SECTION("A|B")
+    {
+      record = {"A","B"};
+      result = generateCsvRecord(record, csvSettings);
+      REQUIRE( result == std::string("A,B") + nativeEndOfLineString() );
+    }
+  }
 }

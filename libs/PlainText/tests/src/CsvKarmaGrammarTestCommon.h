@@ -6,21 +6,19 @@
  */
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/CsvGeneratorSettings.h"
+#include "Mdt/PlainText/EndOfLine.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/UnprotectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/SafeChar.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/ProtectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/FieldColumn.h"
-#include "Mdt/PlainText/Grammar/Csv/Karma/CsvFileLine.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/CsvRecord.h"
 #include <boost/spirit/include/karma.hpp>
 #include <string>
 #include <vector>
 #include <iterator>
 #include <cassert>
 
-
 using namespace Mdt::PlainText;
-
-/// \todo Should also use CsvGeneratorField !
 
 using StringRecord = std::vector<std::string>;
 using StringTable = std::vector<StringRecord>;
@@ -29,9 +27,30 @@ using SafeChar = Grammar::Csv::Karma::SafeChar< std::back_insert_iterator<std::s
 using UnprotectedField = Grammar::Csv::Karma::UnprotectedField<std::back_insert_iterator<std::string>, std::string>;
 using ProtectedField = Grammar::Csv::Karma::ProtectedField<std::back_insert_iterator<std::string>, std::string>;
 using FieldColumn = Grammar::Csv::Karma::FieldColumn<std::back_insert_iterator<std::string>, std::string>;
-using CsvFileLine = Grammar::Csv::Karma::CsvFileLine<std::back_insert_iterator<std::string>, StringRecord>;
+using CsvRecord = Grammar::Csv::Karma::CsvRecord<std::back_insert_iterator<std::string>, StringRecord>;
 
+std::string endOfLineString(Mdt::PlainText::EndOfLine eol)
+{
+  using Mdt::PlainText::EndOfLine;
 
+  switch(eol){
+    case EndOfLine::Lf:
+      return "\n";
+    case EndOfLine::CrLf:
+      return "\r\n";
+    case EndOfLine::Cr:
+      return "\r";
+    case EndOfLine::Native:
+      return "??";
+  }
+
+  return "";
+}
+
+std::string nativeEndOfLineString()
+{
+  return endOfLineString( Mdt::PlainText::nativeEndOfLine() );
+}
 
 template<typename Rule, typename AttributeData>
 bool generateRuleFails(const AttributeData & data, const CsvGeneratorSettings & settings)
@@ -114,9 +133,9 @@ std::string generateFieldColumn(const std::string & data, const CsvGeneratorSett
   return generateFromRule<FieldColumn>(data, settings);
 }
 
-std::string generateCsvFileLineString(const StringRecord & data, const CsvGeneratorSettings & settings)
+std::string generateCsvRecord(const StringRecord & data, const CsvGeneratorSettings & settings)
 {
   assert( settings.isValid() );
 
-  return generateFromRule<CsvFileLine>(data, settings);
+  return generateFromRule<CsvRecord>(data, settings);
 }
