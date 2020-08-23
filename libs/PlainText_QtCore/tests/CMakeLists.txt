@@ -55,14 +55,6 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME BoostSpiritKarmaQStringRecordTest
-  TARGET boostSpiritKarmaQStringRecordTest
-  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
-  SOURCE_FILES
-    src/BoostSpiritKarmaQStringRecordTest.cpp
-)
-
-mdt_add_test(
   NAME QStringConstIteratorTest
   TARGET qStringConstIteratorTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
