@@ -70,19 +70,19 @@ namespace Mdt{ namespace PlainText{
       return *this;
     }
 
-    /*! \brief Copy construct a container from \a other
+    /*! \brief Copy construct a view from \a other
      */
     QStringUnicodeView(const QStringUnicodeView & other) noexcept = default;
 
-    /*! \brief Copy assign \a other to this container
+    /*! \brief Copy assign \a other to this view
      */
     QStringUnicodeView & operator=(const QStringUnicodeView & other) noexcept = default;
 
-    /*! \brief Move construct a container from \a other
+    /*! \brief Move construct a view from \a other
      */
     QStringUnicodeView(QStringUnicodeView && other) noexcept = default;
 
-    /*! \brief Move assign \a other to this container
+    /*! \brief Move assign \a other to this view
      */
     QStringUnicodeView & operator=(QStringUnicodeView && other) noexcept = default;
 
@@ -100,7 +100,7 @@ namespace Mdt{ namespace PlainText{
       return mEnd;
     }
 
-    /*! \brief Return a QString from this container
+    /*! \brief Return a QString from this view
      *
      * \note This can be useful for debug,
      * but can be slow
