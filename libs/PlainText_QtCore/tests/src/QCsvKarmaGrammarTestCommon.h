@@ -24,8 +24,8 @@
 #include "Mdt/PlainText/Grammar/Csv/Karma/ProtectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/UnprotectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/FieldColumn.h"
-#include "Mdt/PlainText/Grammar/Csv/Karma/CsvFileLine.h"
-#include "Mdt/PlainText/BoostSpiritKarmaQStringContainer.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/CsvRecord.h"
+#include "Mdt/PlainText/BoostSpiritKarmaQStringUnicodeView"
 #include "Mdt/PlainText/QStringBackInsertIterator.h"
 
 // #include "Mdt/PlainText/BoostSpiritQStringContainer.h"
@@ -39,10 +39,14 @@
 
 using namespace Mdt::PlainText;
 
-using UnprotectedField = Grammar::Csv::Karma::UnprotectedField<QStringBackInsertIterator, BoostSpiritKarmaQStringContainer>;
+/// \todo Should check with BoostSpiritKarmaQStringList
+using StringRecord = std::vector<QStringUnicodeView>;
+
+using UnprotectedField = Grammar::Csv::Karma::UnprotectedField<QStringBackInsertIterator, QStringUnicodeView>;
 // using ProtectedField = Grammar::Csv::Karma::ProtectedField<QStringBackInsertIterator, QString>;
-using ProtectedField = Grammar::Csv::Karma::ProtectedField<QStringBackInsertIterator, BoostSpiritKarmaQStringContainer>;
-using FieldColumn = Grammar::Csv::Karma::FieldColumn<QStringBackInsertIterator, BoostSpiritKarmaQStringContainer>;
+using ProtectedField = Grammar::Csv::Karma::ProtectedField<QStringBackInsertIterator, QStringUnicodeView>;
+using FieldColumn = Grammar::Csv::Karma::FieldColumn<QStringBackInsertIterator, QStringUnicodeView>;
+using CsvRecord = Grammar::Csv::Karma::CsvRecord<QStringBackInsertIterator, StringRecord>;
 
 
 template<typename Rule>
@@ -54,7 +58,7 @@ bool generateRuleFails(const QString & data, const CsvGeneratorSettings & settin
   Rule rule(settings);
 //   const BoostSpiritKarmaQStringContainer sourceContainer(data);
 
-  return !boost::spirit::karma::generate( QStringBackInsertIterator(result), rule, BoostSpiritKarmaQStringContainer(data) );
+  return !boost::spirit::karma::generate( QStringBackInsertIterator(result), rule, QStringUnicodeView(data) );
 }
 
 template<typename Rule>
@@ -65,7 +69,7 @@ QString generateFromQStringRule(const QString & data, const CsvGeneratorSettings
   QString result;
   Rule rule(settings);
 
-  const bool ok = boost::spirit::karma::generate( QStringBackInsertIterator(result), rule, BoostSpiritKarmaQStringContainer(data) );
+  const bool ok = boost::spirit::karma::generate( QStringBackInsertIterator(result), rule, QStringUnicodeView(data) );
   if(!ok){
     const std::string what = "Rule '" + rule.name() + "' failed to generate from '" + data.toStdString() + "'";
     throw std::runtime_error(what);

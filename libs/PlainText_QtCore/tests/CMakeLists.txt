@@ -31,19 +31,27 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME QStringListUnicodeViewTest
+  TARGET qStringListUnicodeViewTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
+  SOURCE_FILES
+    src/QStringListUnicodeViewTest.cpp
+)
+
+mdt_add_test(
+  NAME QStringListUnicodeViewBoostSpiritKarmaTest
+  TARGET qStringListUnicodeViewBoostSpiritKarmaTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
+  SOURCE_FILES
+    src/QStringListUnicodeViewBoostSpiritKarmaTest.cpp
+)
+
+mdt_add_test(
   NAME BoostSpiritKarmaQStringRecordTest
   TARGET boostSpiritKarmaQStringRecordTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
   SOURCE_FILES
     src/BoostSpiritKarmaQStringRecordTest.cpp
-)
-
-mdt_add_test(
-  NAME BoostSpiritKarmaQStringListTest
-  TARGET boostSpiritKarmaQStringListTest
-  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
-  SOURCE_FILES
-    src/BoostSpiritKarmaQStringListTest.cpp
 )
 
 mdt_add_test(

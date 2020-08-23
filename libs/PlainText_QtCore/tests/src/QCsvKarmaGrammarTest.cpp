@@ -203,3 +203,8 @@ TEST_CASE("FieldColumn")
     REQUIRE( result == QString::fromUtf8("\"a𐐅,ö\"") );
   }
 }
+
+TEST_CASE("CsvRecord")
+{
+  REQUIRE(false);
+}
