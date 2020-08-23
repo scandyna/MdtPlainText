@@ -38,8 +38,6 @@ namespace Mdt{ namespace PlainText{
   {
    public:
 
-    /// \todo typdefs should refer to underlaying types..
-
     /*! \brief STL const_iterator
      */
     using const_iterator = QStringConstIterator;
@@ -52,7 +50,7 @@ namespace Mdt{ namespace PlainText{
      */
     using size_type = int;
 
-    QStringUnicodeView() = delete;
+    QStringUnicodeView() = default;
 
     /*! \brief Construct a view from \a str
      */
@@ -60,6 +58,16 @@ namespace Mdt{ namespace PlainText{
      : mBegin( str.cbegin(), str.cend() ),
        mEnd( str.cend(), str.cend() )
     {
+    }
+
+    /*! \brief Assign \a str to this view
+     */
+    QStringUnicodeView & operator=(const QString & str) noexcept
+    {
+      mBegin = QStringConstIterator( str.cbegin(), str.cend() );
+      mEnd = QStringConstIterator( str.cend(), str.cend() );
+
+      return *this;
     }
 
     /*! \brief Copy construct a container from \a other

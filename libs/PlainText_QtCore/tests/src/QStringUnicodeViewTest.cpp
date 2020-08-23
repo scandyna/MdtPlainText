@@ -29,6 +29,46 @@
 
 using Mdt::PlainText::QStringUnicodeView;
 
+TEST_CASE("default_construct")
+{
+  QStringUnicodeView unicodeString;
+  REQUIRE( unicodeString.begin() == unicodeString.end() );
+}
+
+TEST_CASE("assign_str")
+{
+  QString str;
+  QStringUnicodeView unicodeString;
+
+  SECTION("empty")
+  {
+    unicodeString = str;
+    REQUIRE( unicodeString.toQString().isEmpty() );
+  }
+
+  SECTION("A then empty")
+  {
+    str = QLatin1String("A");
+    unicodeString = str;
+    REQUIRE( unicodeString.toQString() == QLatin1String("A") );
+
+    str.clear();
+    unicodeString = str;
+    REQUIRE( unicodeString.toQString().isEmpty() );
+  }
+
+  SECTION("A then B")
+  {
+    str = QLatin1String("A");
+    unicodeString = str;
+    REQUIRE( unicodeString.toQString() == QLatin1String("A") );
+
+    str = QLatin1String("B");
+    unicodeString = str;
+    REQUIRE( unicodeString.toQString() == QLatin1String("B") );
+  }
+}
+
 TEST_CASE("toQString")
 {
   QString str;
