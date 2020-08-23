@@ -244,7 +244,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \internal
      *
-     * \note To be recognized as a random access iterator,
+     * \note To be recognized as a bidirectional iterator,
      * the reference type MUST be a reference.
      * If not doing so, boost::iterator_facade will
      * tell that this iterator is a input iterator (!)
