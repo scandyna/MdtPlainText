@@ -19,12 +19,11 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_CONTAINER_H
-#define MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_CONTAINER_H
+#ifndef MDT_PLAIN_TEXT_QSTRING_UNICODE_VIEW_H
+#define MDT_PLAIN_TEXT_QSTRING_UNICODE_VIEW_H
 
 #include "QStringConstIterator.h"
 #include <QString>
-#include <boost/spirit/include/karma.hpp>
 #include <cstdint>
 #include <vector>
 #include <algorithm>
@@ -34,9 +33,8 @@ namespace Mdt{ namespace PlainText{
 
   /*! \brief QStringUnicodeView is a view on a QString to access its elements as unicode code points
    *
-   *
    */
-  class BoostSpiritKarmaQStringContainer
+  class QStringUnicodeView
   {
    public:
 
@@ -54,11 +52,11 @@ namespace Mdt{ namespace PlainText{
      */
     using size_type = int;
 
-    BoostSpiritKarmaQStringContainer() = delete;
+    QStringUnicodeView() = delete;
 
     /*! \brief Construct a view from \a str
      */
-    explicit BoostSpiritKarmaQStringContainer(const QString & str) noexcept
+    explicit QStringUnicodeView(const QString & str) noexcept
      : mBegin( str.cbegin(), str.cend() ),
        mEnd( str.cend(), str.cend() )
     {
@@ -66,19 +64,19 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Copy construct a container from \a other
      */
-    BoostSpiritKarmaQStringContainer(const BoostSpiritKarmaQStringContainer & other) noexcept = default;
+    QStringUnicodeView(const QStringUnicodeView & other) noexcept = default;
 
     /*! \brief Copy assign \a other to this container
      */
-    BoostSpiritKarmaQStringContainer & operator=(const BoostSpiritKarmaQStringContainer & other) noexcept = default;
+    QStringUnicodeView & operator=(const QStringUnicodeView & other) noexcept = default;
 
     /*! \brief Move construct a container from \a other
      */
-    BoostSpiritKarmaQStringContainer(BoostSpiritKarmaQStringContainer && other) noexcept = default;
+    QStringUnicodeView(QStringUnicodeView && other) noexcept = default;
 
     /*! \brief Move assign \a other to this container
      */
-    BoostSpiritKarmaQStringContainer & operator=(BoostSpiritKarmaQStringContainer && other) noexcept = default;
+    QStringUnicodeView & operator=(QStringUnicodeView && other) noexcept = default;
 
     /*! \brief Get a iterator to the beginning
      */
@@ -118,56 +116,4 @@ namespace Mdt{ namespace PlainText{
 
 }} // namespace Mdt{ namespace PlainText{
 
-namespace boost { namespace spirit { namespace traits{
-
-  /*! \internal
-   */
-  template <>
-  struct is_container<const Mdt::PlainText::BoostSpiritKarmaQStringContainer> : mpl::true_ {};
-
-//   /*! \internal
-//    */
-//   template <>
-//   struct extract_from_attribute<uint32_t, const Mdt::PlainText::BoostSpiritKarmaQStringContainer>
-//   {
-//     template <typename Context>
-//     static
-//     uint32_t call(const Mdt::PlainText::BoostSpiritKarmaQStringContainer & c, Context&)
-//     {
-//     }
-//   };
-
-//   /*! \internal
-//    */
-//   template <>
-//   struct extract_from_container<uint32_t, const Mdt::PlainText::BoostSpiritKarmaQStringContainer>
-//   {
-//     template <typename Context>
-//     static
-//     uint32_t call(const Mdt::PlainText::BoostSpiritKarmaQStringContainer & c, Context&)
-//     {
-//     }
-//   };
-
-  /*! \internal
-   */
-  template <>
-  struct container_iterator<const Mdt::PlainText::BoostSpiritKarmaQStringContainer>
-  {
-    using type = Mdt::PlainText::BoostSpiritKarmaQStringContainer::const_iterator;
-  };
-
-  /*! \internal Define how to stream a BoostSpiritKarmaQStringContainer (required for debug)
-   */
-  template<typename Out, typename Enable>
-  struct print_attribute_debug<Out, Mdt::PlainText::BoostSpiritKarmaQStringContainer, Enable>
-  {
-    static void call(Out & out, const Mdt::PlainText::BoostSpiritKarmaQStringContainer & c)
-    {
-      out << c.toQString().toStdString();
-    }
-  };
-
-}}} // namespace boost { namespace spirit { namespace traits{
-
-#endif // #ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_CONTAINER_H
+#endif // #ifndef MDT_PLAIN_TEXT_QSTRING_UNICODE_VIEW_H

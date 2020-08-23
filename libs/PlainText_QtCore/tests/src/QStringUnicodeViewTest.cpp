@@ -19,4 +19,44 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#include "BoostSpiritKarmaQStringContainer.h"
+#include "catch2/catch.hpp"
+#include "Mdt/PlainText/QStringUnicodeView"
+#include <QString>
+#include <QLatin1String>
+#include <boost/spirit/include/karma.hpp>
+#include <string>
+#include <iterator>
+
+using Mdt::PlainText::QStringUnicodeView;
+
+TEST_CASE("toQString")
+{
+  QString str;
+
+  SECTION("empty")
+  {
+    QStringUnicodeView c(str);
+    REQUIRE( c.toQString().isEmpty() );
+  }
+
+  SECTION("A")
+  {
+    str = QLatin1String("A");
+    QStringUnicodeView c(str);
+    REQUIRE( c.toQString() == QLatin1String("A") );
+  }
+
+  SECTION("ABC")
+  {
+    str = QLatin1String("ABC");
+    QStringUnicodeView c(str);
+    REQUIRE( c.toQString() == QLatin1String("ABC") );
+  }
+
+  SECTION("𐐅")
+  {
+    str = QString::fromUtf8("𐐅");
+    QStringUnicodeView c(str);
+    REQUIRE( c.toQString() == QString::fromUtf8("𐐅") );
+  }
+}

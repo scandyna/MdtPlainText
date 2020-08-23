@@ -10,9 +10,12 @@ include(MdtInstallLibrary)
 add_library(Mdt_PlainText_QtCore
   Mdt/PlainText/Impl/AddCodePointToQString.cpp
   Mdt/PlainText/QStringConstIterator.cpp
+  Mdt/PlainText/QStringUnicodeView.cpp
   Mdt/PlainText/QStringBackInsertIterator.cpp
   Mdt/PlainText/BoostSpiritQStringContainer.cpp
-  Mdt/PlainText/BoostSpiritKarmaQStringContainer.cpp
+  Mdt/PlainText/BoostSpiritKarmaQStringUnicodeView.cpp
+  Mdt/PlainText/BoostSpiritKarmaQStringRecord.cpp
+  Mdt/PlainText/BoostSpiritKarmaQStringList.cpp
   Mdt/PlainText/QTextFileInputConstIteratorSharedData.cpp
   Mdt/PlainText/QTextFileInputConstIterator.cpp
   Mdt/PlainText/BoostSpiritQTextFileInputConstIterator.cpp

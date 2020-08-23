@@ -20,19 +20,17 @@
  **
  ****************************************************************************/
 #include "catch2/catch.hpp"
-#include "Mdt/PlainText/BoostSpiritKarmaQStringContainer.h"
+#include "Mdt/PlainText/BoostSpiritKarmaQStringUnicodeView"
 #include <QString>
 #include <QLatin1String>
 #include <boost/spirit/include/karma.hpp>
 #include <string>
 #include <iterator>
 
-/// \todo Add documented QStringList record example
-
 template<typename Rule>
 bool generateToStdString(const QString & source, const Rule & rule, std::string & destination)
 {
-  const Mdt::PlainText::BoostSpiritKarmaQStringContainer sourceContainer(source);
+  const Mdt::PlainText::QStringUnicodeView sourceContainer(source);
 
   return boost::spirit::karma::generate(std::back_inserter(destination), rule, sourceContainer);
 }
@@ -40,44 +38,11 @@ bool generateToStdString(const QString & source, const Rule & rule, std::string 
 template<typename Rule>
 bool generateToStdu32String(const QString & source, const Rule & rule, std::u32string & destination)
 {
-  const Mdt::PlainText::BoostSpiritKarmaQStringContainer sourceContainer(source);
+  const Mdt::PlainText::QStringUnicodeView sourceContainer(source);
 
   return boost::spirit::karma::generate(std::back_inserter(destination), rule, sourceContainer);
 }
 
-TEST_CASE("toQString")
-{
-  using Mdt::PlainText::BoostSpiritKarmaQStringContainer;
-
-  QString str;
-
-  SECTION("empty")
-  {
-    BoostSpiritKarmaQStringContainer c(str);
-    REQUIRE( c.toQString().isEmpty() );
-  }
-
-  SECTION("A")
-  {
-    str = QLatin1String("A");
-    BoostSpiritKarmaQStringContainer c(str);
-    REQUIRE( c.toQString() == QLatin1String("A") );
-  }
-
-  SECTION("ABC")
-  {
-    str = QLatin1String("ABC");
-    BoostSpiritKarmaQStringContainer c(str);
-    REQUIRE( c.toQString() == QLatin1String("ABC") );
-  }
-
-  SECTION("𐐅")
-  {
-    str = QString::fromUtf8("𐐅");
-    BoostSpiritKarmaQStringContainer c(str);
-    REQUIRE( c.toQString() == QString::fromUtf8("𐐅") );
-  }
-}
 
 TEST_CASE("generate_standard_char_")
 {
