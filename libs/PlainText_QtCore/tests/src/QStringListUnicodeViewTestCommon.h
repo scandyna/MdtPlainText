@@ -43,7 +43,7 @@ QStringList qStringListFromStdStringList(const std::vector<std::string> & stdStr
   return stringList;
 }
 
-bool unicodeStringViewEqualsLatin1String(const QStringUnicodeView & s1, const std::string & s2)
+bool unicodeStringViewEqualsStdString(const QStringUnicodeView & s1, const std::string & s2)
 {
   return s1.toQString().toStdString() == s2;
 }

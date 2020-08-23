@@ -23,8 +23,10 @@
 #define MDT_PLAIN_TEXT_QSTRING_LIST_UNICODE_VIEW_H
 
 #include "QStringUnicodeView.h"
+#include "QStringContainerUnicodeConstIterator.h"
 #include <QStringList>
 #include <QList>
+#include <iterator>
 #include <cassert>
 
 namespace Mdt{ namespace PlainText{
@@ -55,44 +57,42 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief STL container const_iterator
      */
-    using const_iterator = void;
+    using const_iterator = QStringContainerUnicodeConstIterator<QStringList::const_iterator>;
 
     QStringListUnicodeView() = delete;
 
-    /*! \brief Construct a karma record from \a record
+    /*! \brief Construct a view from \a list
      */
-    constexpr
-    explicit QStringListUnicodeView(const QStringList & record) noexcept
+    explicit QStringListUnicodeView(const QStringList & list) noexcept
+     : mBegin( list.cbegin() ),
+       mEnd( list.cend() )
     {
     }
 
-    /*! \brief Copy construct a container from \a other
+    /*! \brief Copy construct a view from \a other
      */
-    constexpr
     QStringListUnicodeView(const QStringListUnicodeView & other) noexcept = default;
 
-    /*! \brief Copy assign \a other to this container
+    /*! \brief Copy assign \a other to this view
      */
-    constexpr
     QStringListUnicodeView & operator=(const QStringListUnicodeView & other) noexcept = default;
 
-    /*! \brief Move construct a container from \a other
+    /*! \brief Move construct a view from \a other
      */
-    constexpr
     QStringListUnicodeView(QStringListUnicodeView && other) noexcept = default;
 
-    /*! \brief Move assign \a other to this container
+    /*! \brief Move assign \a other to this view
      */
-    constexpr
     QStringListUnicodeView & operator=(QStringListUnicodeView && other) noexcept = default;
 
     /*! \brief Return the number of element in this list
      */
     int size() const noexcept
     {
+      return std::distance(mBegin, mEnd);
     }
 
-    /*! \brief Get the element at \a index
+    /*! \brief Get a unicode string view for the element at \a index
      *
      * \pre \a index must be in valid range ( 0 >= \a index < size() )
      */
@@ -100,7 +100,42 @@ namespace Mdt{ namespace PlainText{
     {
       assert( index >= 0 );
       assert( index < size() );
+
+      return *std::next(mBegin, index);
     }
+
+    /*! \brief Get a iterator to the beginning
+     */
+    const_iterator begin() const noexcept
+    {
+      return mBegin;
+    }
+
+    /*! \brief Get a iterator to the end
+     */
+    const_iterator end() const noexcept
+    {
+      return mEnd;
+    }
+
+    /*! \brief Get a iterator to the beginning
+     */
+    const_iterator cbegin() const noexcept
+    {
+      return mBegin;
+    }
+
+    /*! \brief Get a iterator to the end
+     */
+    const_iterator cend() const noexcept
+    {
+      return mEnd;
+    }
+
+   private:
+
+    const_iterator mBegin;
+    const_iterator mEnd;
   };
 
 }} // namespace Mdt{ namespace PlainText{

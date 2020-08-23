@@ -20,6 +20,7 @@
  **
  ****************************************************************************/
 #include "QStringListUnicodeViewTestCommon.h"
+#include <algorithm>
 
 static_assert( std::is_copy_constructible<QStringListUnicodeView>::value , "" );
 static_assert( std::is_copy_assignable<QStringListUnicodeView>::value , "" );
@@ -32,6 +33,31 @@ TEST_CASE("construct")
   REQUIRE( unicodeStringList.size() == 2 );
 }
 
+TEST_CASE("size")
+{
+  QStringList stringList;
+
+  SECTION("empty list")
+  {
+    const QStringListUnicodeView unicodeStringList(stringList);
+    REQUIRE( unicodeStringList.size() == 0 );
+  }
+
+  SECTION("A")
+  {
+    stringList = qStringListFromStdStringList({"A"});
+    const QStringListUnicodeView unicodeStringList(stringList);
+    REQUIRE( unicodeStringList.size() == 1 );
+  }
+
+  SECTION("A|BCD")
+  {
+    stringList = qStringListFromStdStringList({"A","BCD"});
+    const QStringListUnicodeView unicodeStringList(stringList);
+    REQUIRE( unicodeStringList.size() == 2 );
+  }
+}
+
 TEST_CASE("at")
 {
   QStringList stringList;
@@ -41,23 +67,50 @@ TEST_CASE("at")
     stringList = qStringListFromStdStringList({"A"});
     const QStringListUnicodeView unicodeStringList(stringList);
     REQUIRE( unicodeStringList.size() == 1 );
-    REQUIRE( unicodeStringViewEqualsLatin1String(unicodeStringList.at(0), "A") );
+    REQUIRE( unicodeStringViewEqualsStdString(unicodeStringList.at(0), "A") );
   }
-
-  REQUIRE(false);
 }
 
-TEST_CASE("operator_square_bracket")
+// TEST_CASE("operator_square_bracket")
+// {
+//   REQUIRE(false);
+// }
+
+TEST_CASE("iterators")
 {
-  REQUIRE(false);
+  QStringList stringList;
+
+  SECTION("empty list")
+  {
+    const QStringListUnicodeView unicodeStringList(stringList);
+    REQUIRE( unicodeStringList.begin() == unicodeStringList.end() );
+    REQUIRE( unicodeStringList.cbegin() == unicodeStringList.cend() );
+  }
+
+  SECTION("ABC")
+  {
+    stringList = qStringListFromStdStringList({"ABC"});
+    const QStringListUnicodeView unicodeStringList(stringList);
+
+    REQUIRE( unicodeStringList.begin() != unicodeStringList.end() );
+    REQUIRE( unicodeStringViewEqualsStdString(*unicodeStringList.begin(), "ABC") );
+
+    REQUIRE( unicodeStringList.cbegin() != unicodeStringList.cend() );
+    REQUIRE( unicodeStringViewEqualsStdString(*unicodeStringList.cbegin(), "ABC") );
+  }
 }
 
 TEST_CASE("Range_for")
 {
-  REQUIRE(false);
+  QStringList stringList = qStringListFromStdStringList({"A"});
+  const QStringListUnicodeView unicodeStringList(stringList);
+
+  for(const QStringUnicodeView & unicodeString : unicodeStringList){
+    REQUIRE( unicodeStringViewEqualsStdString(unicodeString, "A") );
+  }
 }
 
-TEST_CASE("std_copy")
-{
-  REQUIRE(false);
-}
+// TEST_CASE("std_copy")
+// {
+//   REQUIRE(false);
+// }
