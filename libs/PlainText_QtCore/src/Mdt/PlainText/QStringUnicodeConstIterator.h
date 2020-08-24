@@ -19,8 +19,8 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#ifndef MDT_PLAIN_TEXT_QSTRING_CONST_ITERATOR_H
-#define MDT_PLAIN_TEXT_QSTRING_CONST_ITERATOR_H
+#ifndef MDT_PLAIN_TEXT_QSTRING_UNICODE_CONST_ITERATOR_H
+#define MDT_PLAIN_TEXT_QSTRING_UNICODE_CONST_ITERATOR_H
 
 #include "mdt_plaintext_qtcore_export.h"
 #include <QString>
@@ -261,4 +261,4 @@ namespace Mdt{ namespace PlainText{
 
 }} // namespace Mdt{ namespace PlainText{
 
-#endif // #ifndef MDT_PLAIN_TEXT_QSTRING_CONST_ITERATOR_H
+#endif // #ifndef MDT_PLAIN_TEXT_QSTRING_UNICODE_CONST_ITERATOR_H
