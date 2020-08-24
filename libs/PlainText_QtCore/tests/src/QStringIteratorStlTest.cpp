@@ -21,13 +21,13 @@
  ****************************************************************************/
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/QStringUnicodeConstIterator.h"
-#include "Mdt/PlainText/QStringBackInsertIterator.h"
+#include "Mdt/PlainText/QStringUnicodeBackInsertIterator.h"
 #include <QString>
 #include <QLatin1String>
 #include <iterator>
 
 using Mdt::PlainText::QStringUnicodeConstIterator;
-using Mdt::PlainText::QStringBackInsertIterator;
+using Mdt::PlainText::QStringUnicodeBackInsertIterator;
 
 
 TEST_CASE("std_copy")
@@ -39,7 +39,7 @@ TEST_CASE("std_copy")
     const QString source = QLatin1String("abcd");
     QStringUnicodeConstIterator first( source.cbegin(), source.cend() );
     QStringUnicodeConstIterator last( source.cend(), source.cend() );
-    std::copy( first, last, QStringBackInsertIterator(destination) );
+    std::copy( first, last, QStringUnicodeBackInsertIterator(destination) );
     REQUIRE( destination == source );
   }
 
@@ -48,7 +48,7 @@ TEST_CASE("std_copy")
     const QString source = QString::fromUtf8("éöàäèü$£𐐅");
     QStringUnicodeConstIterator first( source.cbegin(), source.cend() );
     QStringUnicodeConstIterator last( source.cend(), source.cend() );
-    std::copy( first, last, QStringBackInsertIterator(destination) );
+    std::copy( first, last, QStringUnicodeBackInsertIterator(destination) );
     REQUIRE( destination == source );
   }
 }
@@ -59,7 +59,7 @@ TEST_CASE("std_fill_n")
 
   SECTION("5 𝛀")
   {
-    std::fill_n( QStringBackInsertIterator(str), 5, U'𝛀' );
+    std::fill_n( QStringUnicodeBackInsertIterator(str), 5, U'𝛀' );
     REQUIRE( str == QString::fromUtf8("𝛀𝛀𝛀𝛀𝛀") );
   }
 }

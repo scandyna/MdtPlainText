@@ -19,8 +19,8 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
 ****************************************************************************/
-#ifndef MDT_PLAIN_TEXT_QSTRING_BACK_INSERT_ITERATOR_H
-#define MDT_PLAIN_TEXT_QSTRING_BACK_INSERT_ITERATOR_H
+#ifndef MDT_PLAIN_TEXT_QSTRING_UNICODE_BACK_INSERT_ITERATOR_H
+#define MDT_PLAIN_TEXT_QSTRING_UNICODE_BACK_INSERT_ITERATOR_H
 
 #include "Mdt/PlainText/Impl/AddCodePointToQString.h"
 #include "mdt_plaintext_qtcore_export.h"
@@ -39,13 +39,13 @@ namespace Mdt{ namespace PlainText{
    *
    * Example:
    * \code
-   * using Mdt::PlainText::QStringBackInsertIterator;
+   * using Mdt::PlainText::QStringUnicodeBackInsertIterator;
    *
    * QString str;
-   * std::fill_n( QStringBackInsertIterator(str), 5, U'𝛀' );
+   * std::fill_n( QStringUnicodeBackInsertIterator(str), 5, U'𝛀' );
    * \endcode
    */
-  class MDT_PLAINTEXT_QTCORE_EXPORT QStringBackInsertIterator
+  class MDT_PLAINTEXT_QTCORE_EXPORT QStringUnicodeBackInsertIterator
   {
    public:
 
@@ -58,14 +58,14 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Construct a back insert iterator to act on \a str
      */
-    explicit QStringBackInsertIterator(QString & str)
+    explicit QStringUnicodeBackInsertIterator(QString & str)
      : mString(str)
     {
     }
 
     /*! \brief Append \a codePoint to the string
      */
-    QStringBackInsertIterator & operator=(uint32_t codePoint)
+    QStringUnicodeBackInsertIterator & operator=(uint32_t codePoint)
     {
       Impl::addCodePointToQString(codePoint, mString);
 
@@ -82,7 +82,7 @@ namespace Mdt{ namespace PlainText{
      * \endcode
      * to output (insert) the value into the underlying string. 
      */
-    constexpr QStringBackInsertIterator & operator*()
+    constexpr QStringUnicodeBackInsertIterator & operator*()
     {
       return *this;
     }
@@ -97,7 +97,7 @@ namespace Mdt{ namespace PlainText{
      * \endcode
      * to output (insert) the value into the underlying string. 
      */
-    constexpr QStringBackInsertIterator & operator++()
+    constexpr QStringUnicodeBackInsertIterator & operator++()
     {
       return *this;
     }
@@ -112,7 +112,7 @@ namespace Mdt{ namespace PlainText{
      * \endcode
      * to output (insert) the value into the underlying string. 
      */
-    constexpr QStringBackInsertIterator & operator++(int)
+    constexpr QStringUnicodeBackInsertIterator & operator++(int)
     {
       return *this;
     }
@@ -124,4 +124,4 @@ namespace Mdt{ namespace PlainText{
 
 }} // namespace Mdt{ namespace PlainText{
 
-#endif // #ifndef MDT_PLAIN_TEXT_QSTRING_BACK_INSERT_ITERATOR_H
+#endif // #ifndef MDT_PLAIN_TEXT_QSTRING_UNICODE_BACK_INSERT_ITERATOR_H

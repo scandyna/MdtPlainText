@@ -71,11 +71,11 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME QStringBackInsertIteratorTest
-  TARGET qStringBackInsertIteratorTest
+  NAME QStringUnicodeBackInsertIteratorTest
+  TARGET qStringUnicodeBackInsertIteratorTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
   SOURCE_FILES
-    src/QStringBackInsertIteratorTest.cpp
+    src/QStringUnicodeBackInsertIteratorTest.cpp
 )
 
 mdt_add_test(

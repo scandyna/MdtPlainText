@@ -20,18 +20,18 @@
  **
  ****************************************************************************/
 #include "catch2/catch.hpp"
-#include "Mdt/PlainText/QStringBackInsertIterator.h"
+#include "Mdt/PlainText/QStringUnicodeBackInsertIterator.h"
 #include <QString>
 #include <QLatin1String>
 #include <type_traits>
 #include <iterator>
 
-using Mdt::PlainText::QStringBackInsertIterator;
+using Mdt::PlainText::QStringUnicodeBackInsertIterator;
 
 TEST_CASE("construct")
 {
   QString str;
-  QStringBackInsertIterator it(str);
+    QStringUnicodeBackInsertIterator it(str);
 //   Q_UNUSED(it);
 }
 
@@ -39,9 +39,9 @@ TEST_CASE("construct")
  * Tests for LegacyIterator requirements
  */
 
-static_assert( std::is_copy_constructible<QStringBackInsertIterator>::value , "" );
+static_assert( std::is_copy_constructible<QStringUnicodeBackInsertIterator>::value , "" );
 /// static_assert( std::is_copy_assignable<QStringBackInsertIterator>::value , "" );
-static_assert( std::is_destructible<QStringBackInsertIterator>::value , "" );
+static_assert( std::is_destructible<QStringUnicodeBackInsertIterator>::value , "" );
 
 TEST_CASE("copy_construct")
 {
@@ -60,7 +60,7 @@ TEST_CASE("copy_assign")
 TEST_CASE("assign")
 {
   QString str;
-  QStringBackInsertIterator it(str);
+    QStringUnicodeBackInsertIterator it(str);
 
   SECTION("A")
   {
@@ -105,7 +105,7 @@ TEST_CASE("assign")
 TEST_CASE("dereference")
 {
   QString str;
-  QStringBackInsertIterator it(str);
+    QStringUnicodeBackInsertIterator it(str);
 
   SECTION("A")
   {
@@ -117,7 +117,7 @@ TEST_CASE("dereference")
 TEST_CASE("pre-increment")
 {
   QString str;
-  QStringBackInsertIterator it(str);
+    QStringUnicodeBackInsertIterator it(str);
 
   SECTION("A")
   {
@@ -129,7 +129,7 @@ TEST_CASE("pre-increment")
 TEST_CASE("post-increment")
 {
   QString str;
-  QStringBackInsertIterator it(str);
+    QStringUnicodeBackInsertIterator it(str);
 
   SECTION("A")
   {
