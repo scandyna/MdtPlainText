@@ -20,13 +20,13 @@
  **
  ****************************************************************************/
 #include "catch2/catch.hpp"
-#include "Mdt/PlainText/QStringConstIterator.h"
+#include "Mdt/PlainText/QStringUnicodeConstIterator.h"
 #include "Mdt/PlainText/QStringBackInsertIterator.h"
 #include <QString>
 #include <QLatin1String>
 #include <iterator>
 
-using Mdt::PlainText::QStringConstIterator;
+using Mdt::PlainText::QStringUnicodeConstIterator;
 using Mdt::PlainText::QStringBackInsertIterator;
 
 
@@ -37,8 +37,8 @@ TEST_CASE("std_copy")
   SECTION("abcd")
   {
     const QString source = QLatin1String("abcd");
-    QStringConstIterator first( source.cbegin(), source.cend() );
-    QStringConstIterator last( source.cend(), source.cend() );
+    QStringUnicodeConstIterator first( source.cbegin(), source.cend() );
+    QStringUnicodeConstIterator last( source.cend(), source.cend() );
     std::copy( first, last, QStringBackInsertIterator(destination) );
     REQUIRE( destination == source );
   }
@@ -46,8 +46,8 @@ TEST_CASE("std_copy")
   SECTION("éöàäèü$£𐐅")
   {
     const QString source = QString::fromUtf8("éöàäèü$£𐐅");
-    QStringConstIterator first( source.cbegin(), source.cend() );
-    QStringConstIterator last( source.cend(), source.cend() );
+    QStringUnicodeConstIterator first( source.cbegin(), source.cend() );
+    QStringUnicodeConstIterator last( source.cend(), source.cend() );
     std::copy( first, last, QStringBackInsertIterator(destination) );
     REQUIRE( destination == source );
   }

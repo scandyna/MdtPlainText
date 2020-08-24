@@ -35,7 +35,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \internal
      */
-    struct QStringConstIteratorData
+    struct QStringUnicodeConstIteratorData
     {
       uint32_t value = 0;
       QString::const_iterator begin = nullptr;
@@ -43,10 +43,10 @@ namespace Mdt{ namespace PlainText{
       QString::const_iterator end = nullptr;
 
       constexpr
-      QStringConstIteratorData() noexcept = default;
+      QStringUnicodeConstIteratorData() noexcept = default;
 
       constexpr
-      QStringConstIteratorData(QString::const_iterator begin, QString::const_iterator pos, QString::const_iterator end) noexcept
+      QStringUnicodeConstIteratorData(QString::const_iterator begin, QString::const_iterator pos, QString::const_iterator end) noexcept
        : begin(begin),
          position(pos),
          end(end)
@@ -54,16 +54,16 @@ namespace Mdt{ namespace PlainText{
       }
 
       constexpr
-      QStringConstIteratorData(const QStringConstIteratorData & other) noexcept = default;
+      QStringUnicodeConstIteratorData(const QStringUnicodeConstIteratorData & other) noexcept = default;
 
       constexpr
-      QStringConstIteratorData & operator=(const QStringConstIteratorData & other) noexcept = default;
+      QStringUnicodeConstIteratorData & operator=(const QStringUnicodeConstIteratorData & other) noexcept = default;
 
       constexpr
-      QStringConstIteratorData(QStringConstIteratorData && other) noexcept = default;
+      QStringUnicodeConstIteratorData(QStringUnicodeConstIteratorData && other) noexcept = default;
 
       constexpr
-      QStringConstIteratorData & operator=(QStringConstIteratorData && other) noexcept = default;
+      QStringUnicodeConstIteratorData & operator=(QStringUnicodeConstIteratorData && other) noexcept = default;
 
       constexpr
       bool hasNext() const noexcept
@@ -143,20 +143,20 @@ namespace Mdt{ namespace PlainText{
 
   } // namespace Impl{
 
-  /*! \brief QString const iterator
+  /*! \brief QString unicode const iterator
    *
    * QString::const_iterator is a pointer to a QChar,
    * which gives access to each code unit in a QString,
    * not the code point.
    *
-   * QStringConstIterator travels code points in a QString,
+   * QStringUnicodeConstIterator travels code points in a QString,
    * and return it as a 32bit unicode value.
    *
    * \code
-   * using Mdt::PlainText::QStringConstIterator;
+   * using Mdt::PlainText::QStringUnicodeConstIterator;
    *
-   * QStringConstIterator first( str.cbegin(), str.cend() );
-   * QStringConstIterator last( str.cend(), str.cend() );
+   * QStringUnicodeConstIterator first( str.cbegin(), str.cend() );
+   * QStringUnicodeConstIterator last( str.cend(), str.cend() );
    * \endcode
    *
    * Because it has to check each UTF-16 code unit to know
@@ -172,8 +172,8 @@ namespace Mdt{ namespace PlainText{
    *
    * \sa https://stackoverflow.com/questions/57461106/how-can-i-use-boostspirit-x3-in-conjunction-with-qstring
    */
-  class MDT_PLAINTEXT_QTCORE_EXPORT QStringConstIterator : public boost::iterator_facade<
-      QStringConstIterator,               // Derived
+  class MDT_PLAINTEXT_QTCORE_EXPORT QStringUnicodeConstIterator : public boost::iterator_facade<
+      QStringUnicodeConstIterator,        // Derived
       const uint32_t,                     // Value
       boost::bidirectional_traversal_tag, // CategoryOrTraversal
       const uint32_t &,                   // Reference, see dereference()
@@ -184,7 +184,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Default constructor
      */
-    QStringConstIterator() noexcept = default;
+    QStringUnicodeConstIterator() noexcept = default;
 
     /*! \brief Construct a iterator that points to \a it
      *
@@ -192,7 +192,7 @@ namespace Mdt{ namespace PlainText{
      *  This is because the codepoint value (uint32_t) can be a composition
      *  of 2 UTF16 (QChar) codepoints.
      */
-    QStringConstIterator(QString::const_iterator it, QString::const_iterator end)
+    QStringUnicodeConstIterator(QString::const_iterator it, QString::const_iterator end)
      : mData(it, it, end)
     {
       extractCodePointIfDereferencable();
@@ -204,7 +204,7 @@ namespace Mdt{ namespace PlainText{
      *  This is because the codepoint value (uint32_t) can be a composition
      *  of 2 UTF16 (QChar) codepoints.
      */
-    QStringConstIterator(QString::iterator it, QString::iterator end)
+    QStringUnicodeConstIterator(QString::iterator it, QString::iterator end)
      : mData(it, it, end)
     {
       extractCodePointIfDereferencable();
@@ -212,13 +212,13 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Copy construct a iterator from \a other
      */
-    QStringConstIterator(const QStringConstIterator & other) noexcept = default;
+    QStringUnicodeConstIterator(const QStringUnicodeConstIterator & other) noexcept = default;
 
   private:
 
     friend class boost::iterator_core_access;
 
-    bool equal(const QStringConstIterator & other) const
+    bool equal(const QStringUnicodeConstIterator & other) const
     {
       return mData.position == other.mData.position;
     }
@@ -256,7 +256,7 @@ namespace Mdt{ namespace PlainText{
       return mData.value;
     }
 
-    Impl::QStringConstIteratorData mData;
+    Impl::QStringUnicodeConstIteratorData mData;
   };
 
 }} // namespace Mdt{ namespace PlainText{

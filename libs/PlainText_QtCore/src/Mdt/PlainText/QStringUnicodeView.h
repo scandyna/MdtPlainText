@@ -22,7 +22,7 @@
 #ifndef MDT_PLAIN_TEXT_QSTRING_UNICODE_VIEW_H
 #define MDT_PLAIN_TEXT_QSTRING_UNICODE_VIEW_H
 
-#include "QStringConstIterator.h"
+#include "QStringUnicodeConstIterator.h"
 #include <QString>
 #include <cstdint>
 #include <vector>
@@ -40,7 +40,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief STL const_iterator
      */
-    using const_iterator = QStringConstIterator;
+    using const_iterator = QStringUnicodeConstIterator;
 
     /*! \brief STL value_type
      */
@@ -64,8 +64,8 @@ namespace Mdt{ namespace PlainText{
      */
     QStringUnicodeView & operator=(const QString & str) noexcept
     {
-      mBegin = QStringConstIterator( str.cbegin(), str.cend() );
-      mEnd = QStringConstIterator( str.cend(), str.cend() );
+      mBegin = QStringUnicodeConstIterator( str.cbegin(), str.cend() );
+      mEnd = QStringUnicodeConstIterator( str.cend(), str.cend() );
 
       return *this;
     }
@@ -118,8 +118,8 @@ namespace Mdt{ namespace PlainText{
 
    private:
 
-    QStringConstIterator mBegin;
-    QStringConstIterator mEnd;
+    QStringUnicodeConstIterator mBegin;
+    QStringUnicodeConstIterator mEnd;
   };
 
 }} // namespace Mdt{ namespace PlainText{

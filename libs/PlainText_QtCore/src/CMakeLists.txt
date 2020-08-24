@@ -9,7 +9,7 @@ include(MdtInstallLibrary)
 
 add_library(Mdt_PlainText_QtCore
   Mdt/PlainText/Impl/AddCodePointToQString.cpp
-  Mdt/PlainText/QStringConstIterator.cpp
+  Mdt/PlainText/QStringUnicodeConstIterator.cpp
   Mdt/PlainText/QStringUnicodeView.cpp
   Mdt/PlainText/QStringContainerUnicodeConstIterator.cpp
   Mdt/PlainText/QStringContainerUnicodeView.cpp

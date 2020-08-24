@@ -55,19 +55,19 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME QStringConstIteratorTest
-  TARGET qStringConstIteratorTest
+  NAME QStringUnicodeConstIteratorTest
+  TARGET qStringUnicodeConstIteratorTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
   SOURCE_FILES
-    src/QStringConstIteratorTest.cpp
+    src/QStringUnicodeConstIteratorTest.cpp
 )
 
 mdt_add_test(
-  NAME QStringConstIteratorBoostSpiritTest
-  TARGET qStringConstIteratorBoostSpiritTest
+  NAME QStringUnicodeConstIteratorBoostSpiritTest
+  TARGET qStringUnicodeConstIteratorBoostSpiritTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
   SOURCE_FILES
-    src/QStringConstIteratorBoostSpiritTest.cpp
+    src/QStringUnicodeConstIteratorBoostSpiritTest.cpp
 )
 
 mdt_add_test(

@@ -44,7 +44,7 @@ TEST_CASE("standard_char_")
 
   SECTION("A")
   {
-//     REQUIRE( generateToStdString({QLatin1String("A")}, *char_, result) );
+    REQUIRE( generateToStdString({QLatin1String("A")}, *char_, result) );
     REQUIRE( result == "A" );
   }
 
