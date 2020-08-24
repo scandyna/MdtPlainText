@@ -19,31 +19,4 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#ifndef MDT_PLAIN_TEXT_QSTRING_LIST_UNICODE_VIEW_H
-#define MDT_PLAIN_TEXT_QSTRING_LIST_UNICODE_VIEW_H
-
 #include "QStringContainerUnicodeView.h"
-#include <QStringList>
-#include <QList>
-
-namespace Mdt{ namespace PlainText{
-
-  /*! \brief QStringListUnicodeView is a view on a QStringList to access its elements as QStringUnicodeView
-   *
-   * Example:
-   * \code
-   * using Mdt::PlainText::QStringUnicodeView;
-   *
-   * QStringList stringList{"ABC","1234"};
-   * Mdt::PlainText::QStringListUnicodeView unicodeStringList(stringList);
-   *
-   * for(const QStringUnicodeView & unicodeString : unicodeStringList){
-   *   processUnicodeString(unicodeString);
-   * }
-   * \endcode
-   */
-  using QStringListUnicodeView = QStringContainerUnicodeView<QStringList>;
-
-}} // namespace Mdt{ namespace PlainText{
-
-#endif // #ifndef MDT_PLAIN_TEXT_QSTRING_LIST_UNICODE_VIEW_H
