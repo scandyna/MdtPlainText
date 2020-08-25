@@ -79,6 +79,7 @@ This is the recommended way.
 
 MdtPlainText has those dependencies:
  - [mdt-cmake-modules](https://gitlab.com/scandyna/mdt-cmake-modules)
+ - boost
  - Qt5
 
 Qt5 can be installed using Conan, which can be usefull
