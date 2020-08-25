@@ -25,11 +25,20 @@
 template<typename FieldColumnRule>
 bool generateToStdString(const QStringList & record, const FieldColumnRule & fieldColumn, std::string & destination)
 {
-//   using KarmaRecord = Mdt::PlainText::BoostSpiritKarmaQStringRecord<std::vector<QString>>;
-
   const QStringListUnicodeView sourceContainer(record);
 
   boost::spirit::karma::rule<std::back_insert_iterator<std::string>, QStringListUnicodeView()> csvRecord;
+  csvRecord = fieldColumn % ',';
+
+  return boost::spirit::karma::generate(std::back_inserter(destination), csvRecord, sourceContainer);
+}
+
+template<typename FieldColumnRule>
+bool generateToStdu32String(const QStringList & record, const FieldColumnRule & fieldColumn, std::u32string & destination)
+{
+  const QStringListUnicodeView sourceContainer(record);
+
+  boost::spirit::karma::rule<std::back_insert_iterator<std::u32string>, QStringListUnicodeView()> csvRecord;
   csvRecord = fieldColumn % ',';
 
   return boost::spirit::karma::generate(std::back_inserter(destination), csvRecord, sourceContainer);
@@ -40,6 +49,7 @@ TEST_CASE("standard_char_")
 {
   using boost::spirit::standard::char_;
 
+  QStringList record;
   std::string result;
 
   SECTION("A")
@@ -48,5 +58,46 @@ TEST_CASE("standard_char_")
     REQUIRE( result == "A" );
   }
 
-  REQUIRE(false);
+  SECTION("A|B")
+  {
+    record = qStringListFromStdStringList({"A","B"});
+    REQUIRE( generateToStdString(record, *char_, result) );
+    REQUIRE( result == "A,B" );
+  }
+
+  SECTION("AB|C|DE")
+  {
+    record = qStringListFromStdStringList({"AB","C","DE"});
+    REQUIRE( generateToStdString(record, *char_, result) );
+    REQUIRE( result == "AB,C,DE" );
+  }
+}
+
+TEST_CASE("unicode_char_")
+{
+  using boost::spirit::unicode::char_;
+
+  QStringList record;
+  std::u32string result;
+
+  SECTION("A|B")
+  {
+    record = qStringListFromStdStringList({"A","B"});
+    REQUIRE( generateToStdu32String(record, *char_, result) );
+    REQUIRE( result == U"A,B" );
+  }
+
+  SECTION("éö|àäè|ü$£")
+  {
+    record = qStringListFromStdStringList({"éö","àäè","ü$£"});
+    REQUIRE( generateToStdu32String(record, *char_, result) );
+    REQUIRE( result == U"éö,àäè,ü$£" );
+  }
+
+  SECTION("a|𐐅ö")
+  {
+    record = qStringListFromStdStringList({"a","𐐅ö"});
+    REQUIRE( generateToStdu32String(record, *char_, result) );
+    REQUIRE( result == U"a,𐐅ö" );
+  }
 }
