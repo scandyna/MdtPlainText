@@ -22,8 +22,8 @@
  ** https://www.boost.org/doc/libs/1_73_0/libs/spirit/example/qi/custom_string.cpp
  **
  ****************************************************************************/
-#ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_CONTAINER_H
-#define MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_CONTAINER_H
+#ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_QI_QSTRING_SUPPORT_H
+#define MDT_PLAIN_TEXT_BOOST_SPIRIT_QI_QSTRING_SUPPORT_H
 
 #include "Mdt/PlainText/Impl/AddCodePointToQString.h"
 #include <boost/spirit/include/qi.hpp>
@@ -85,4 +85,4 @@ namespace boost { namespace spirit { namespace traits{
 
 }}} // namespace boost { namespace spirit { namespace traits{
 
-#endif // #ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_QSTRING_CONTAINER_H
+#endif // #ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_QI_QSTRING_SUPPORT_H

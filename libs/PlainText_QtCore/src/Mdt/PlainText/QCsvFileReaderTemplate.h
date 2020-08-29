@@ -26,7 +26,7 @@
 #include "QCsvFileReadError.h"
 #include "QTextCodecNotFoundError.h"
 #include "BoostSpiritQTextFileInputConstIterator.h"
-#include "BoostSpiritQStringContainer.h"
+#include "BoostSpiritQiQStringSupport.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include "mdt_plaintext_qtcore_export.h"
 #include <QByteArray>

@@ -21,7 +21,7 @@
  ****************************************************************************/
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/BoostSpiritQTextFileInputConstIterator.h"
-#include "Mdt/PlainText/BoostSpiritQStringContainer.h"
+#include "Mdt/PlainText/BoostSpiritQiQStringSupport"
 #include "Mdt/PlainText/TestLib/TextFileUtils.h"
 #include <boost/spirit/include/support_multi_pass.hpp>
 #include <QTemporaryFile>

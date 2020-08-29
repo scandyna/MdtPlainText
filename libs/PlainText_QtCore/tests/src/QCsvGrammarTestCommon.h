@@ -24,7 +24,7 @@
 #include "Mdt/PlainText/Grammar/Csv/CsvRecord.h"
 #include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
 #include "Mdt/PlainText/QStringUnicodeConstIterator.h"
-#include "Mdt/PlainText/BoostSpiritQStringContainer.h"
+#include "Mdt/PlainText/BoostSpiritQiQStringSupport"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include "Mdt/PlainText/QRuntimeError.h"
 #include <QString>

@@ -21,7 +21,7 @@
  ****************************************************************************/
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/QStringUnicodeConstIterator.h"
-#include "Mdt/PlainText/BoostSpiritQStringContainer.h"
+#include "Mdt/PlainText/BoostSpiritQiQStringSupport"
 #include <boost/spirit/include/qi.hpp>
 #include <QString>
 
