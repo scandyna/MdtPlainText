@@ -206,5 +206,43 @@ TEST_CASE("FieldColumn")
 
 TEST_CASE("CsvRecord")
 {
-  REQUIRE(false);
+  QStringList record;
+  QString result;
+  CsvGeneratorSettings csvSettings;
+  csvSettings.setEndOfLine(EndOfLine::Lf);
+
+  SECTION("A|B")
+  {
+    record = qStringListFromStdStringList({"A","B"});
+    result = generateCsvRecord(record, csvSettings);
+    REQUIRE( result == QLatin1String("A,B\n") );
+  }
+
+  SECTION("a|𐐅|ö")
+  {
+    record = qStringListFromStdStringList({"a","𐐅","ö"});
+    result = generateCsvRecord(record, csvSettings);
+    REQUIRE( result == QString::fromUtf8("a,𐐅,ö\n") );
+  }
+
+  SECTION("ab|c𐐅|ö")
+  {
+    record = qStringListFromStdStringList({"ab","c𐐅","ö"});
+    result = generateCsvRecord(record, csvSettings);
+    REQUIRE( result == QString::fromUtf8("ab,c𐐅,ö\n") );
+  }
+
+  SECTION("a,b|c,𐐅|ö")
+  {
+    record = qStringListFromStdStringList({"a,b","c,𐐅","ö"});
+    result = generateCsvRecord(record, csvSettings);
+    REQUIRE( result == QString::fromUtf8("\"a,b\",\"c,𐐅\",ö\n") );
+  }
+
+  SECTION("\"ab\"|\"c𐐅\"|ö")
+  {
+    record = qStringListFromStdStringList({"\"ab\"","\"c𐐅\"","ö"});
+    result = generateCsvRecord(record, csvSettings);
+    REQUIRE( result == QString::fromUtf8("\"\"\"ab\"\"\",\"\"\"c𐐅\"\"\",ö\n") );
+  }
 }

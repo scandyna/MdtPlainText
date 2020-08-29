@@ -101,3 +101,22 @@ TEST_CASE("unicode_char_")
     REQUIRE( result == U"a,𐐅ö" );
   }
 }
+
+TEST_CASE("Sequence")
+{
+  using boost::spirit::unicode::char_;
+  using boost::spirit::lit;
+
+  QStringList record;
+  std::u32string result;
+
+  SECTION("*char_ << char_")
+  {
+    SECTION("A << B")
+    {
+      record = qStringListFromStdStringList({"A"});
+      REQUIRE( generateToStdu32String(record, *char_ << lit('B'), result) );
+      REQUIRE( result == U"AB" );
+    }
+  }
+}

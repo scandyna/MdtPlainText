@@ -20,7 +20,7 @@
  **
  ****************************************************************************/
 #include "catch2/catch.hpp"
-#include "Mdt/PlainText/BoostSpiritKarmaQStringUnicodeView"
+#include "Mdt/PlainText/BoostSpiritKarmaQStringSupport"
 #include <QString>
 #include <QLatin1String>
 #include <boost/spirit/include/karma.hpp>
@@ -49,13 +49,6 @@ TEST_CASE("generate_standard_char_")
   using boost::spirit::standard::char_;
 
   std::string result;
-
-  /// \todo this has no sense
-//   SECTION("char_ A")
-//   {
-//     REQUIRE( generateToStdString(QLatin1String("A"), char_, result) );
-//     REQUIRE( result == "A" );
-//   }
 
   SECTION("*char_ A")
   {
@@ -95,19 +88,6 @@ TEST_CASE("generate_unicode_char_")
     REQUIRE( generateToStdu32String(QLatin1String("A"), *char_, result) );
     REQUIRE( result == U"A" );
   }
-
-  /// \todo this has no sense
-//   SECTION("char_ A")
-//   {
-//     REQUIRE( generateToStdu32String(QLatin1String("A"), char_, result) );
-//     REQUIRE( result == U"A" );
-//   }
-
-//   SECTION("char_ << char_ AB")
-//   {
-//     REQUIRE( generateToStdu32String(QLatin1String("AB"), char_ << char_, result) );
-//     REQUIRE( result == U"AB" );
-//   }
 
   SECTION("ö")
   {

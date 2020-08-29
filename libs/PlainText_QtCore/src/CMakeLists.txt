@@ -16,7 +16,7 @@ add_library(Mdt_PlainText_QtCore
   Mdt/PlainText/QStringListUnicodeView.cpp
   Mdt/PlainText/QStringUnicodeBackInsertIterator.cpp
   Mdt/PlainText/BoostSpiritQStringContainer.cpp
-  Mdt/PlainText/BoostSpiritKarmaQStringUnicodeView.cpp
+  Mdt/PlainText/BoostSpiritKarmaQStringSupport.cpp
   Mdt/PlainText/QTextFileInputConstIteratorSharedData.cpp
   Mdt/PlainText/QTextFileInputConstIterator.cpp
   Mdt/PlainText/BoostSpiritQTextFileInputConstIterator.cpp

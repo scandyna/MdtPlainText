@@ -19,52 +19,16 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_UNICODE_VIEW_H
-#define MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_UNICODE_VIEW_H
+#ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_SUPPORT_H
+#define MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_SUPPORT_H
 
 #include "QStringUnicodeView.h"
+#include "QStringContainerUnicodeView.h"
 #include <boost/spirit/include/karma.hpp>
 
 namespace boost { namespace spirit { namespace traits{
 
-  /*! \internal
-   */
-  template <>
-  struct is_container<const Mdt::PlainText::QStringUnicodeView> : mpl::true_ {};
-
-//   /*! \internal
-//    */
-//   template <>
-//   struct extract_from_attribute<uint32_t, const Mdt::PlainText::BoostSpiritKarmaQStringContainer>
-//   {
-//     template <typename Context>
-//     static
-//     uint32_t call(const Mdt::PlainText::BoostSpiritKarmaQStringContainer & c, Context&)
-//     {
-//     }
-//   };
-
-//   /*! \internal
-//    */
-//   template <>
-//   struct extract_from_container<uint32_t, const Mdt::PlainText::BoostSpiritKarmaQStringContainer>
-//   {
-//     template <typename Context>
-//     static
-//     uint32_t call(const Mdt::PlainText::BoostSpiritKarmaQStringContainer & c, Context&)
-//     {
-//     }
-//   };
-
-  /*! \internal
-   */
-  template <>
-  struct container_iterator<const Mdt::PlainText::QStringUnicodeView>
-  {
-    using type = Mdt::PlainText::QStringUnicodeView::const_iterator;
-  };
-
-  /*! \internal Define how to stream a BoostSpiritKarmaQStringContainer (required for debug)
+  /*! \internal Define how to stream a QStringUnicodeView (required for debug)
    */
   template<typename Out, typename Enable>
   struct print_attribute_debug<Out, Mdt::PlainText::QStringUnicodeView, Enable>
@@ -75,6 +39,29 @@ namespace boost { namespace spirit { namespace traits{
     }
   };
 
+  /*! \internal Define how to stream a QStringContainerUnicodeView (required for debug)
+   */
+  template<typename Container, typename Out, typename Enable>
+  struct print_attribute_debug<Out, Mdt::PlainText::QStringContainerUnicodeView<Container>, Enable>
+  {
+    static void call(Out & out, const Mdt::PlainText::QStringContainerUnicodeView<Container> & container)
+    {
+      auto first = container.cbegin();
+      const auto last = container.cend();
+
+      out << '[';
+      if(first != last){
+        out << first->toQString().toStdString();
+        ++first;
+      }
+      while(first != last){
+        out << ',' << first->toQString().toStdString();
+        ++first;
+      }
+      out << ']';
+    }
+  };
+
 }}} // namespace boost { namespace spirit { namespace traits{
 
-#endif // #ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_UNICODE_VIEW_H
+#endif // #ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_KARMA_QSTRING_SUPPORT_H
