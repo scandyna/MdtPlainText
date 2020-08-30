@@ -87,3 +87,19 @@ mdt_add_test(
   SOURCE_FILES
     src/CsvFileWriterErrorTest.cpp
 )
+
+mdt_add_test(
+  NAME ContainerAliasViewConstIteratorTest
+  TARGET containerAliasViewConstIteratorTest
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/ContainerAliasViewConstIteratorTest.cpp
+)
+
+mdt_add_test(
+  NAME ContainerAliasViewTest
+  TARGET containerAliasViewTest
+  DEPENDENCIES Mdt::PlainText Mdt::Catch2Main Mdt::PlainText_TestLib
+  SOURCE_FILES
+    src/ContainerAliasViewTest.cpp
+)
