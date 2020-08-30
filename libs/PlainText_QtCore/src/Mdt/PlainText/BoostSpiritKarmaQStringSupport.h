@@ -24,6 +24,7 @@
 
 #include "QStringUnicodeView.h"
 #include "QStringContainerUnicodeView.h"
+#include "Mdt/PlainText/ContainerAliasView.h"
 #include <boost/spirit/include/karma.hpp>
 
 namespace boost { namespace spirit { namespace traits{
@@ -56,6 +57,32 @@ namespace boost { namespace spirit { namespace traits{
       }
       while(first != last){
         out << ',' << first->toQString().toStdString();
+        ++first;
+      }
+      out << ']';
+    }
+  };
+
+  /*! \internal Define how to stream a ContainerAliasView of QStringContainerUnicodeView (required for debug)
+   */
+  template<typename List, typename Container, typename Out, typename Enable>
+  struct print_attribute_debug<Out, Mdt::PlainText::ContainerAliasView< List, Mdt::PlainText::QStringContainerUnicodeView<Container> >, Enable>
+  {
+    static void call(Out & out, const Mdt::PlainText::ContainerAliasView< List, Mdt::PlainText::QStringContainerUnicodeView<Container> > & list)
+    {
+      using Printer = print_attribute_debug<Out, Mdt::PlainText::QStringContainerUnicodeView<Container>, Enable>;
+
+      auto first = list.cbegin();
+      const auto last = list.cend();
+
+      out << '[';
+      if(first != last){
+        Printer::call(out, *first);
+        ++first;
+      }
+      while(first != last){
+        out << ',';
+        Printer::call(out, *first);
         ++first;
       }
       out << ']';
