@@ -54,7 +54,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Construct a view from \a container
      */
-    explicit ContainerAliasView(const SourceContainer & container) noexcept
+    explicit ContainerAliasView(const SourceContainer & container)
      : mBegin( container.cbegin() ),
        mEnd( container.cend() )
     {
@@ -62,11 +62,11 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Copy construct a view from \a other
      */
-    ContainerAliasView(const ContainerAliasView & other) noexcept = default;
+    ContainerAliasView(const ContainerAliasView & other) = default;
 
     /*! \brief Copy assign \a other to this view
      */
-    ContainerAliasView & operator=(const ContainerAliasView & other) noexcept = default;
+    ContainerAliasView & operator=(const ContainerAliasView & other) = default;
 
     /*! \brief Move construct a view from \a other
      */

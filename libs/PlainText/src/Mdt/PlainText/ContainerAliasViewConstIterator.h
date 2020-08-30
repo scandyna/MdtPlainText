@@ -28,11 +28,11 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Default constructor
      */
-    ContainerAliasViewConstIterator() noexcept = default;
+    ContainerAliasViewConstIterator() = default;
 
     /*! \brief Construct a iterator that points to \a it
      */
-    explicit ContainerAliasViewConstIterator(SourceIterator it) noexcept
+    explicit ContainerAliasViewConstIterator(SourceIterator it)
      : mSourceIterator(it)
     {
     }
@@ -67,7 +67,7 @@ namespace Mdt{ namespace PlainText{
      */
     const AliasValue & dereference() const noexcept
     {
-      mValue = *mSourceIterator;
+      mValue = AliasValue(*mSourceIterator);
       return mValue;
     }
 
