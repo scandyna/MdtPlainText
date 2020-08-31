@@ -10,6 +10,7 @@
 #include "ContainerAliasViewConstIterator.h"
 #include <iterator>
 #include <cassert>
+#include <type_traits>
 
 namespace Mdt{ namespace PlainText{
 

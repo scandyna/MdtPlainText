@@ -8,6 +8,7 @@
 #include "Mdt/PlainText/ContainerAliasViewConstIterator.h"
 #include <vector>
 #include <type_traits>
+#include <iterator>
 #include <limits>
 #include <cmath>
 #include <cstdlib>
@@ -17,10 +18,14 @@ using Mdt::PlainText::ContainerAliasViewConstIterator;
 using IntList = std::vector<int>;
 using IntListAsDoubleListIterator = ContainerAliasViewConstIterator<IntList::const_iterator, double>;
 
+static_assert( std::is_same< std::iterator_traits<IntListAsDoubleListIterator>::value_type, const double >::value, "" );
+static_assert( std::is_same< std::iterator_traits<IntListAsDoubleListIterator>::iterator_category, std::bidirectional_iterator_tag >::value, "" );
+
 bool doubleAreEqual(double a, double b)
 {
   return std::abs(a-b) < std::numeric_limits<double>::epsilon();
 }
+
 
 TEST_CASE("construct")
 {

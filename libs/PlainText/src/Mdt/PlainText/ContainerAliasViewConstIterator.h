@@ -7,7 +7,8 @@
 #ifndef MDT_PLAIN_TEXT_CONTAINER_ALIAS_VIEW_CONST_ITERATOR_H
 #define MDT_PLAIN_TEXT_CONTAINER_ALIAS_VIEW_CONST_ITERATOR_H
 
-#include <boost/iterator/iterator_facade.hpp>
+#include <type_traits>
+#include <iterator>
 
 namespace Mdt{ namespace PlainText{
 
@@ -16,15 +17,29 @@ namespace Mdt{ namespace PlainText{
    * \sa ContainerAliasView
    */
   template<typename SourceIterator, typename AliasValue>
-  class ContainerAliasViewConstIterator : public boost::iterator_facade<
-      ContainerAliasViewConstIterator<SourceIterator, AliasValue>,  // Derived
-      const AliasValue,                                             // Value
-      boost::bidirectional_traversal_tag,                           // CategoryOrTraversal
-      const AliasValue &,                                           // Reference, see dereference()
-      typename SourceIterator::difference_type                      // Difference
-    >
+  class ContainerAliasViewConstIterator
   {
    public:
+
+    /*! \brief STL iterator difference_type
+     */
+    using difference_type = typename SourceIterator::difference_type;
+
+    /*! \brief STL iterator value_type
+     */
+    using value_type = const AliasValue;
+
+    /*! \brief STL iterator pointer
+     */
+    using pointer = value_type;
+
+    /*! \brief STL iterator reference
+     */
+    using reference = value_type;
+
+    /*! \brief STL iterator iterator_category
+     */
+    using iterator_category = std::bidirectional_iterator_tag;
 
     /*! \brief Default constructor
      */
@@ -37,42 +52,82 @@ namespace Mdt{ namespace PlainText{
     {
     }
 
-   private:
+    /*! \brief Copy construct a iterator from \a other
+     */
+    ContainerAliasViewConstIterator(const ContainerAliasViewConstIterator & other) = default;
 
-    friend class boost::iterator_core_access;
+    /*! \brief Copy assign \a other to this iterator
+     */
+    ContainerAliasViewConstIterator & operator=(const ContainerAliasViewConstIterator & other) = default;
 
-    bool equal(const ContainerAliasViewConstIterator & other) const noexcept
+    /*! \brief Move construct a iterator from \a other
+     */
+    ContainerAliasViewConstIterator(ContainerAliasViewConstIterator && other) noexcept = default;
+
+    /*! \brief Move assign \a other to this iterator
+     */
+    ContainerAliasViewConstIterator & operator=(ContainerAliasViewConstIterator && other) noexcept = default;
+
+    /*! \brief Get the alias value
+     */
+    value_type operator*() const
     {
-      return mSourceIterator == other.mSourceIterator;
+      return AliasValue(*mSourceIterator);
     }
 
-    void increment() noexcept
+    /*! \brief Increment iterator (pre-increment)
+     */
+    ContainerAliasViewConstIterator & operator++()
     {
       ++mSourceIterator;
+      return *this;
     }
 
-    void decrement() noexcept
+    /*! \brief Increment iterator (post-increment)
+     */
+    ContainerAliasViewConstIterator operator++(int)
+    {
+      ContainerAliasViewConstIterator tmp(*this);
+      ++*this;
+      return tmp;
+    }
+
+    /*! \brief Decrement iterator (pre-decrement)
+     */
+    ContainerAliasViewConstIterator & operator--()
     {
       --mSourceIterator;
+      return *this;
     }
 
-    /*! \internal
-     *
-     * \note To be recognized as a bidirectional iterator,
-     * the reference type MUST be a reference.
-     * If not doing so, boost::iterator_facade will
-     * tell that this iterator is a input iterator (!)
-     *
-     * \sa https://github.com/boostorg/iterator/issues/47
+    /*! \brief Decrement iterator (post-decrement)
      */
-    const AliasValue & dereference() const noexcept
+    ContainerAliasViewConstIterator operator--(int)
     {
-      mValue = AliasValue(*mSourceIterator);
-      return mValue;
+      ContainerAliasViewConstIterator tmp(*this);
+      --*this;
+      return tmp;
     }
+
+    /*! \brief Returns true if iterator a refers to same item than iterator b
+     */
+    friend
+    bool operator==(const ContainerAliasViewConstIterator & a, const ContainerAliasViewConstIterator & b) noexcept
+    {
+      return a.mSourceIterator == b.mSourceIterator;
+    }
+
+    /*! \brief Returns true if iterator a refers not to same item than iterator b
+     */
+    friend
+    bool operator!=(const ContainerAliasViewConstIterator & a, const ContainerAliasViewConstIterator & b) noexcept
+    {
+      return !(a == b);
+    }
+
+   private:
 
     SourceIterator mSourceIterator = SourceIterator{};
-    mutable AliasValue mValue;
   };
 
 }} // namespace Mdt{ namespace PlainText{
