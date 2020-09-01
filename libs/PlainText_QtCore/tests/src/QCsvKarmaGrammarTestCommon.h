@@ -21,10 +21,12 @@
  ****************************************************************************/
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/CsvGeneratorSettings.h"
+#include "Mdt/PlainText/ContainerAliasView"
 #include "Mdt/PlainText/Grammar/Csv/Karma/ProtectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/UnprotectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/FieldColumn.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/CsvFile.h"
 #include "Mdt/PlainText/BoostSpiritKarmaQStringSupport"
 #include "Mdt/PlainText/QStringListUnicodeView"
 #include "Mdt/PlainText/QStringUnicodeBackInsertIterator.h"
@@ -38,10 +40,14 @@
 
 using namespace Mdt::PlainText;
 
+using StringTable = std::vector<QStringList>;
+using StringTableUnicodeView = ContainerAliasView<StringTable, QStringListUnicodeView>;
+
 using UnprotectedField = Grammar::Csv::Karma::UnprotectedField<QStringUnicodeBackInsertIterator, QStringUnicodeView>;
 using ProtectedField = Grammar::Csv::Karma::ProtectedField<QStringUnicodeBackInsertIterator, QStringUnicodeView>;
 using FieldColumn = Grammar::Csv::Karma::FieldColumn<QStringUnicodeBackInsertIterator, QStringUnicodeView>;
 using CsvRecord = Grammar::Csv::Karma::CsvRecord<QStringUnicodeBackInsertIterator, QStringListUnicodeView>;
+using CsvFile = Grammar::Csv::Karma::CsvFile<QStringUnicodeBackInsertIterator, StringTableUnicodeView>;
 
 
 QStringList qStringListFromStdStringList(const std::vector<std::string> & stdStringList)
@@ -55,6 +61,16 @@ QStringList qStringListFromStdStringList(const std::vector<std::string> & stdStr
   return stringList;
 }
 
+StringTable qStringTableFromStdStringTable(const std::vector< std::vector<std::string> > & stdStringTable)
+{
+  StringTable table;
+
+  for(const auto & record : stdStringTable){
+    table.push_back( qStringListFromStdStringList(record) );
+  }
+
+  return table;
+}
 
 template<typename Rule>
 bool generateRuleFails(const QString & data, const CsvGeneratorSettings & settings)
@@ -149,4 +165,30 @@ QString generateCsvRecord(const QStringList & data, const CsvGeneratorSettings &
   assert( settings.isValid() );
 
   return generateFromQStringListRule<CsvRecord>(data, settings);
+}
+
+bool generateCsvFileFails(const StringTable & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  QString result;
+  CsvFile rule(settings);
+
+  return !boost::spirit::karma::generate( QStringUnicodeBackInsertIterator(result), rule, StringTableUnicodeView(data) );
+}
+
+QString generateCsvFileString(const StringTable & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  QString result;
+  CsvFile rule(settings);
+
+  const bool ok = boost::spirit::karma::generate( QStringUnicodeBackInsertIterator(result), rule, StringTableUnicodeView(data) );
+  if(!ok){
+    const std::string what = "Rule '" + rule.name() + "' failed to generate";
+    throw std::runtime_error(what);
+  }
+
+  return result;
 }

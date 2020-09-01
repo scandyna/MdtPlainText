@@ -21,6 +21,8 @@
  ****************************************************************************/
 #include "QCsvKarmaGrammarTestCommon.h"
 
+#include <QDebug>
+
 TEST_CASE("UnprotectedField")
 {
   QString result;
@@ -244,5 +246,32 @@ TEST_CASE("CsvRecord")
     record = qStringListFromStdStringList({"\"ab\"","\"c𐐅\"","ö"});
     result = generateCsvRecord(record, csvSettings);
     REQUIRE( result == QString::fromUtf8("\"\"\"ab\"\"\",\"\"\"c𐐅\"\"\",ö\n") );
+  }
+}
+
+TEST_CASE("CsvFile")
+{
+  StringTable table;
+  QString result;
+  CsvGeneratorSettings csvSettings;
+  csvSettings.setEndOfLine(EndOfLine::Lf);
+
+  SECTION("empty")
+  {
+    REQUIRE( generateCsvFileFails(table, csvSettings) );
+  }
+
+  SECTION("1 record (header)")
+  {
+    table = qStringTableFromStdStringTable({{"A","𐐅ö"}});
+    result = generateCsvFileString(table, csvSettings);
+    REQUIRE( result == QString::fromUtf8("A,𐐅ö\n") );
+  }
+
+  SECTION("2 records")
+  {
+    table = qStringTableFromStdStringTable({{"A","𐐅ö"},{"𐐅,ü","abc"}});
+    result = generateCsvFileString(table, csvSettings);
+    REQUIRE( result == QString::fromUtf8("A,𐐅ö\n\"𐐅,ü\",abc\n") );
   }
 }

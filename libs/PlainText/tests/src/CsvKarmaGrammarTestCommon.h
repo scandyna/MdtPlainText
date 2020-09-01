@@ -12,6 +12,7 @@
 #include "Mdt/PlainText/Grammar/Csv/Karma/ProtectedField.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/FieldColumn.h"
 #include "Mdt/PlainText/Grammar/Csv/Karma/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/CsvFile.h"
 #include <boost/spirit/include/karma.hpp>
 #include <string>
 #include <vector>
@@ -28,6 +29,7 @@ using UnprotectedField = Grammar::Csv::Karma::UnprotectedField<std::back_insert_
 using ProtectedField = Grammar::Csv::Karma::ProtectedField<std::back_insert_iterator<std::string>, std::string>;
 using FieldColumn = Grammar::Csv::Karma::FieldColumn<std::back_insert_iterator<std::string>, std::string>;
 using CsvRecord = Grammar::Csv::Karma::CsvRecord<std::back_insert_iterator<std::string>, StringRecord>;
+using CsvFile = Grammar::Csv::Karma::CsvFile<std::back_insert_iterator<std::string>, StringTable>;
 
 std::string endOfLineString(Mdt::PlainText::EndOfLine eol)
 {
@@ -138,4 +140,18 @@ std::string generateCsvRecord(const StringRecord & data, const CsvGeneratorSetti
   assert( settings.isValid() );
 
   return generateFromRule<CsvRecord>(data, settings);
+}
+
+bool generateCsvFileFails(const StringTable & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateRuleFails<CsvFile>(data, settings);
+}
+
+std::string generateCsvFileString(const StringTable & data, const CsvGeneratorSettings & settings)
+{
+  assert( settings.isValid() );
+
+  return generateFromRule<CsvFile>(data, settings);
 }

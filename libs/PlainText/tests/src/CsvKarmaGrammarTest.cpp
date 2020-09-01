@@ -507,3 +507,33 @@ TEST_CASE("CsvRecord")
     }
   }
 }
+
+TEST_CASE("CsvFile")
+{
+  std::string result;
+  StringTable table;
+  CsvGeneratorSettings csvSettings;
+  csvSettings.setEndOfLine(EndOfLine::Lf);
+
+  SECTION("empty")
+  {
+    REQUIRE( generateCsvFileFails(table, csvSettings) );
+  }
+
+  SECTION("1 record (header)")
+  {
+    table = {{"A","BC"}};
+    result = generateCsvFileString(table, csvSettings);
+    REQUIRE( result == "A,BC\n" );
+  }
+
+  SECTION("2 records")
+  {
+    table = {
+      {"A","BC"},
+      {"d,e","f"}
+    };
+    result = generateCsvFileString(table, csvSettings);
+    REQUIRE( result == "A,BC\n\"d,e\",f\n" );
+  }
+}
