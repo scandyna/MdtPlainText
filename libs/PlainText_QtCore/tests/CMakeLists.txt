@@ -31,14 +31,6 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME QStringContainerUnicodeConstIteratorTest
-  TARGET qStringContainerUnicodeConstIteratorTest
-  DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
-  SOURCE_FILES
-    src/QStringContainerUnicodeConstIteratorTest.cpp
-)
-
-mdt_add_test(
   NAME QStringListUnicodeViewTest
   TARGET qStringListUnicodeViewTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main
