@@ -52,11 +52,13 @@ namespace boost { namespace spirit { namespace traits{
 
       out << '[';
       if(first != last){
-        out << first->toQString().toStdString();
+        const Mdt::PlainText::QStringUnicodeView str = *first;
+        out << str.toQString().toStdString();
         ++first;
       }
       while(first != last){
-        out << ',' << first->toQString().toStdString();
+        const Mdt::PlainText::QStringUnicodeView str = *first;
+        out << ',' << str.toQString().toStdString();
         ++first;
       }
       out << ']';

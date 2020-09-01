@@ -23,6 +23,7 @@
 #define MDT_PLAIN_TEXT_QSTRING_LIST_UNICODE_VIEW_H
 
 #include "QStringContainerUnicodeView.h"
+#include "QStringUnicodeView.h"
 #include <QStringList>
 #include <QList>
 

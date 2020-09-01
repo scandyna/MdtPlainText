@@ -23,7 +23,7 @@
 #define MDT_PLAIN_TEXT_QSTRING_CONTAINER_UNICODE_VIEW_H
 
 #include "QStringUnicodeView.h"
-#include "QStringContainerUnicodeConstIterator.h"
+#include "Mdt/PlainText/ContainerAliasView.h"
 #include <iterator>
 #include <cassert>
 
@@ -48,100 +48,7 @@ namespace Mdt{ namespace PlainText{
    * \sa QStringListUnicodeView
    */
   template<typename Container>
-  class QStringContainerUnicodeView
-  {
-   public:
-
-    /*! \brief STL container value_type
-     */
-    using value_type = QStringUnicodeView;
-
-    /*! \brief STL container size_type
-     */
-    using size_type = int;
-
-    /*! \brief STL container const_iterator
-     */
-    using const_iterator = QStringContainerUnicodeConstIterator<typename Container::const_iterator>;
-
-    QStringContainerUnicodeView() = delete;
-
-    /*! \brief Construct a view from \a container
-     */
-    explicit QStringContainerUnicodeView(const Container & container) noexcept
-     : mBegin( container.cbegin() ),
-       mEnd( container.cend() )
-    {
-    }
-
-    /*! \brief Copy construct a view from \a other
-     */
-    QStringContainerUnicodeView(const QStringContainerUnicodeView & other) noexcept = default;
-
-    /*! \brief Copy assign \a other to this view
-     */
-    QStringContainerUnicodeView & operator=(const QStringContainerUnicodeView & other) noexcept = default;
-
-    /*! \brief Move construct a view from \a other
-     */
-    QStringContainerUnicodeView(QStringContainerUnicodeView && other) noexcept = default;
-
-    /*! \brief Move assign \a other to this view
-     */
-    QStringContainerUnicodeView & operator=(QStringContainerUnicodeView && other) noexcept = default;
-
-    /*! \brief Return the number of element in this container
-     */
-    int size() const noexcept
-    {
-      return std::distance(mBegin, mEnd);
-    }
-
-    /*! \brief Get a unicode string view for the element at \a index
-     *
-     * \pre \a index must be in valid range ( 0 >= \a index < size() )
-     */
-    QStringUnicodeView at(int index) const
-    {
-      assert( index >= 0 );
-      assert( index < size() );
-
-      return *std::next(mBegin, index);
-    }
-
-    /*! \brief Get a iterator to the beginning
-     */
-    const_iterator begin() const noexcept
-    {
-      return mBegin;
-    }
-
-    /*! \brief Get a iterator to the end
-     */
-    const_iterator end() const noexcept
-    {
-      return mEnd;
-    }
-
-    /*! \brief Get a iterator to the beginning
-     */
-    const_iterator cbegin() const noexcept
-    {
-      return mBegin;
-    }
-
-    /*! \brief Get a iterator to the end
-     */
-    const_iterator cend() const noexcept
-    {
-      return mEnd;
-    }
-
-   private:
-
-    const_iterator mBegin;
-    const_iterator mEnd;
-  };
+  using QStringContainerUnicodeView = ContainerAliasView<Container, QStringUnicodeView>;
 
 }} // namespace Mdt{ namespace PlainText{
 
