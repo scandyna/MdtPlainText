@@ -21,6 +21,23 @@ using IntListAsDoubleListIterator = ContainerAliasViewConstIterator<IntList::con
 static_assert( std::is_same< std::iterator_traits<IntListAsDoubleListIterator>::value_type, const double >::value, "" );
 static_assert( std::is_same< std::iterator_traits<IntListAsDoubleListIterator>::iterator_category, std::bidirectional_iterator_tag >::value, "" );
 
+
+struct AsDoubleStruct
+{
+  AsDoubleStruct(int i)
+   : x(i)
+  {
+  }
+
+  double x;
+};
+
+using IntListAsDoubleStructListIterator = ContainerAliasViewConstIterator<IntList::const_iterator, AsDoubleStruct>;
+
+static_assert( std::is_same< std::iterator_traits<IntListAsDoubleStructListIterator>::value_type, const AsDoubleStruct >::value, "" );
+static_assert( std::is_same< std::iterator_traits<IntListAsDoubleStructListIterator>::iterator_category, std::bidirectional_iterator_tag >::value, "" );
+
+
 bool doubleAreEqual(double a, double b)
 {
   return std::abs(a-b) < std::numeric_limits<double>::epsilon();
@@ -122,6 +139,14 @@ TEST_CASE("comparison")
   REQUIRE( a == b );
   REQUIRE( !(a != b) );
 }
+
+// TEST_CASE("operator ->")
+// {
+//   IntList list{74};
+//   IntListAsDoubleStructListIterator it( list.cbegin() );
+//
+//   REQUIRE( doubleAreEqual(it->x, 74.0) );
+// }
 
 TEST_CASE("post-increment")
 {
