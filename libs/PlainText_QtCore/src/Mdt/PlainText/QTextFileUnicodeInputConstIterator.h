@@ -33,7 +33,7 @@ namespace Mdt{ namespace PlainText{
   /*! \brief Input iterator that reads file and provide unicode support
    *
    * This iterator is based on QTextFileInputConstIterator,
-   * but exposes uint32_t as value type, instead of QChar.
+   * but exposes unicode points as uint32_t value type, instead of UTF-16 QChar.
    *
    * To use this iterator with boost Spirit,
    * [the multi pass iterator](https://www.boost.org/doc/libs/1_73_0/libs/spirit/doc/html/spirit/support/multi_pass.html)
@@ -44,7 +44,7 @@ namespace Mdt{ namespace PlainText{
    * avoiding to copy buffered data every time.
    */
   class MDT_PLAINTEXT_QTCORE_EXPORT QTextFileUnicodeInputConstIterator : public boost::iterator_facade<
-      QTextFileUnicodeInputConstIterator, // Derived
+      QTextFileUnicodeInputConstIterator,     // Derived
       uint32_t,                               // Value
       boost::single_pass_traversal_tag,       // CategoryOrTraversal
       uint32_t                                // Reference
@@ -58,8 +58,8 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Construct a iterator that acts on a file
      *
-     * Will read some data from \a file until a unicode character could be decoded.
-     * If \a file is at end, or not enough data is available to get a unicode character,
+     * Will read some data from \a file until a unicode point could be decoded.
+     * If \a file is at end, or not enough data is available to get a unicode point,
      * this iterator falls back to a end-of-file iterator.
      *
      * \pre \a file must be a valid pointer
