@@ -111,19 +111,27 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME BoostSpiritQTextFileInputConstIteratorTest
-  TARGET boostSpiritQTextFileInputConstIteratorTest
+  NAME QTextFileUnicodeInputConstIteratorTest
+  TARGET qTextFileUnicodeInputConstIteratorTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
   SOURCE_FILES
-    src/BoostSpiritQTextFileInputConstIteratorTest.cpp
+    src/QTextFileUnicodeInputConstIteratorTest.cpp
 )
 
 mdt_add_test(
-  NAME BoostSpiritQTextFileInputConstIteratorErrorTest
-  TARGET boostSpiritQTextFileInputConstIteratorErrorTest
+  NAME QTextFileUnicodeInputConstIteratorErrorTest
+  TARGET qTextFileUnicodeInputConstIteratorErrorTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
   SOURCE_FILES
-    src/BoostSpiritQTextFileInputConstIteratorErrorTest.cpp
+    src/QTextFileUnicodeInputConstIteratorErrorTest.cpp
+)
+
+mdt_add_test(
+  NAME QTextFileUnicodeInputConstIteratorBoostSpiritQiTest
+  TARGET qTextFileUnicodeInputConstIteratorBoostSpiritQiTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/QTextFileUnicodeInputConstIteratorBoostSpiritQiTest.cpp
 )
 
 mdt_add_test(

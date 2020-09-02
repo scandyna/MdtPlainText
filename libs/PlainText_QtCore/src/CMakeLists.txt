@@ -18,7 +18,7 @@ add_library(Mdt_PlainText_QtCore
   Mdt/PlainText/BoostSpiritKarmaQStringSupport.cpp
   Mdt/PlainText/QTextFileInputConstIteratorSharedData.cpp
   Mdt/PlainText/QTextFileInputConstIterator.cpp
-  Mdt/PlainText/BoostSpiritQTextFileInputConstIterator.cpp
+  Mdt/PlainText/QTextFileUnicodeInputConstIterator.cpp
   Mdt/PlainText/QCsvFileReaderTemplate.cpp
   Mdt/PlainText/QCsvFileReader.cpp
   Mdt/PlainText/QCsvFileWriterTemplate.cpp

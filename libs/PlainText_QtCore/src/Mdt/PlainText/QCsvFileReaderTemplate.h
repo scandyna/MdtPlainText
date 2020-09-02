@@ -25,7 +25,7 @@
 #include "QFileOpenError.h"
 #include "QCsvFileReadError.h"
 #include "QTextCodecNotFoundError.h"
-#include "BoostSpiritQTextFileInputConstIterator.h"
+#include "QTextFileUnicodeInputConstIterator.h"
 #include "BoostSpiritQiQStringSupport.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include "mdt_plaintext_qtcore_export.h"
@@ -86,7 +86,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief STL const iterator
      */
-    using const_iterator = boost::spirit::multi_pass<BoostSpiritQTextFileInputConstIterator>;
+    using const_iterator = boost::spirit::multi_pass<QTextFileUnicodeInputConstIterator>;
 
     /*! \brief Construct a CSV file reader
      */
@@ -199,7 +199,7 @@ namespace Mdt{ namespace PlainText{
       }
 
       try{
-        mSourceIterator = boost::spirit::make_default_multi_pass( BoostSpiritQTextFileInputConstIterator(&mFile, mFileEncoding) );
+        mSourceIterator = boost::spirit::make_default_multi_pass( QTextFileUnicodeInputConstIterator(&mFile, mFileEncoding) );
       }catch(const QTextCodecNotFoundError & error){
         close();
         throw error;
@@ -291,7 +291,7 @@ namespace Mdt{ namespace PlainText{
     static
     const_iterator sourceIteratorEnd() noexcept
     {
-      return boost::spirit::make_default_multi_pass( BoostSpiritQTextFileInputConstIterator() );
+      return boost::spirit::make_default_multi_pass( QTextFileUnicodeInputConstIterator() );
     }
 
     const_iterator mSourceIterator;

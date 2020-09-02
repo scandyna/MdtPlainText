@@ -20,37 +20,18 @@
  **
  ****************************************************************************/
 #include "catch2/catch.hpp"
-#include "Mdt/PlainText/BoostSpiritQTextFileInputConstIterator.h"
-#include "Mdt/PlainText/BoostSpiritQiQStringSupport"
+#include "Mdt/PlainText/QTextFileUnicodeInputConstIterator.h"
 #include "Mdt/PlainText/TestLib/TextFileUtils.h"
-#include <boost/spirit/include/support_multi_pass.hpp>
 #include <QTemporaryFile>
 #include <QFile>
 #include <QLatin1String>
 #include <QLatin1Char>
-#include <boost/spirit/include/qi.hpp>
-#include <type_traits>
-#include <algorithm>
 
 using namespace Mdt::PlainText;
 
 bool openTextFileReadOnly(QFile & file)
 {
   return file.open(QIODevice::ReadOnly | QIODevice::Text);
-}
-
-template<typename Grammar, typename Result>
-bool parse(QFile & file, const Grammar & grammar, Result & destination)
-{
-  using boost::spirit::multi_pass;
-  using boost::spirit::make_default_multi_pass;
-
-  using MultiPassIterator = multi_pass<BoostSpiritQTextFileInputConstIterator>;
-
-  MultiPassIterator first = make_default_multi_pass( BoostSpiritQTextFileInputConstIterator(&file, "UTF-8") );
-  MultiPassIterator last = make_default_multi_pass( BoostSpiritQTextFileInputConstIterator() );
-
-  return boost::spirit::qi::parse(first, last, grammar, destination);
 }
 
 bool writeTextFile(QFile & file, const QString & content)

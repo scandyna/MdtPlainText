@@ -19,8 +19,8 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_QTEXT_FILE_INPUT_CONST_ITERATOR_H
-#define MDT_PLAIN_TEXT_BOOST_SPIRIT_QTEXT_FILE_INPUT_CONST_ITERATOR_H
+#ifndef MDT_PLAIN_TEXT_QTEXT_FILE_UNICODE_INPUT_CONST_ITERATOR_H
+#define MDT_PLAIN_TEXT_QTEXT_FILE_UNICODE_INPUT_CONST_ITERATOR_H
 
 #include "QTextFileInputConstIterator.h"
 #include "mdt_plaintext_qtcore_export.h"
@@ -43,8 +43,8 @@ namespace Mdt{ namespace PlainText{
    * it does not use the multi pass iterator internally,
    * avoiding to copy buffered data every time.
    */
-  class MDT_PLAINTEXT_QTCORE_EXPORT BoostSpiritQTextFileInputConstIterator : public boost::iterator_facade<
-      BoostSpiritQTextFileInputConstIterator, // Derived
+  class MDT_PLAINTEXT_QTCORE_EXPORT QTextFileUnicodeInputConstIterator : public boost::iterator_facade<
+      QTextFileUnicodeInputConstIterator, // Derived
       uint32_t,                               // Value
       boost::single_pass_traversal_tag,       // CategoryOrTraversal
       uint32_t                                // Reference
@@ -54,7 +54,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Construct a end-of-file iterator
      */
-    BoostSpiritQTextFileInputConstIterator() noexcept = default;
+    QTextFileUnicodeInputConstIterator() noexcept = default;
 
     /*! \brief Construct a iterator that acts on a file
      *
@@ -67,7 +67,7 @@ namespace Mdt{ namespace PlainText{
      * \exception QTextCodecNotFoundError
      * \exception QFileReadError
      */
-    BoostSpiritQTextFileInputConstIterator(QFileDevice *file, const QByteArray & fileEncoding)
+    QTextFileUnicodeInputConstIterator(QFileDevice *file, const QByteArray & fileEncoding)
      : mIterator(file, fileEncoding)
     {
       Q_ASSERT( file != nullptr );
@@ -76,7 +76,7 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Copy construct a iterator from \a other
      */
-    BoostSpiritQTextFileInputConstIterator(const BoostSpiritQTextFileInputConstIterator & other) noexcept
+    QTextFileUnicodeInputConstIterator(const QTextFileUnicodeInputConstIterator & other) noexcept
      : mIterator(other.mIterator)
     {
     }
@@ -90,7 +90,7 @@ namespace Mdt{ namespace PlainText{
       ++mIterator;
     }
 
-    bool equal(const BoostSpiritQTextFileInputConstIterator & other) const
+    bool equal(const QTextFileUnicodeInputConstIterator & other) const
     {
       return mIterator == other.mIterator;
     }
@@ -105,4 +105,4 @@ namespace Mdt{ namespace PlainText{
 
 }} // namespace Mdt{ namespace PlainText{
 
-#endif // #ifndef MDT_PLAIN_TEXT_BOOST_SPIRIT_QTEXT_FILE_INPUT_CONST_ITERATOR_H
+#endif // #ifndef MDT_PLAIN_TEXT_QTEXT_FILE_UNICODE_INPUT_CONST_ITERATOR_H
