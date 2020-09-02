@@ -148,7 +148,7 @@ TEST_CASE("Impl_isDereferencable")
 {
   SECTION("Default constructed iterator is not dereferencable")
   {
-        QStringUnicodeConstIteratorData data;
+    QStringUnicodeConstIteratorData data;
     data.begin = nullptr;
     data.position = nullptr;
     data.end = nullptr;
@@ -591,27 +591,27 @@ TEST_CASE("construct")
   SECTION("Begin from QString::const_iterator, A")
   {
     const QString str = QLatin1String("A");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     REQUIRE( *it == U'A' );
   }
 
   SECTION("End from QString::const_iterator, A")
   {
     const QString str = QLatin1String("A");
-        QStringUnicodeConstIterator it( str.cend(), str.cend() );
+    QStringUnicodeConstIterator it( str.cend(), str.cend() );
   }
 
   SECTION("Begin from QString::iterator, A")
   {
     QString str = QLatin1String("A");
-        QStringUnicodeConstIterator it( str.begin(), str.end() );
+    QStringUnicodeConstIterator it( str.begin(), str.end() );
     REQUIRE( *it == U'A' );
   }
 
   SECTION("End from QString::iterator, A")
   {
     QString str = QLatin1String("A");
-        QStringUnicodeConstIterator it( str.end(), str.end() );
+    QStringUnicodeConstIterator it( str.end(), str.end() );
   }
 }
 
@@ -628,50 +628,50 @@ TEST_CASE("copy_construct")
   SECTION("A")
   {
     const QString str = QLatin1String("A");
-        QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
     REQUIRE( *a == U'A' );
 
-        QStringUnicodeConstIterator b(a);
+    QStringUnicodeConstIterator b(a);
     REQUIRE( *b == U'A' );
   }
 
   SECTION("AB")
   {
     const QString str = QLatin1String("AB");
-        QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
     REQUIRE( *a == U'A' );
 
-        QStringUnicodeConstIterator b(a);
+    QStringUnicodeConstIterator b(a);
     REQUIRE( *b == U'A' );
   }
 
   SECTION("ABC")
   {
     const QString str = QLatin1String("ABC");
-        QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
     REQUIRE( *a == U'A' );
 
-        QStringUnicodeConstIterator b(a);
+    QStringUnicodeConstIterator b(a);
     REQUIRE( *b == U'A' );
   }
 
   SECTION("ö")
   {
     const QString str = QString::fromUtf8("ö");
-        QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
     REQUIRE( *a == U'ö' );
 
-        QStringUnicodeConstIterator b(a);
+    QStringUnicodeConstIterator b(a);
     REQUIRE( *b == U'ö' );
   }
 
   SECTION("𐐅")
   {
     const QString str = QString::fromUtf8("𐐅");
-        QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
     REQUIRE( *a == U'𐐅' );
 
-        QStringUnicodeConstIterator b(a);
+    QStringUnicodeConstIterator b(a);
     REQUIRE( *b == U'𐐅' );
   }
 }
@@ -679,9 +679,9 @@ TEST_CASE("copy_construct")
 TEST_CASE("assign")
 {
   const QString str = QLatin1String("ABCD");
-    QStringUnicodeConstIterator b;
+  QStringUnicodeConstIterator b;
 
-    QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
+  QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
   REQUIRE( *a == U'A' );
   b = a;
   REQUIRE( *b == U'A' );
@@ -690,7 +690,7 @@ TEST_CASE("assign")
 TEST_CASE("dereference")
 {
   const QString str = QLatin1String("ABCD");
-    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+  QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
 
   REQUIRE( *it == U'A' );
 }
@@ -700,7 +700,7 @@ TEST_CASE("pre-increment")
   SECTION("AB")
   {
     const QString str = QLatin1String("AB");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
 
     ++it;
     REQUIRE( *it == U'B' );
@@ -709,7 +709,7 @@ TEST_CASE("pre-increment")
   SECTION("A𐐅")
   {
     const QString str = QString::fromUtf8("A𐐅");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
 
     ++it;
     REQUIRE( *it == U'𐐅' );
@@ -718,7 +718,7 @@ TEST_CASE("pre-increment")
   SECTION("𐐅A")
   {
     const QString str = QString::fromUtf8("𐐅A");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
 
     ++it;
     REQUIRE( *it == U'A' );
@@ -732,7 +732,7 @@ TEST_CASE("pre-increment")
 TEST_CASE("comparison")
 {
   const QString str = QLatin1String("ABCD");
-    QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
+  QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
   auto b = a;
 
   REQUIRE( a == b );
@@ -742,7 +742,7 @@ TEST_CASE("comparison")
 TEST_CASE("post-increment")
 {
   const QString str = QLatin1String("ABCD");
-    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+  QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
 
   it++;
   REQUIRE( *it == U'B' );
@@ -757,7 +757,7 @@ static_assert( std::is_default_constructible<QStringUnicodeConstIterator>::value
 TEST_CASE("multipass")
 {
   const QString str = QLatin1String("ABCD");
-    QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
+  QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
   auto b = a;
 
   REQUIRE( a == b );
@@ -777,7 +777,7 @@ TEST_CASE("multipass")
 TEST_CASE("decrement")
 {
   const QString str = QLatin1String("ABCD");
-    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+  QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
 
   ++it;
   ++it;
@@ -791,7 +791,7 @@ TEST_CASE("decrement")
   SECTION("AB")
   {
     const QString str = QLatin1String("AB");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     ++it;
     REQUIRE( *it == U'B' );
 
@@ -808,7 +808,7 @@ TEST_CASE("decrement")
   SECTION("A𐐅")
   {
     const QString str = QString::fromUtf8("A𐐅");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     ++it;
     REQUIRE( *it == U'𐐅' );
 
@@ -819,7 +819,7 @@ TEST_CASE("decrement")
   SECTION("𐐅A")
   {
     const QString str = QString::fromUtf8("𐐅A");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     ++it;
     REQUIRE( *it == U'A' );
 
@@ -837,42 +837,42 @@ TEST_CASE("Unicode")
   SECTION("A")
   {
     const QString str = QString::fromUtf8("A");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     REQUIRE( *it == U'A' );
   }
 
   SECTION("ö")
   {
     const QString str = QString::fromUtf8("ö");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     REQUIRE( *it == U'ö' );
   }
 
   SECTION("ĵ")
   {
     const QString str = QString::fromUtf8("ĵ");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     REQUIRE( *it == U'ĵ' );
   }
 
   SECTION("�")
   {
     const QString str = QString::fromUtf8("�");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     REQUIRE( *it == U'�' );
   }
 
   SECTION("𐀀")
   {
     const QString str = QString::fromUtf8("𐀀");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     REQUIRE( *it == U'𐀀' );
   }
 
   SECTION("𐐅")
   {
     const QString str = QString::fromUtf8("𐐅");
-        QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
+    QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     REQUIRE( *it == U'𐐅' );
   }
 }
