@@ -12,7 +12,7 @@
  * \section introduction Introduction
  *
  * Provides some libraries to read and write simple plain text
- * using the [boost Spirit](https://www.boost.org/doc/libs/1_73_0/libs/spirit/doc/html/index.html) library.
+ * using the [boost Spirit](https://www.boost.org/doc/libs/1_74_0/libs/spirit/doc/html/index.html) library.
  *
  * It also provides some support to parse QString strings,
  * as well as putting boost Spirit parsers attributes into a QString.
@@ -25,7 +25,7 @@
  * \todo Write a basic example how to use CsvFileReader with the required includes,
  *   then explain encoding support, finaly same example with QCsvFileReader
  *
- * Some CSV parsers can be used:
+ * Some CSV file readers can be used:
  * - Mdt::PlainText::CsvFileReader
  * - Mdt::PlainText::QCsvFileReader,
  *   which also supports reading files that have a different encoding than the machine locale one.
@@ -33,7 +33,7 @@
  * \todo Document how to write a custom %CsvFileReader, with int, float, ... fields
  *  Also document some tricks to make rules work, as encountered by CSV grammar.
  *
- * Some CSV parsers can be used:
+ * Some CSV file writers can be used:
  * - Mdt::PlainText::CsvFileWriter
  * - Mdt::PlainText::QCsvFileWriter,
  *   which also supports reading files that have a different encoding than the machine locale one.
@@ -57,32 +57,121 @@
  * then use Mdt::PlainText::CsvFileWriter with Mdt::PlainText::CsvGeneratorField,
  * which lets us tell if a field must be quoted or not in the resulting CSV file.
  *
+ * \section support Some support helpers
+ *
+ * \todo Explain:
+ *  - Mdt::PlainText::ContainerAliasView
+ *
  * \section Qt_support Qt support
- *
- * \todo Explain that Spirit V2 qi uses uint32_t as unicode char
- *
- * \todo Document how to parse QString using BoostSpiritQStringConstIterator,
- * notably using the undocumented unicode namespace for char parsers.
- *
- * \subsection QString_as_container Use QString as output of a parser
- *
- * To be able to use QString as output of a parser:
- * \code
- * include <Mdt/PlainText/BoostSpiritQStringContainer>
- * \endcode
- *
- * \subsection parse_from_QString Parse from a QString
- *
- * - Mdt::PlainText::BoostSpiritQStringConstIterator
- *
- * \subsection parse_file_with_encoding_using_Qt Parse files with encoding support using Qt
  *
  * Qt offers great unicode support, thanks to QString.
  * It is also possible to read sources with various encoding,
  * using QTextCodec and QTextDecoder.
  *
+ * \todo
+ * Also document to use explicit QChar/QString (QLatin1Char, QLatin1String, ..)
+ * + warn to compile with
+ * -DQT_NO_CAST_DEFINITIONS -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_BYTEARRAY
+ *
+ * \subsection QString_iterators QString iterators
+ *
+ * \todo Explain:
+ * - Mdt::PlainText::QStringUnicodeConstIterator
+ * - Mdt::PlainText::QStringUnicodeBackInsertIterator
+ *
+ * \subsection QString_views QString views
+ *
+ * \todo Explain:
+ * - Mdt::PlainText::QStringUnicodeView
+ * - Mdt::PlainText::QStringContainerUnicodeView
+ * - Mdt::PlainText::QStringListUnicodeView
+ *
+ * \subsection QFile_iterators QFile iterators
+ *
+ * \todo Explain:
  * - Mdt::PlainText::QTextFileInputConstIterator
- * - Mdt::PlainText::BoostSpiritQTextFileInputConstIterator
+ * - Mdt::PlainText::QTextFileUnicodeInputConstIterator
+ * - Mdt::PlainText::QTextFileOutputIterator
+ * - Mdt::PlainText::QTextFileUnicodeOutputIterator
+ *
+ * \section Qt_Boost_Spirit Qt and boost Spirit
+ *
+ * \todo Explain that Spirit V2 qi uses uint32_t as unicode char
+ *
+ * \todo Document how to parse QString using Mdt::PlainText::QStringUnicodeConstIterator,
+ * notably using the undocumented unicode namespace for char parsers.
+ *
+ * \subsection QString_as_container Use QString as output of a parser
+ *
+ * To use QString with boost Spirit Qi, some customization points are required:
+ * \code
+ * include <Mdt/PlainText/BoostSpiritQiQStringSupport>
+ * \endcode
+ *
+ *
+ * To see the implementation details, see:
+ * \ref Mdt/PlainText/BoostSpiritQiQStringSupport.h
+ *
+ * \todo example
+ *
+ * \subsection boost_Spirit_Karma_QString Using boost Spirit Karma with QString
+ *
+ * To use QString with boost Spirit Karma, some customization points are required:
+ * \code
+ * #include <Mdt/PlainText/BoostSpiritKarmaQStringSupport>
+ * \endcode
+ *
+ * To see the implementation details, see:
+ * \ref Mdt/PlainText/BoostSpiritKarmaQStringSupport.h .
+ *
+ * For example, if we have to generate a basic CSV string from a QStringList record:
+ * \code
+ * #include <Mdt/PlainText/QStringListUnicodeView>
+ * #include <Mdt/PlainText/BoostSpiritKarmaQStringSupport>
+ * #include <boost/spirit/include/karma.hpp>
+ * #include <QStringList>
+ * #include <string>
+ * #include <iterator>
+ *
+ * std::u32string generateBasicCsvString(const QStringList & record)
+ * {
+ *   using boost::spirit::unicode::char_;
+ *   using Mdt::PlainText::QStringListUnicodeView;
+ *
+ *   std::u32string csvString;
+ *   const bool ok = boost::spirit::karma::generate( std::back_inserter(csvString), *char_ % ',', QStringListUnicodeView(record) );
+ *   if(!ok){
+ *     // Error
+ *   }
+ *
+ *   return csvString;
+ * }
+ * \endcode
+ *
+ * We could also generate the CSV to a QString:
+ * \code
+ * #include <Mdt/PlainText/QStringListUnicodeView>
+ * #include <Mdt/PlainText/BoostSpiritKarmaQStringSupport>
+ * #include <Mdt/PlainText/QStringUnicodeBackInsertIterator>
+ * #include <boost/spirit/include/karma.hpp>
+ * #include <QStringList>
+ * #include <QString>
+ *
+ * QString generateBasicCsvString(const QStringList & record)
+ * {
+ *   using boost::spirit::unicode::char_;
+ *   using Mdt::PlainText::QStringListUnicodeView;
+ *   using Mdt::PlainText::QStringUnicodeBackInsertIterator;
+ *
+ *   QString csvString;
+ *   const bool ok = boost::spirit::karma::generate( QStringUnicodeBackInsertIterator(csvString), *char_ % ',', QStringListUnicodeView(record) );
+ *   if(!ok){
+ *     // Error
+ *   }
+ *
+ *   return csvString;
+ * }
+ * \endcode
  *
  *
  * \section reference Reference
@@ -115,9 +204,18 @@
  * branch:
  * https://gitlab.com/scandyna/mdtplaintext/-/blob/qstring-encoding/libs/PlainText_QtCore/src/Mdt/PlainText/BoostSpiritQStringEncoding.h
  *
+ * \subsection boost_spirit_karma_customization_point_attributes boost Spirit Karma customization points for attributes
  *
- * Also document to use explicit QChar/QString (QLatin1Char, QLatin1String, ..)
- * + warn to compile with
- * -DQT_NO_CAST_DEFINITIONS -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_BYTEARRAY
+ * To be able to generate CSV strings from a container of QString's, like QStringList,
+ * the first attempts was to use Karma customization points
+ * as described in [Extract Attribute Values to Generate Output from a Container (Karma)](https://www.boost.org/doc/libs/1_74_0/libs/spirit/doc/html/spirit/advanced/customize/iterate.html),
+ * described with a example [here](https://www.boost.org/doc/libs/1_74_0/libs/spirit/doc/html/spirit/advanced/customize/iterate/container_iterator.html).
  *
+ * The advantage would have been that it is not required to create a STL conform container to be able to use Spirit Karma attributes.
+ * Sadly this did not work because current versions of Karma uses [std::iterator_traits](https://en.cppreference.com/w/cpp/iterator/iterator_traits)
+ * in their generators, which requires conform containers, exposing the most iterator traits to work.
+ * As example, I copied the
+ * [customize_counter](https://www.boost.org/doc/libs/1_74_0/libs/spirit/doc/html/spirit/advanced/customize/iterate/deref_iterator.html#spirit.advanced.customize.iterate.deref_iterator.example)
+ * example, that simply did not compile at all.
+ * This is finally why I had to implement classes like Mdt::PlainText::QStringUnicodeView and Mdt::PlainText::QStringListUnicodeView.
  */
