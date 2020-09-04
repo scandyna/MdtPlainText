@@ -39,7 +39,7 @@ QStringUnicodeConstIteratorData iteratorDataFromString(const QString & str)
 
 QStringUnicodeConstIteratorData iteratorDataFromStringWithPos(const QString & str, QString::const_iterator pos)
 {
-    QStringUnicodeConstIteratorData data;
+  QStringUnicodeConstIteratorData data;
 
   data.begin = str.cbegin();
   data.position = pos;
