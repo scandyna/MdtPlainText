@@ -23,6 +23,391 @@
 #include <type_traits>
 #include <algorithm>
 
+/*
+ * Private implementation tests
+ */
+
+using Mdt::PlainText::Impl::QTextFileUnicodeInputConstIteratorImpl;
+
+QTextFileUnicodeInputConstIteratorImpl iteratorImplFromFile(QFile & file)
+{
+  return QTextFileUnicodeInputConstIteratorImpl(&file, "UTF-8");
+}
+
+
+TEST_CASE("Impl_construct")
+{
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+
+  SECTION("empty")
+  {
+    file.close();
+    REQUIRE( openTextFileReadOnly(file) );
+    const auto it = iteratorImplFromFile(file);
+    REQUIRE( it.currentCodeUint.isNull() );
+    REQUIRE( it.codePoint == 0 );
+  }
+
+  SECTION("A")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("A")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+    REQUIRE( it.currentCodeUint == QLatin1Char('A') );
+  }
+}
+
+TEST_CASE("Impl_atEnd")
+{
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+
+  SECTION("empty")
+  {
+    file.close();
+    REQUIRE( openTextFileReadOnly(file) );
+    const auto it = iteratorImplFromFile(file);
+    REQUIRE( it.atEnd() );
+  }
+
+  SECTION("A")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("A")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+    REQUIRE( !it.atEnd() );
+
+    ++it.mIterator;
+    REQUIRE( it.atEnd() );
+  }
+}
+
+TEST_CASE("Impl_isDereferencable")
+{
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+
+  SECTION("Default constructed iterator is not dereferencable")
+  {
+    QTextFileUnicodeInputConstIteratorImpl it;
+    REQUIRE( !it.isDereferencable() );
+  }
+
+  SECTION("empty")
+  {
+    file.close();
+    REQUIRE( openTextFileReadOnly(file) );
+    const auto it = iteratorImplFromFile(file);
+    REQUIRE( !it.isDereferencable() );
+  }
+
+  SECTION("Single char A is dereferencable, then increment, then its not")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("A")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+    REQUIRE( it.isDereferencable() );
+
+    ++it.mIterator;
+    REQUIRE( !it.isDereferencable() );
+  }
+}
+
+TEST_CASE("Impl_increment")
+{
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+
+  SECTION("A")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("A")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+    REQUIRE( it.currentCodeUint == QLatin1Char('A') );
+
+    it.increment();
+    REQUIRE( it.atEnd() );
+    REQUIRE( !it.isDereferencable() );
+  }
+
+  SECTION("AB")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("AB")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+    REQUIRE( it.currentCodeUint == QLatin1Char('A') );
+
+    it.increment();
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+    REQUIRE( it.currentCodeUint == QLatin1Char('B') );
+
+    it.increment();
+    REQUIRE( it.atEnd() );
+    REQUIRE( !it.isDereferencable() );
+  }
+
+  SECTION("Single code unit char: ĵ (U+0135)")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("ĵ")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+    REQUIRE( it.currentCodeUint.unicode() == u'ĵ' );
+
+    it.increment();
+    REQUIRE( it.atEnd() );
+    REQUIRE( !it.isDereferencable() );
+  }
+
+  SECTION("Code point requiring 2 UTF-16 units: 𐐅")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("𐐅")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    /*
+     * Code point | 𐐅 |
+     * Surrogate  |H|L|
+     *             ^
+     */
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+
+    /*
+     * Code point | 𐐅 |
+     * Surrogate  |H|L|
+     *                 ^
+     */
+    it.increment();
+    REQUIRE( it.atEnd() );
+    REQUIRE( !it.isDereferencable() );
+  }
+
+  SECTION("A𐐅")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("A𐐅")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    /*
+     * Code point |A| 𐐅 |
+     * Surrogate  | |H|L|
+     *             ^
+     */
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+    REQUIRE( it.currentCodeUint == QLatin1Char('A') );
+
+    /*
+     * Code point |A| 𐐅 |
+     * Surrogate  | |H|L|
+     *               ^
+     */
+    it.increment();
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+
+    /*
+     * Code point |A| 𐐅 |
+     * Surrogate  | |H|L|
+     *                   ^
+     */
+    it.increment();
+    REQUIRE( it.atEnd() );
+    REQUIRE( !it.isDereferencable() );
+  }
+
+  SECTION("𐐅A")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("𐐅A")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    /*
+     * Code point | 𐐅 |A|
+     * Surrogate  |H|L| |
+     *             ^
+     */
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+
+    /*
+     * Code point | 𐐅 |A|
+     * Surrogate  |H|L| |
+     *                 ^
+     */
+    it.increment();
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+    REQUIRE( it.currentCodeUint == QLatin1Char('A') );
+
+    /*
+     * Code point | 𐐅 |A|
+     * Surrogate  |H|L| |
+     *                   ^
+     */
+    it.increment();
+    REQUIRE( it.atEnd() );
+    REQUIRE( !it.isDereferencable() );
+  }
+
+  SECTION("𐐅𝛀 (U+10405 U+1D6C0)")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("𐐅𝛀")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    /*
+     * Code point | 𐐅 | 𝛀 |
+     * Surrogate  |H|L|H|L|
+     *             ^
+     */
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+
+    /*
+     * Code point | 𐐅 | 𝛀 |
+     * Surrogate  |H|L|H|L|
+     *                 ^
+     */
+    it.increment();
+    REQUIRE( !it.atEnd() );
+    REQUIRE( it.isDereferencable() );
+
+    /*
+     * Code point | 𐐅 | 𝛀 |
+     * Surrogate  |H|L|H|L|
+     *                     ^
+     */
+    it.increment();
+    REQUIRE( it.atEnd() );
+    REQUIRE( !it.isDereferencable() );
+  }
+}
+
+TEST_CASE("Impl_extractCodePoint")
+{
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+
+  SECTION("A")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("A")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'A' );
+  }
+
+  SECTION("AB")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("AB")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'A' );
+
+    it.increment();
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'B' );
+  }
+
+  SECTION("ĵ")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("ĵ")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'ĵ' );
+  }
+
+  SECTION("𐐅")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("𐐅")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'𐐅' );
+  }
+
+  SECTION("A𐐅")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("A𐐅")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'A' );
+
+    it.increment();
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'𐐅' );
+  }
+
+  SECTION("𐐅A")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("𐐅A")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'𐐅' );
+
+    it.increment();
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'A' );
+  }
+
+  SECTION("𐐅𝛀 (U+10405 U+1D6C0)")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("𐐅𝛀")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    auto it = iteratorImplFromFile(file);
+
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'𐐅' );
+
+    it.increment();
+    it.extractCodePoint();
+    REQUIRE( it.codePoint == U'𝛀' );
+  }
+}
+
+/*
+ * Iterator interface tests
+ */
+
+TEST_CASE("construct")
+{
+  QTemporaryFile file;
+  REQUIRE( file.open() );
+
+  SECTION("empty file")
+  {
+    file.close();
+    REQUIRE( openTextFileReadOnly(file) );
+    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+  }
+
+  SECTION("A")
+  {
+    REQUIRE( writeTextFile(file, QLatin1String("ABC")) );
+    REQUIRE( openTextFileReadOnly(file) );
+    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    REQUIRE( *it == U'A' );
+  }
+}
 
 /*
  * Tests for LegacyIterator requirements
@@ -66,14 +451,42 @@ TEST_CASE("pre-increment")
 {
   QTemporaryFile file;
   REQUIRE( file.open() );
-  REQUIRE( writeTextFile(file, QLatin1String("ABC")) );
-  file.close();
 
-  REQUIRE( openTextFileReadOnly(file) );
-  QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+  SECTION("AB")
+  {
+    REQUIRE( writeTextFile(file, QLatin1String("AB")) );
 
-  ++it;
-  REQUIRE( *it == QLatin1Char('B') );
+    REQUIRE( openTextFileReadOnly(file) );
+    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    REQUIRE( *it == U'A' );
+
+    ++it;
+    REQUIRE( *it == U'B' );
+  }
+
+  SECTION("A𐐅")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("A𐐅")) );
+
+    REQUIRE( openTextFileReadOnly(file) );
+    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    REQUIRE( *it == U'A' );
+
+    ++it;
+    REQUIRE( *it == U'𐐅' );
+  }
+
+  SECTION("𐐅A")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("𐐅A")) );
+
+    REQUIRE( openTextFileReadOnly(file) );
+    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    REQUIRE( *it == U'𐐅' );
+
+    ++it;
+    REQUIRE( *it == U'A' );
+  }
 }
 
 /*
@@ -84,14 +497,42 @@ TEST_CASE("post-increment")
 {
   QTemporaryFile file;
   REQUIRE( file.open() );
-  REQUIRE( writeTextFile(file, QLatin1String("ABC")) );
-  file.close();
 
-  REQUIRE( openTextFileReadOnly(file) );
-  QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+  SECTION("AB")
+  {
+    REQUIRE( writeTextFile(file, QLatin1String("AB")) );
 
-  it++;
-  REQUIRE( *it == QLatin1Char('B') );
+    REQUIRE( openTextFileReadOnly(file) );
+    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    REQUIRE( *it == U'A' );
+
+    it++;
+    REQUIRE( *it == U'B' );
+  }
+
+  SECTION("A𐐅")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("A𐐅")) );
+
+    REQUIRE( openTextFileReadOnly(file) );
+    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    REQUIRE( *it == U'A' );
+
+    it++;
+    REQUIRE( *it == U'𐐅' );
+  }
+
+  SECTION("𐐅A")
+  {
+    REQUIRE( writeTextFile(file, QString::fromUtf8("𐐅A")) );
+
+    REQUIRE( openTextFileReadOnly(file) );
+    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    REQUIRE( *it == U'𐐅' );
+
+    it++;
+    REQUIRE( *it == U'A' );
+  }
 }
 
 TEST_CASE("comparison")

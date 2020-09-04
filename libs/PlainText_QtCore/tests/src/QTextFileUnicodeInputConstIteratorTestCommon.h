@@ -36,5 +36,10 @@ bool openTextFileReadOnly(QFile & file)
 
 bool writeTextFile(QFile & file, const QString & content)
 {
-  return Mdt::PlainText::TestLib::writeTextFileUtf8(file, content);
+  if( !Mdt::PlainText::TestLib::writeTextFileUtf8(file, content) ){
+    return false;
+  }
+  file.close();
+
+  return true;
 }

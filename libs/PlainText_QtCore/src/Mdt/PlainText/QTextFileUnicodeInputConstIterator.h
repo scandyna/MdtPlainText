@@ -26,9 +26,92 @@
 #include "mdt_plaintext_qtcore_export.h"
 #include <QFileDevice>
 #include <QByteArray>
+#include <QChar>
 #include <boost/iterator/iterator_facade.hpp>
+#include <cstdint>
+#include <cassert>
 
 namespace Mdt{ namespace PlainText{
+
+  namespace Impl{
+
+    /*! \internal
+     *
+     * \note We act on a input iterator (QTextFileInputConstIterator),
+     * which does not provide the multi-pass garantie.
+     * Because get the value at current position multiple times,
+     * we have to cache it.
+     */
+    struct QTextFileUnicodeInputConstIteratorImpl
+    {
+      uint32_t codePoint = 0;
+      QChar currentCodeUint;
+      QTextFileInputConstIterator mIterator;
+
+      QTextFileUnicodeInputConstIteratorImpl() noexcept = default;
+
+      QTextFileUnicodeInputConstIteratorImpl(QFileDevice *file, const QByteArray & fileEncoding)
+       : mIterator(file, fileEncoding)
+      {
+        assert( file != nullptr );
+        assert( file->isOpen() );
+
+        if( isDereferencable() ){
+          currentCodeUint = *mIterator;
+        }
+      }
+
+      QTextFileUnicodeInputConstIteratorImpl(const QTextFileUnicodeInputConstIteratorImpl & other) noexcept = default;
+
+      QTextFileUnicodeInputConstIteratorImpl & operator=(const QTextFileUnicodeInputConstIteratorImpl & other) noexcept = default;
+
+      QTextFileUnicodeInputConstIteratorImpl(QTextFileUnicodeInputConstIteratorImpl && other) noexcept = default;
+
+      QTextFileUnicodeInputConstIteratorImpl & operator=(QTextFileUnicodeInputConstIteratorImpl && other) noexcept = default;
+
+      bool atEnd() const noexcept
+      {
+        return mIterator.isEof();
+      }
+
+      bool isDereferencable() const noexcept
+      {
+        return !mIterator.isEof();
+      }
+
+      void increment()
+      {
+        assert( !atEnd() );
+
+        ++mIterator;
+        if( isDereferencable() ){
+          currentCodeUint = *mIterator;
+          if( currentCodeUint.isLowSurrogate() ){
+            assert( !atEnd() );
+            ++mIterator;
+            if( isDereferencable() ){
+              currentCodeUint = *mIterator;
+            }
+          }
+        }
+      }
+
+      void extractCodePoint()
+      {
+        assert( isDereferencable() );
+
+        if( currentCodeUint.isHighSurrogate() ){
+          assert( !atEnd() );
+          ++mIterator;
+          codePoint = QChar::surrogateToUcs4( currentCodeUint, *mIterator );
+        }else{
+          assert( !currentCodeUint.isSurrogate() );
+          codePoint = currentCodeUint.unicode();
+        }
+      }
+    };
+
+  } // namespace Impl{
 
   /*! \brief Input iterator that reads file and provide unicode support
    *
@@ -68,18 +151,17 @@ namespace Mdt{ namespace PlainText{
      * \exception QFileReadError
      */
     QTextFileUnicodeInputConstIterator(QFileDevice *file, const QByteArray & fileEncoding)
-     : mIterator(file, fileEncoding)
+     : mImpl(file, fileEncoding)
     {
-      Q_ASSERT( file != nullptr );
-      Q_ASSERT( file->isOpen() );
+      assert( file != nullptr );
+      assert( file->isOpen() );
+
+      extractCodePointIfDereferencable();
     }
 
     /*! \brief Copy construct a iterator from \a other
      */
-    QTextFileUnicodeInputConstIterator(const QTextFileUnicodeInputConstIterator & other) noexcept
-     : mIterator(other.mIterator)
-    {
-    }
+    QTextFileUnicodeInputConstIterator(const QTextFileUnicodeInputConstIterator & other) noexcept = default;
 
    private:
 
@@ -87,20 +169,28 @@ namespace Mdt{ namespace PlainText{
 
     void increment()
     {
-      ++mIterator;
+      mImpl.increment();
+      extractCodePointIfDereferencable();
     }
 
     bool equal(const QTextFileUnicodeInputConstIterator & other) const
     {
-      return mIterator == other.mIterator;
+      return mImpl.mIterator == other.mImpl.mIterator;
     }
 
     uint32_t dereference() const
     {
-      return mIterator->unicode();
+      return mImpl.codePoint;
     }
 
-    QTextFileInputConstIterator mIterator;
+    void extractCodePointIfDereferencable()
+    {
+      if( mImpl.isDereferencable() ){
+        mImpl.extractCodePoint();
+      }
+    }
+
+    Impl::QTextFileUnicodeInputConstIteratorImpl mImpl;
   };
 
 }} // namespace Mdt{ namespace PlainText{
