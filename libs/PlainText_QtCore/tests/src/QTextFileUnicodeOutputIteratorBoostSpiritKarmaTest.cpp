@@ -21,3 +21,72 @@
  ****************************************************************************/
 #include "QTextFileOutputIteratorTestCommon.h"
 #include "Mdt/PlainText/QTextFileUnicodeOutputIterator.h"
+#include "Mdt/PlainText/BoostSpiritKarmaQStringSupport"
+
+template<typename Rule>
+bool generateToFile(const QString & source, const Rule & rule, QFile & file)
+{
+  const Mdt::PlainText::QStringUnicodeView sourceContainer(source);
+  Mdt::PlainText::QTextFileUnicodeOutputIterator fileIterator(&file, "UTF-8");
+
+  return boost::spirit::karma::generate(fileIterator, rule, sourceContainer);
+}
+
+
+TEST_CASE("generate_standard_char_")
+{
+  using boost::spirit::standard::char_;
+
+  QTemporaryFile file;
+  REQUIRE( openTextFileForWrite(file) );
+
+  SECTION("*char_ A")
+  {
+    REQUIRE( generateToFile(QLatin1String("A"), *char_, file) );
+    REQUIRE( readTextFileBack(file) == QLatin1String("A") );
+  }
+
+  SECTION("AB")
+  {
+    REQUIRE( generateToFile(QLatin1String("AB"), *char_, file) );
+    REQUIRE( readTextFileBack(file) == QLatin1String("AB") );
+  }
+
+  SECTION("ABC")
+  {
+    REQUIRE( generateToFile(QLatin1String("ABC"), *char_, file) );
+    REQUIRE( readTextFileBack(file) == QLatin1String("ABC") );
+  }
+}
+
+TEST_CASE("generate_unicode_char_")
+{
+  using boost::spirit::unicode::char_;
+
+  QTemporaryFile file;
+  REQUIRE( openTextFileForWrite(file) );
+
+  SECTION("*char_ A")
+  {
+    REQUIRE( generateToFile(QLatin1String("A"), *char_, file) );
+    REQUIRE( readTextFileBack(file) == QString::fromUtf8("A") );
+  }
+
+  SECTION("ö")
+  {
+    REQUIRE( generateToFile(QString::fromUtf8("ö"), *char_, file) );
+    REQUIRE( readTextFileBack(file) == QString::fromUtf8("ö") );
+  }
+
+  SECTION("ĵ")
+  {
+    REQUIRE( generateToFile(QString::fromUtf8("ĵ"), *char_, file) );
+    REQUIRE( readTextFileBack(file) == QString::fromUtf8("ĵ") );
+  }
+
+  SECTION("𐐅")
+  {
+    REQUIRE( generateToFile(QString::fromUtf8("𐐅"), *char_, file) );
+    REQUIRE( readTextFileBack(file) == QString::fromUtf8("𐐅") );
+  }
+}
