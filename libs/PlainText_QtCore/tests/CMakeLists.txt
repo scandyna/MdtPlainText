@@ -135,6 +135,38 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME QTextFileOutputIteratorImplTest
+  TARGET qTextFileOutputIteratorImplTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/QTextFileOutputIteratorImplTest.cpp
+)
+
+mdt_add_test(
+  NAME QTextFileOutputIteratorImplErrorTest
+  TARGET qTextFileOutputIteratorImplErrorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/QTextFileOutputIteratorImplErrorTest.cpp
+)
+
+mdt_add_test(
+  NAME QTextFileOutputIteratorTest
+  TARGET qTextFileOutputIteratorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/QTextFileOutputIteratorTest.cpp
+)
+
+mdt_add_test(
+  NAME QTextFileOutputIteratorErrorTest
+  TARGET qTextFileOutputIteratorErrorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/QTextFileOutputIteratorErrorTest.cpp
+)
+
+mdt_add_test(
   NAME QCsvGrammarTest
   TARGET qCsvGrammarTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
