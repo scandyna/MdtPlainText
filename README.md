@@ -1,10 +1,4 @@
 
-[![pipeline status](https://gitlab.com/scandyna/mdtplaintext/badges/experimental/pipeline.svg)](https://gitlab.com/scandyna/mdtplaintext/-/commits/experimental)
-
-[![Coverity](https://scan.coverity.com/projects/21719/badge.svg)](https://scan.coverity.com/projects/scandyna-mdtplaintext)
-
-[View on OpenHub](https://www.openhub.net/p/MdtPlainText)
-
 | Topic                    | Status                                                                                                                                 |
 |:-------------------------|:---------------------------------------------------------------------------------------------------------------------------------------|
 | `Build / test (CI)`  | [![pipeline status](https://gitlab.com/scandyna/mdtplaintext/badges/experimental/pipeline.svg)](https://gitlab.com/scandyna/mdtplaintext/-/commits/experimental)   |
