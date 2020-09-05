@@ -35,10 +35,11 @@ namespace Mdt{ namespace PlainText{ namespace Impl{
   inline
   void addCodePointToQString(uint32_t codePoint, QString & str)
   {
-    if(codePoint <= 0xffff){
-      str.append( QChar(codePoint) );
+    if( QChar::requiresSurrogates(codePoint) ){
+      str.append( QChar::highSurrogate(codePoint) );
+      str.append( QChar::lowSurrogate(codePoint) );
     }else{
-      str.append( QString::fromUcs4(&codePoint, 1) );
+      str.append( QChar(codePoint) );
     }
   }
 
