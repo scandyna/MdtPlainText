@@ -11,6 +11,8 @@ The main use case is a CSV parser, that should read files conform to
 and
 [RFC 4180](https://tools.ietf.org/html/rfc4180)
 
+[View on OpenHub](https://www.openhub.net/p/MdtPlainText)
+
 # Usage
 
 For the available classes, functions, and their usage,
