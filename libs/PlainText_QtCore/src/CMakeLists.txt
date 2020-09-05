@@ -21,6 +21,7 @@ add_library(Mdt_PlainText_QtCore
   Mdt/PlainText/QTextFileUnicodeInputConstIterator.cpp
   Mdt/PlainText/QTextFileOutputIteratorImpl.cpp
   Mdt/PlainText/QTextFileOutputIterator.cpp
+  Mdt/PlainText/QTextFileUnicodeOutputIterator.cpp
   Mdt/PlainText/QCsvFileReaderTemplate.cpp
   Mdt/PlainText/QCsvFileReader.cpp
   Mdt/PlainText/QCsvFileWriterTemplate.cpp

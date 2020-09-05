@@ -167,6 +167,30 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME QTextFileUnicodeOutputIteratorTest
+  TARGET qTextFileUnicodeOutputIteratorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/QTextFileUnicodeOutputIteratorTest.cpp
+)
+
+mdt_add_test(
+  NAME QTextFileUnicodeOutputIteratorErrorTest
+  TARGET qTextFileUnicodeOutputIteratorErrorTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/QTextFileUnicodeOutputIteratorErrorTest.cpp
+)
+
+mdt_add_test(
+  NAME QTextFileUnicodeOutputIteratorBoostSpiritKarmaTest
+  TARGET qTextFileUnicodeOutputIteratorBoostSpiritKarmaTest
+  DEPENDENCIES Mdt::PlainText_QtCore Mdt::PlainText_TestLib Mdt::Catch2Main
+  SOURCE_FILES
+    src/QTextFileUnicodeOutputIteratorBoostSpiritKarmaTest.cpp
+)
+
+mdt_add_test(
   NAME QCsvGrammarTest
   TARGET qCsvGrammarTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
