@@ -5,6 +5,12 @@
 
 [View on OpenHub](https://www.openhub.net/p/MdtPlainText)
 
+| Topic                    | Status                                                                                                                                 |
+|:-------------------------|:---------------------------------------------------------------------------------------------------------------------------------------|
+| `Build / test (CI)`  | [![pipeline status](https://gitlab.com/scandyna/mdtplaintext/badges/experimental/pipeline.svg)](https://gitlab.com/scandyna/mdtplaintext/-/commits/experimental)   |
+| `Coverity`               | [![Coverity](https://scan.coverity.com/projects/21719/badge.svg)](https://scan.coverity.com/projects/scandyna-mdtplaintext) |
+| `OpenHub`                | [View on OpenHub](https://www.openhub.net/p/MdtPlainText) |
+
 # MdtPlainText
 
 Provides some libraries to read and write simple plain text
@@ -14,6 +20,7 @@ The main use case is a CSV parser, that should read files conform to
 [CSV-1203](https://idoc.pub/documents/csv-file-format-specification-standard-csv-1203-6nq88y5xr9nw)
 and
 [RFC 4180](https://tools.ietf.org/html/rfc4180)
+
 
 # Usage
 
