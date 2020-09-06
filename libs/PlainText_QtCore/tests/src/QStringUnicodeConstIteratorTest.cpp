@@ -530,7 +530,7 @@ TEST_CASE("Impl_extractCodePoint")
     auto data = iteratorDataFromString(str);
 
     data.extractCodePoint();
-    REQUIRE( data.value == U'ĵ' );
+    REQUIRE( data.value == U'\U00000135' );
   }
 
   SECTION("𐐅")
@@ -539,7 +539,7 @@ TEST_CASE("Impl_extractCodePoint")
     auto data = iteratorDataFromString(str);
 
     data.extractCodePoint();
-    REQUIRE( data.value == U'𐐅' );
+    REQUIRE( data.value == U'\U00010405' );
   }
 
   SECTION("A𐐅")
@@ -552,7 +552,7 @@ TEST_CASE("Impl_extractCodePoint")
 
     data.increment();
     data.extractCodePoint();
-    REQUIRE( data.value == U'𐐅' );
+    REQUIRE( data.value == U'\U00010405' );
   }
 
   SECTION("𐐅A")
@@ -561,7 +561,7 @@ TEST_CASE("Impl_extractCodePoint")
     auto data = iteratorDataFromString(str);
 
     data.extractCodePoint();
-    REQUIRE( data.value == U'𐐅' );
+    REQUIRE( data.value == U'\U00010405' );
 
     data.increment();
     data.extractCodePoint();
@@ -574,11 +574,11 @@ TEST_CASE("Impl_extractCodePoint")
     auto data = iteratorDataFromString(str);
 
     data.extractCodePoint();
-    REQUIRE( data.value == U'𐐅' );
+    REQUIRE( data.value == U'\U00010405' );
 
     data.increment();
     data.extractCodePoint();
-    REQUIRE( data.value == U'𝛀' );
+    REQUIRE( data.value == U'\U0001D6C0' );
   }
 }
 
@@ -659,20 +659,20 @@ TEST_CASE("copy_construct")
   {
     const QString str = QString::fromUtf8("ö");
     QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
-    REQUIRE( *a == U'ö' );
+    REQUIRE( *a == U'\U000000F6' );
 
     QStringUnicodeConstIterator b(a);
-    REQUIRE( *b == U'ö' );
+    REQUIRE( *b == U'\U000000F6' );
   }
 
   SECTION("𐐅")
   {
     const QString str = QString::fromUtf8("𐐅");
     QStringUnicodeConstIterator a( str.cbegin(), str.cend() );
-    REQUIRE( *a == U'𐐅' );
+    REQUIRE( *a == U'\U00010405' );
 
     QStringUnicodeConstIterator b(a);
-    REQUIRE( *b == U'𐐅' );
+    REQUIRE( *b == U'\U00010405' );
   }
 }
 
@@ -712,7 +712,7 @@ TEST_CASE("pre-increment")
     QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
 
     ++it;
-    REQUIRE( *it == U'𐐅' );
+    REQUIRE( *it == U'\U00010405' );
   }
 
   SECTION("𐐅A")
@@ -810,7 +810,7 @@ TEST_CASE("decrement")
     const QString str = QString::fromUtf8("A𐐅");
     QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
     ++it;
-    REQUIRE( *it == U'𐐅' );
+    REQUIRE( *it == U'\U00010405' );
 
     --it;
     REQUIRE( *it == U'A' );
@@ -824,7 +824,7 @@ TEST_CASE("decrement")
     REQUIRE( *it == U'A' );
 
     --it;
-    REQUIRE( *it == U'𐐅' );
+    REQUIRE( *it == U'\U00010405' );
   }
 }
 
@@ -845,34 +845,34 @@ TEST_CASE("Unicode")
   {
     const QString str = QString::fromUtf8("ö");
     QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
-    REQUIRE( *it == U'ö' );
+    REQUIRE( *it == U'\U000000F6' );
   }
 
   SECTION("ĵ")
   {
     const QString str = QString::fromUtf8("ĵ");
     QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
-    REQUIRE( *it == U'ĵ' );
+    REQUIRE( *it == U'\U00000135' );
   }
 
   SECTION("�")
   {
     const QString str = QString::fromUtf8("�");
     QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
-    REQUIRE( *it == U'�' );
+    REQUIRE( *it == U'\U0000FFFD' );
   }
 
   SECTION("𐀀")
   {
     const QString str = QString::fromUtf8("𐀀");
     QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
-    REQUIRE( *it == U'𐀀' );
+    REQUIRE( *it == U'\U00010000' );
   }
 
   SECTION("𐐅")
   {
     const QString str = QString::fromUtf8("𐐅");
     QStringUnicodeConstIterator it( str.cbegin(), str.cend() );
-    REQUIRE( *it == U'𐐅' );
+    REQUIRE( *it == U'\U00010405' );
   }
 }

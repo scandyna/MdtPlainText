@@ -75,16 +75,16 @@ TEST_CASE("assign")
 
   SECTION("ĵ")
   {
-    it = u'ĵ';
+    it = U'\U00000135'; // ĵ
     REQUIRE( readTextFileBack(file) == QString::fromUtf8("ĵ") );
   }
 
   SECTION("aèöĵg")
   {
     it = u'a';
-    it = u'è';
-    it = u'ö';
-    it = u'ĵ';
+    it = U'\U000000E8'; // è
+    it = U'\U000000F6'; // ö
+    it = U'\U00000135'; // ĵ
     it = u'g';
     REQUIRE( readTextFileBack(file) == QString::fromUtf8("aèöĵg") );
   }

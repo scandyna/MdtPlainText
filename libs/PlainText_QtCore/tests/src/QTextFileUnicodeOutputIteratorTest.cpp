@@ -78,36 +78,36 @@ TEST_CASE("assign")
 
   SECTION("ĵ")
   {
-    it = U'ĵ';
+    it = U'\U00000135'; // ĵ
     REQUIRE( readTextFileBack(file) == QString::fromUtf8("ĵ") );
   }
 
   SECTION("aèöĵg")
   {
     it = U'a';
-    it = U'è';
-    it = U'ö';
-    it = U'ĵ';
+    it = U'\U000000E8'; // è
+    it = U'\U000000F6'; // ö
+    it = U'\U00000135'; // ĵ
     it = U'g';
     REQUIRE( readTextFileBack(file) == QString::fromUtf8("aèöĵg") );
   }
 
   SECTION("𐐅")
   {
-    it = U'𐐅';
+    it = U'\U00010405'; // 𐐅
     REQUIRE( readTextFileBack(file) == QString::fromUtf8("𐐅") );
   }
 
   SECTION("A𐐅")
   {
     it = U'A';
-    it = U'𐐅';
+    it = U'\U00010405'; // 𐐅
     REQUIRE( readTextFileBack(file) == QString::fromUtf8("A𐐅") );
   }
 
   SECTION("𐐅A")
   {
-    it = U'𐐅';
+    it = U'\U00010405'; // 𐐅
     it = U'A';
     REQUIRE( readTextFileBack(file) == QString::fromUtf8("𐐅A") );
   }
