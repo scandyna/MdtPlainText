@@ -19,8 +19,8 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#ifndef MDT_PLAIN_TEXT_QCSV_FILE_READE_ERROR_H
-#define MDT_PLAIN_TEXT_QCSV_FILE_READE_ERROR_H
+#ifndef MDT_PLAIN_TEXT_QCSV_FILE_READ_ERROR_H
+#define MDT_PLAIN_TEXT_QCSV_FILE_READ_ERROR_H
 
 #include "QRuntimeError.h"
 #include "mdt_plaintext_qtcore_export.h"
@@ -43,4 +43,4 @@ namespace Mdt{ namespace PlainText{
 
 }} // namespace Mdt{ namespace PlainText{
 
-#endif // #ifndef MDT_PLAIN_TEXT_QCSV_FILE_READE_ERROR_H
+#endif // #ifndef MDT_PLAIN_TEXT_QCSV_FILE_READ_ERROR_H
