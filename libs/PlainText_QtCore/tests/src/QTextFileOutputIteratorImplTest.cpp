@@ -66,16 +66,16 @@ TEST_CASE("put")
 
   SECTION("ĵ")
   {
-    it.put(u'ĵ');
+    it.put(u'\u0135');
     REQUIRE( readTextFileBack(file) == QString::fromUtf8("ĵ") );
   }
 
   SECTION("aèöĵg")
   {
     it.put(u'a');
-    it.put(u'è');
-    it.put(u'ö');
-    it.put(u'ĵ');
+    it.put(u'\u00E8');  // è
+    it.put(u'\u00F6');  // ö
+    it.put(u'\u0135');  // ĵ
     it.put(u'g');
     REQUIRE( readTextFileBack(file) == QString::fromUtf8("aèöĵg") );
   }

@@ -159,7 +159,7 @@ TEST_CASE("Impl_increment")
     auto it = iteratorImplFromFile(file);
     REQUIRE( !it.atEnd() );
     REQUIRE( it.isDereferencable() );
-    REQUIRE( it.currentCodeUint.unicode() == u'ĵ' );
+    REQUIRE( it.currentCodeUint.unicode() == u'\u0135' );
 
     it.increment();
     REQUIRE( it.atEnd() );
@@ -328,7 +328,7 @@ TEST_CASE("Impl_extractCodePoint")
     auto it = iteratorImplFromFile(file);
 
     it.extractCodePoint();
-    REQUIRE( it.codePoint == U'ĵ' );
+    REQUIRE( it.codePoint == U'\U00000135' );
   }
 
   SECTION("𐐅")
@@ -338,7 +338,7 @@ TEST_CASE("Impl_extractCodePoint")
     auto it = iteratorImplFromFile(file);
 
     it.extractCodePoint();
-    REQUIRE( it.codePoint == U'𐐅' );
+    REQUIRE( it.codePoint == U'\U00010405' );
   }
 
   SECTION("A𐐅")
@@ -352,7 +352,7 @@ TEST_CASE("Impl_extractCodePoint")
 
     it.increment();
     it.extractCodePoint();
-    REQUIRE( it.codePoint == U'𐐅' );
+    REQUIRE( it.codePoint == U'\U00010405' );
   }
 
   SECTION("𐐅A")
@@ -362,7 +362,7 @@ TEST_CASE("Impl_extractCodePoint")
     auto it = iteratorImplFromFile(file);
 
     it.extractCodePoint();
-    REQUIRE( it.codePoint == U'𐐅' );
+    REQUIRE( it.codePoint == U'\U00010405' );
 
     it.increment();
     it.extractCodePoint();
@@ -376,11 +376,11 @@ TEST_CASE("Impl_extractCodePoint")
     auto it = iteratorImplFromFile(file);
 
     it.extractCodePoint();
-    REQUIRE( it.codePoint == U'𐐅' );
+    REQUIRE( it.codePoint == U'\U00010405' );
 
     it.increment();
     it.extractCodePoint();
-    REQUIRE( it.codePoint == U'𝛀' );
+    REQUIRE( it.codePoint == U'\U0001D6C0' );
   }
 }
 
@@ -473,7 +473,7 @@ TEST_CASE("pre-increment")
     REQUIRE( *it == U'A' );
 
     ++it;
-    REQUIRE( *it == U'𐐅' );
+    REQUIRE( *it == U'\U00010405' );
   }
 
   SECTION("𐐅A")
@@ -482,7 +482,7 @@ TEST_CASE("pre-increment")
 
     REQUIRE( openTextFileReadOnly(file) );
     QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
-    REQUIRE( *it == U'𐐅' );
+    REQUIRE( *it == U'\U00010405' );
 
     ++it;
     REQUIRE( *it == U'A' );
@@ -519,7 +519,7 @@ TEST_CASE("post-increment")
     REQUIRE( *it == U'A' );
 
     it++;
-    REQUIRE( *it == U'𐐅' );
+    REQUIRE( *it == U'\U00010405' );
   }
 
   SECTION("𐐅A")
@@ -528,7 +528,7 @@ TEST_CASE("post-increment")
 
     REQUIRE( openTextFileReadOnly(file) );
     QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
-    REQUIRE( *it == U'𐐅' );
+    REQUIRE( *it == U'\U00010405' );
 
     it++;
     REQUIRE( *it == U'A' );
