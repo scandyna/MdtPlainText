@@ -6,6 +6,8 @@
  */
 #include "CsvFileWriter.h"
 #include "CsvFileWriterTemplate.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/CsvFile.h"
 #include <cassert>
 
 namespace Mdt{ namespace PlainText{
@@ -69,9 +71,24 @@ bool CsvFileWriter::isOpen() const
   return mImpl->isOpen();
 }
 
-void CsvFileWriter::appendLine(const std::vector<std::string> & record)
+void CsvFileWriter::writeLine(const std::vector<std::string> & record)
 {
   assert( isOpen() );
+
+  using DestinationIterator = CsvFileWriterTemplate::iterator;
+
+  Grammar::Csv::Karma::CsvRecord< DestinationIterator, std::vector<std::string> > rule( csvSettings() );
+  mImpl->writeLine(record, rule);
+}
+
+void CsvFileWriter::writeTable(const std::vector< std::vector<std::string> > & table)
+{
+  assert( isOpen() );
+
+  using DestinationIterator = CsvFileWriterTemplate::iterator;
+
+  Grammar::Csv::Karma::CsvFile< DestinationIterator, std::vector< std::vector<std::string> > > rule( csvSettings() );
+  mImpl->writeTable(table, rule);
 }
 
 void CsvFileWriter::close()

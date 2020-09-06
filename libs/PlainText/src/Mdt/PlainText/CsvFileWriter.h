@@ -8,6 +8,7 @@
 #define MDT_PLAIN_TEXT_CSV_FILE_WRITER_H
 
 #include "FileOpenError.h"
+#include "CsvFileWriteError.h"
 #include "EndOfLine.h"
 #include "CsvGeneratorSettings.h"
 #include "FileWriteOpenMode.h"
@@ -28,7 +29,7 @@ namespace Mdt{ namespace PlainText{
    *
    * csvWriter.setFilePath("/some/path/to/file.csv");
    * csvWriter.open();
-   * csvWriter.appendRecord({"A","B","C"});
+   * csvWriter.appendLine({"A","B","C"});
    * \endcode
    */
   class MDT_PLAINTEXT_EXPORT CsvFileWriter
@@ -107,13 +108,21 @@ namespace Mdt{ namespace PlainText{
      */
     bool isOpen() const;
 
-    /*! \brief Append a line to this CSV file
+    /*! \brief Write a line to this CSV file
      *
      * \exception CsvFileWriteError
-     * \pre This file reader must be open
+     * \pre This file writer must be open
      * \sa isOpen()
      */
-    void appendLine(const std::vector<std::string> & record);
+    void writeLine(const std::vector<std::string> & record);
+
+    /*! \brief Write a table to this CSV file
+     *
+     * \exception CsvFileWriteError
+     * \pre This file writer must be open
+     * \sa isOpen()
+     */
+    void writeTable(const std::vector< std::vector<std::string> > & table);
 
     /*! \brief Close this file writer
      */

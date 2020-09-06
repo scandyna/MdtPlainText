@@ -8,13 +8,16 @@
 #define MDT_PLAIN_TEXT_CSV_FILE_WRITER_TEMPLATE_H
 
 #include "FileOpenError.h"
+#include "CsvFileWriteError.h"
 #include "EndOfLine.h"
 #include "CsvGeneratorSettings.h"
 #include "FileWriteOpenMode.h"
 #include "OpenFstream.h"
 #include "mdt_plaintext_export.h"
+#include <boost/spirit/include/karma.hpp>
 #include <string>
 #include <fstream>
+#include <iterator>
 
 namespace Mdt{ namespace PlainText{
 
@@ -25,7 +28,7 @@ namespace Mdt{ namespace PlainText{
    * In counterpart, it includes all the implementation,
    * which increases the compile time significantly.
    *
-   * If you can use std::vector<CsvGeneratorField> or std::vector<std::string> as input records,
+   * If you can use std::vector<std::string> as input records,
    * consider using CsvFileWriter.
    *
    * Here is a minimal example of a possible CSV file writer:
@@ -38,7 +41,7 @@ namespace Mdt{ namespace PlainText{
    *
    *   // All required public methods, constructors, destructor
    *
-   *   void appendLine(cont MyRecord & record);
+   *   void writeLine(cont MyRecord & record);
    *
    *  private:
    *
@@ -46,17 +49,16 @@ namespace Mdt{ namespace PlainText{
    * };
    * \endcode
    *
-   * \todo Check if this is correct
-   * The implementation of %appendLine():
+   * The implementation of %writeLine():
    * \code
-   * void MyCsvFileWriter::appendLine(const MyRecord & record)
+   * void MyCsvFileWriter::writeLine(const MyRecord & record)
    * {
    *   using DestinationIterator = CsvFileWriterTemplate::iterator;
    *
    *   // A boost Spirit Karma rule
    *   MyRecordRule<DestinationIterator, MyRecord> rule( csvSettings() );
    *
-   *   mImpl->appendLine(record, rule);
+   *   mImpl->writeLine(record, rule);
    * }
    * \endcode
    *
@@ -65,6 +67,10 @@ namespace Mdt{ namespace PlainText{
   class MDT_PLAINTEXT_EXPORT CsvFileWriterTemplate
   {
    public:
+
+    /*! \brief STL iterator
+     */
+    using iterator = std::ostreambuf_iterator<char>;
 
     /*! \brief Construct a CSV file writer
      */
@@ -175,16 +181,42 @@ namespace Mdt{ namespace PlainText{
       return mFileStream.is_open();
     }
 
-    /*! \brief Append a line to this CSV file
+    /*! \brief Write a line to this CSV file
      *
      * \exception CsvFileWriteError
-     * \pre This file reader must be open
+     * \pre This file writer must be open
      * \sa isOpen()
      */
     template<typename Record, typename Rule>
-    void appendLine(const Record & record, const Rule & rule)
+    void writeLine(const Record & record, const Rule & rule)
     {
       assert( isOpen() );
+
+      iterator it(mFileStream);
+      const bool ok = boost::spirit::karma::generate(it, rule, record);
+      if(!ok){
+        const std::string what = "writing a line in file '" + mFilePath + "' failed";
+        throw CsvFileWriteError(what);
+      }
+    }
+
+    /*! \brief Write a table to this CSV file
+     *
+     * \exception CsvFileWriteError
+     * \pre This file writer must be open
+     * \sa isOpen()
+     */
+    template<typename Table, typename Rule>
+    void writeTable(const Table & table, const Rule & rule)
+    {
+      assert( isOpen() );
+
+      iterator it(mFileStream);
+      const bool ok = boost::spirit::karma::generate(it, rule, table);
+      if(!ok){
+        const std::string what = "writing table in file '" + mFilePath + "' failed";
+        throw CsvFileWriteError(what);
+      }
     }
 
     /*! \brief Close this file writer
