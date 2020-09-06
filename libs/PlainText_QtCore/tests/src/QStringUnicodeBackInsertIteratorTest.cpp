@@ -66,26 +66,26 @@ TEST_CASE("assign")
 
   SECTION("ĵ")
   {
-    it = U'ĵ';
+    it = U'\U00000135'; // ĵ
     REQUIRE( str == QString::fromUtf8("ĵ") );
   }
 
   SECTION("𐐅")
   {
-    it = U'𐐅';
+    it = U'\U00010405'; // 𐐅
     REQUIRE( str == QString::fromUtf8("𐐅") );
   }
 
   SECTION("A𐐅")
   {
     it = U'A';
-    it = U'𐐅';
+    it = U'\U00010405'; // 𐐅
     REQUIRE( str == QString::fromUtf8("A𐐅") );
   }
 
   SECTION("𐐅A")
   {
-    it = U'𐐅';
+    it = U'\U00010405'; // 𐐅
     it = U'A';
     REQUIRE( str == QString::fromUtf8("𐐅A") );
   }

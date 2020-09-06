@@ -59,7 +59,7 @@ TEST_CASE("std_fill_n")
 
   SECTION("5 𝛀")
   {
-    std::fill_n( QStringUnicodeBackInsertIterator(str), 5, U'𝛀' );
+    std::fill_n( QStringUnicodeBackInsertIterator(str), 5, U'\U0001D6C0' );
     REQUIRE( str == QString::fromUtf8("𝛀𝛀𝛀𝛀𝛀") );
   }
 }

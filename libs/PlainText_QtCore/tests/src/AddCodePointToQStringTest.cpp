@@ -62,51 +62,51 @@ TEST_CASE("addCodePointToQString")
 
   SECTION("ö")
   {
-    addCodePointToQString(U'ö', str);
+    addCodePointToQString(U'\U000000F6', str);
     REQUIRE( str == QString::fromUtf8("ö") );
   }
 
   SECTION("ĵ")
   {
-    addCodePointToQString(U'ĵ', str);
+    addCodePointToQString(U'\U00000135', str);
     REQUIRE( str == QString::fromUtf8("ĵ") );
   }
 
   SECTION("�")
   {
-    addCodePointToQString(U'�', str);
+    addCodePointToQString(U'\U0000FFFD', str);
     REQUIRE( str == QString::fromUtf8("�") );
   }
 
   SECTION("𐀀")
   {
-    addCodePointToQString(U'𐀀', str);
+    addCodePointToQString(U'\U00010000', str);
     REQUIRE( str == QString::fromUtf8("𐀀") );
   }
 
   SECTION("𐐅")
   {
-    addCodePointToQString(U'𐐅', str);
+    addCodePointToQString(U'\U00010405', str);
     REQUIRE( str == QString::fromUtf8("𐐅") );
   }
 
   SECTION("A𐐅")
   {
     addCodePointToQString(U'A', str);
-    addCodePointToQString(U'𐐅', str);
+    addCodePointToQString(U'\U00010405', str);
     REQUIRE( str == QString::fromUtf8("A𐐅") );
   }
 
   SECTION("𐐅A")
   {
-    addCodePointToQString(U'𐐅', str);
+    addCodePointToQString(U'\U00010405', str);
     addCodePointToQString(U'A', str);
     REQUIRE( str == QString::fromUtf8("𐐅A") );
   }
 
   SECTION("𝛀")
   {
-    addCodePointToQString(U'𝛀', str);
+    addCodePointToQString(U'\U0001D6C0', str);
     REQUIRE( str == QString::fromUtf8("𝛀") );
   }
 }
