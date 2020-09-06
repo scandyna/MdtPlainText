@@ -99,7 +99,7 @@ mdt_add_thread_sanitizer_option_if_available(SANITIZER_ENABLE_THREAD
 #######################
 
 if(MSVC)
-  add_compile_options(/W2)
+  add_compile_options(/W3)
   if(WARNING_AS_ERROR)
     add_compile_options(/WX)
   endif()
