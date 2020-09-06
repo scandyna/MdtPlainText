@@ -63,6 +63,22 @@ namespace Mdt{ namespace PlainText{
     {
     }
 
+    /*! \brief Copy construct a back insert iterator from \a other
+     */
+    QStringUnicodeBackInsertIterator(const QStringUnicodeBackInsertIterator & other) noexcept = default;
+
+    /*! \brief Copy assign \a other to this back insert iterator
+     */
+    QStringUnicodeBackInsertIterator & operator=(const QStringUnicodeBackInsertIterator & other) noexcept = default;
+
+    /*! \brief Move construct a back insert iterator from \a other
+     */
+    QStringUnicodeBackInsertIterator(QStringUnicodeBackInsertIterator && other) noexcept = default;
+
+    /*! \brief Move assign \a other to this back insert iterator
+     */
+    QStringUnicodeBackInsertIterator & operator=(QStringUnicodeBackInsertIterator && other) noexcept = default;
+
     /*! \brief Append \a codePoint to the string
      */
     QStringUnicodeBackInsertIterator & operator=(uint32_t codePoint)
