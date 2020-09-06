@@ -22,7 +22,6 @@
 #ifndef MDT_PLAIN_TEXT_IMPL_ADD_CODE_POINT_TO_QSTRING_H
 #define MDT_PLAIN_TEXT_IMPL_ADD_CODE_POINT_TO_QSTRING_H
 
-#include "mdt_plaintext_qtcore_export.h"
 #include <QString>
 #include <QChar>
 #include <cstdint>
@@ -31,7 +30,6 @@ namespace Mdt{ namespace PlainText{ namespace Impl{
 
   /*! \internal Add a unicode code point to \a str
    */
-  MDT_PLAINTEXT_QTCORE_EXPORT
   inline
   void addCodePointToQString(uint32_t codePoint, QString & str)
   {
