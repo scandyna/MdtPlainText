@@ -47,7 +47,7 @@ void openOfstream(std::ofstream & stream, const std::string & path, FileWriteOpe
   assert( !stream.is_open() );
   assert( !path.empty() );
 
-  std::ios_base::openmode openMode;
+  std::ios_base::openmode openMode = std::ios_base::out; // Avoid reporting warnings about uninitialized var
   switch(mode){
     case FileWriteOpenMode::Append:
       openMode = std::ios_base::out | std::ios_base::binary | std::ios_base::app;
