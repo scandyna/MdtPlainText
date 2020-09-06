@@ -106,13 +106,14 @@ if(MSVC)
   # Disable some Warnigs on MSVC:
   #  C4996: 'strcpy': This function or variable may be unsafe.
   #          Consider using strcpy_s instead (which not works with gcc/clang)
+  #  C4244: conversion' conversion from 'type1' to 'type2', possible loss of data
   #  C4267: 'var' : conversion from 'size_t' to 'type', possible loss of data
   #  C4275: non - DLL-interface class 'class_1' used as base for DLL-interface class 'class_2'
   #         See: https://stackoverflow.com/questions/5207765/c4275-warning-in-visual-studio
   #  C4251: 'type' : class 'type1' needs to have dll-interface to be used by clients of class 'type2'
   #         Probably a warning on binary compatibility, which we don't support anyway
   #         See also: https://stackoverflow.com/questions/32098001/stdunique-ptr-pimpl-in-dll-generates-c4251-with-visual-studio
-  add_compile_options(/wd4996 /wd4267 /wd4275 /wd4251)
+  add_compile_options(/wd4996 /wd4244 /wd4267 /wd4275 /wd4251)
 else()
   add_compile_options(-Wall -Wextra -pedantic)
   if(WARNING_AS_ERROR)
