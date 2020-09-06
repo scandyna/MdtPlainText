@@ -98,3 +98,162 @@ TEST_CASE("open_close")
   writer.close();
   REQUIRE( !writer.isOpen() );
 }
+
+TEST_CASE("open")
+{
+  QTemporaryDir dir;
+  REQUIRE( dir.isValid() );
+
+  QCsvFileWriter writer;
+
+  SECTION("Append")
+  {
+    writer.setOpenMode(FileWriteOpenMode::Append);
+
+    SECTION("New file")
+    {
+      const QString filePath = filePathFromDirAndFileName(dir, "new.csv");
+      writer.setFilePath(filePath);
+      REQUIRE( !fileExists(filePath) );
+
+      writer.open();
+      writer.close();
+      REQUIRE( fileExists(filePath) );
+    }
+
+    SECTION("Existing file")
+    {
+      const QString filePath = filePathFromDirAndFileName(dir, "existing.csv");
+      const QString originalFileContent = QLatin1String("ABC");
+      REQUIRE( writeTextFile(filePath, originalFileContent) );
+      REQUIRE( fileExists(filePath) );
+
+      writer.setFilePath(filePath);
+      writer.open();
+      writer.close();
+      REQUIRE( fileExists(filePath) );
+      REQUIRE( readTextFile(filePath) == originalFileContent );
+    }
+  }
+
+  SECTION("Truncate")
+  {
+    writer.setOpenMode(FileWriteOpenMode::Truncate);
+
+    SECTION("New file")
+    {
+      const QString filePath = filePathFromDirAndFileName(dir, "new.csv");
+      writer.setFilePath(filePath);
+      REQUIRE( !fileExists(filePath) );
+
+      writer.open();
+      writer.close();
+      REQUIRE( fileExists(filePath) );
+    }
+
+    SECTION("Existing file")
+    {
+      const QString filePath = filePathFromDirAndFileName(dir, "existing.csv");
+      REQUIRE( writeTextFile(filePath, QLatin1String("ABC")) );
+      REQUIRE( fileExists(filePath) );
+
+      writer.setFilePath(filePath);
+      writer.open();
+      writer.close();
+      REQUIRE( fileExists(filePath) );
+      REQUIRE( readTextFile(filePath).isEmpty() );
+    }
+  }
+}
+
+TEST_CASE("writeLine")
+{
+  QTemporaryDir dir;
+  REQUIRE( dir.isValid() );
+
+  CsvGeneratorSettings csvSettings;
+  csvSettings.setEndOfLine(EndOfLine::Lf);
+
+  QCsvFileWriter writer;
+  writer.setCsvSettings(csvSettings);
+  const QString filePath = filePathFromDirAndFileName(dir, "file.csv");
+  writer.setFilePath(filePath);
+  writer.open();
+
+  QStringList record;
+  QString fileData;
+
+  SECTION("A")
+  {
+    record = qStringListFromStdStringList({"A"});
+    writer.writeLine(record);
+    writer.close();
+    fileData = readTextFile(filePath);
+    REQUIRE( fileData == QLatin1String("A\n") );
+  }
+
+  SECTION("AB|cdéàäö")
+  {
+    record = qStringListFromStdStringList({"AB","cdéàäö"});
+    writer.writeLine(record);
+    writer.close();
+    fileData = readTextFile(filePath);
+    REQUIRE( fileData == QString::fromUtf8("AB,cdéàäö\n") );
+  }
+
+  SECTION("a b𝛀|c, de𐐅")
+  {
+    record = qStringListFromStdStringList({"a b𝛀","c, de𐐅"});
+    writer.writeLine(record);
+    writer.close();
+    fileData = readTextFile(filePath);
+    REQUIRE( fileData == QString::fromUtf8("a b𝛀,\"c, de𐐅\"\n") );
+  }
+
+  SECTION("ab𐐅c|DE\\n12𝛀|3456")
+  {
+    record = qStringListFromStdStringList({"ab𐐅c","DE"});
+    writer.writeLine(record);
+    record = qStringListFromStdStringList({"12𝛀","3456"});
+    writer.writeLine(record);
+    writer.close();
+    fileData = readTextFile(filePath);
+    REQUIRE( fileData == QString::fromUtf8("ab𐐅c,DE\n12𝛀,3456\n") );
+  }
+}
+
+TEST_CASE("writeTable")
+{
+  QTemporaryDir dir;
+  REQUIRE( dir.isValid() );
+
+  CsvGeneratorSettings csvSettings;
+  csvSettings.setEndOfLine(EndOfLine::Lf);
+
+  QCsvFileWriter writer;
+  writer.setCsvSettings(csvSettings);
+  const QString filePath = filePathFromDirAndFileName(dir, "file.csv");
+  writer.setFilePath(filePath);
+  writer.open();
+
+  std::vector<QStringList> table;
+  QString fileData;
+
+  SECTION("A")
+  {
+    table = qStringTableFromStdStringTable({{"A"}});
+    writer.writeTable(table);
+    writer.close();
+    fileData = readTextFile(filePath);
+    REQUIRE( fileData == QString::fromUtf8("A\n") );
+  }
+
+  SECTION("A𐐅 C|D,é\\n79|34𝛀 56")
+  {
+    table = qStringTableFromStdStringTable({{"A𐐅 C","D,é"},{"79","34𝛀 56"}});
+    writer.writeTable(table);
+    writer.close();
+    fileData = readTextFile(filePath);
+    REQUIRE( fileData == QString::fromUtf8("A𐐅 C,\"D,é\"\n79,34𝛀 56\n") );
+  }
+}

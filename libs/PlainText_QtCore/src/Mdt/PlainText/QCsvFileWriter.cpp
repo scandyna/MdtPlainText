@@ -21,6 +21,10 @@
  ****************************************************************************/
 #include "QCsvFileWriter.h"
 #include "QCsvFileWriterTemplate.h"
+#include "QStringListUnicodeView.h"
+#include "Mdt/PlainText/ContainerAliasView.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/Karma/CsvFile.h"
 #include <cassert>
 
 namespace Mdt{ namespace PlainText{
@@ -97,6 +101,28 @@ bool QCsvFileWriter::isOpen() const
   return mImpl->isOpen();
 }
 
+void QCsvFileWriter::writeLine(const QStringList & record)
+{
+  assert( isOpen() );
+
+  using DestinationIterator = QCsvFileWriterTemplate::iterator;
+
+  Grammar::Csv::Karma::CsvRecord<DestinationIterator, QStringListUnicodeView> rule( csvSettings() );
+  QStringListUnicodeView recordView(record);
+  mImpl->writeLine(recordView, rule);
+}
+
+void QCsvFileWriter::writeTable(const std::vector<QStringList> & table)
+{
+  assert( isOpen() );
+
+  using DestinationIterator = QCsvFileWriterTemplate::iterator;
+  using TableView = ContainerAliasView<std::vector<QStringList>, QStringListUnicodeView>;
+
+  Grammar::Csv::Karma::CsvFile<DestinationIterator, TableView> rule( csvSettings() );
+  TableView tableView(table);
+  mImpl->writeLine(tableView, rule);
+}
 
 void QCsvFileWriter::close()
 {

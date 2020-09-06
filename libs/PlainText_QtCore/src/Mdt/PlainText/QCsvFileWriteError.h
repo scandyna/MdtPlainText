@@ -19,20 +19,28 @@
  ** along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **
  ****************************************************************************/
-#include "QCsvFileWriterTestCommon.h"
+#ifndef MDT_PLAIN_TEXT_QCSV_FILE_WRITE_ERROR_H
+#define MDT_PLAIN_TEXT_QCSV_FILE_WRITE_ERROR_H
 
-TEST_CASE("open")
-{
-  QCsvFileWriter writer;
+#include "QRuntimeError.h"
+#include "mdt_plaintext_qtcore_export.h"
 
-  SECTION("Path refers to a directory")
+namespace Mdt{ namespace PlainText{
+
+  /*! \brief Error thrown when writing a CSV file failed
+   */
+  class MDT_PLAINTEXT_QTCORE_EXPORT QCsvFileWriteError : public QRuntimeError
   {
-    QTemporaryDir dir;
-    REQUIRE( dir.isValid() );
+   public:
 
-    setDirectoryPathToWriter(dir, writer);
+    /*! \brief Construct a error
+     */
+    explicit QCsvFileWriteError(const QString & what)
+     : QRuntimeError(what)
+    {
+    }
+  };
 
-    REQUIRE_THROWS_AS( writer.open(), QFileOpenError );
-    REQUIRE( !writer.isOpen() );
-  }
-}
+}} // namespace Mdt{ namespace PlainText{
+
+#endif // #ifndef MDT_PLAIN_TEXT_QCSV_FILE_WRITE_ERROR_H

@@ -21,10 +21,13 @@
  ****************************************************************************/
 #include "catch2/catch.hpp"
 #include "Mdt/PlainText/QCsvFileWriter"
+#include "Mdt/PlainText/TestLib/TextFileUtils.h"
 #include <QLatin1String>
 #include <QLatin1Char>
 #include <QString>
 #include <QTemporaryDir>
+#include <vector>
+#include <string>
 
 using namespace Mdt::PlainText;
 
@@ -33,4 +36,46 @@ QString filePathFromDirAndFileName(const QTemporaryDir & dir, const char *fileNa
   assert( dir.isValid() );
 
   return QDir::cleanPath( dir.path() + QLatin1Char('/') + QLatin1String(fileName) );
+}
+
+void setDirectoryPathToWriter(const QTemporaryDir & dir, QCsvFileWriter & writer)
+{
+  writer.setFilePath( dir.path() );
+}
+
+bool fileExists(const QString & filePath)
+{
+  return Mdt::PlainText::TestLib::fileExists(filePath);
+}
+
+bool writeTextFile(const QString & filePath, const QString & content)
+{
+  return Mdt::PlainText::TestLib::writeTextFileUtf8(filePath, content);
+}
+
+QString readTextFile(const QString & filePath)
+{
+  return Mdt::PlainText::TestLib::readTextFileUtf8(filePath);
+}
+
+QStringList qStringListFromStdStringList(const std::vector<std::string> & stdStringList)
+{
+  QStringList stringList;
+
+  for(const std::string & str : stdStringList){
+    stringList.append( QString::fromStdString(str) );
+  }
+
+  return stringList;
+}
+
+std::vector<QStringList> qStringTableFromStdStringTable(const std::vector< std::vector<std::string> > & stdStringTable)
+{
+  std::vector<QStringList> table;
+
+  for(const auto & record : stdStringTable){
+    table.push_back( qStringListFromStdStringList(record) );
+  }
+
+  return table;
 }

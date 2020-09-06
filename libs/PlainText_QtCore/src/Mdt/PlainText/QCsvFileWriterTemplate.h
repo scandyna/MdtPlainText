@@ -23,9 +23,14 @@
 #define MDT_PLAIN_TEXT_QCSV_FILE_WRITER_TEMPLATE_H
 
 #include "QFileOpenError.h"
+#include "QCsvFileWriteError.h"
+#include "QTextFileUnicodeOutputIterator.h"
+#include "BoostSpiritKarmaQStringSupport.h"
 #include "Mdt/PlainText/CsvGeneratorSettings.h"
 #include "Mdt/PlainText/FileWriteOpenMode.h"
 #include "mdt_plaintext_qtcore_export.h"
+#include <boost/spirit/include/karma.hpp>
+#include <QObject>
 #include <QString>
 #include <QByteArray>
 #include <QFile>
@@ -40,7 +45,7 @@ namespace Mdt{ namespace PlainText{
    * In counterpart, it includes all the implementation,
    * which increases the compile time significantly.
    *
-   * If you can use std::vector<QCsvGeneratorField> or QStringList as input records,
+   * If you can use QStringList as input records,
    * consider using QCsvFileWriter.
    *
    * Here is a minimal example of a possible CSV file writer:
@@ -51,7 +56,7 @@ namespace Mdt{ namespace PlainText{
    *
    *   // All required public methods, constructors, destructor
    *
-   *   void appendLine(cont MyRecord & record);
+   *   void writeLine(cont MyRecord & record);
    *
    *  private:
    *
@@ -59,29 +64,37 @@ namespace Mdt{ namespace PlainText{
    * };
    * \endcode
    *
-   * \todo Check if this is correct
-   * The implementation of %appendLine():
+   * The implementation of %writeLine():
    * \code
-   * void MyCsvFileWriter::appendLine(const MyRecord & record)
+   * void MyCsvFileWriter::writeLine(const MyRecord & record)
    * {
    *   using DestinationIterator = QCsvFileWriterTemplate::iterator;
    *
    *   // A boost Spirit Karma rule
    *   MyRecordRule<DestinationIterator, MyRecord> rule( csvSettings() );
    *
-   *   mImpl->appendLine(record, rule);
+   *   mImpl->writeLine(record, rule);
    * }
    * \endcode
    *
-   * \sa CsvFileWriter
+   * \sa QCsvFileWriter
    */
-  class MDT_PLAINTEXT_QTCORE_EXPORT QCsvFileWriterTemplate
+  class MDT_PLAINTEXT_QTCORE_EXPORT QCsvFileWriterTemplate : public QObject
   {
+    Q_OBJECT
+
    public:
+
+    /*! \brief STL iterator
+     */
+    using iterator = QTextFileUnicodeOutputIterator;
 
     /*! \brief Construct a CSV file writer
      */
-    QCsvFileWriterTemplate() = default;
+    QCsvFileWriterTemplate()
+     : QObject(nullptr)
+    {
+    }
 
     /*! \brief Cleanup this CSV file writer
      */
@@ -188,7 +201,7 @@ namespace Mdt{ namespace PlainText{
     /*! \brief Open this CSV file writer
      *
      * If this file writer is allready open,
-     * it will be closed first().
+     * it will be closed first.
      *
      * Open the file set with setFilePath().
      *
@@ -200,6 +213,23 @@ namespace Mdt{ namespace PlainText{
     void open()
     {
       assert( !filePath().isEmpty() );
+
+      QIODevice::OpenMode openMode;
+      switch(mOpenMode){
+        case FileWriteOpenMode::Append:
+          openMode = QIODevice::WriteOnly | QIODevice::Append;
+          break;
+        case FileWriteOpenMode::Truncate:
+          openMode = QIODevice::WriteOnly | QIODevice::Truncate;
+          break;
+      }
+
+      if( !mFile.open(openMode) ){
+        const QString what = tr("open file '%1' failed").arg(filePath());
+        throw QFileOpenError(what);
+      }
+
+      mFileIterator = iterator(&mFile, mFileEncoding);
     }
 
     /*! \brief Check if this file writer is open
@@ -211,8 +241,41 @@ namespace Mdt{ namespace PlainText{
       return mFile.isOpen();
     }
 
-    /*! \brief Append a record to this CSV file
+    /*! \brief Write a line to this CSV file
+     *
+     * \exception QCsvFileWriteError
+     * \pre This file writer must be open
+     * \sa isOpen()
      */
+    template<typename Record, typename Rule>
+    void writeLine(const Record & record, const Rule & rule)
+    {
+      assert( isOpen() );
+
+      const bool ok = boost::spirit::karma::generate(mFileIterator, rule, record);
+      if(!ok){
+        const QString what = tr("writing a line in file '%1' failed").arg(filePath());
+        throw QCsvFileWriteError(what);
+      }
+    }
+
+    /*! \brief Write a table to this CSV file
+     *
+     * \exception QCsvFileWriteError
+     * \pre This file writer must be open
+     * \sa isOpen()
+     */
+    template<typename Table, typename Rule>
+    void writeTable(const Table & table, const Rule & rule)
+    {
+      assert( isOpen() );
+
+      const bool ok = boost::spirit::karma::generate(mFileIterator, rule, table);
+      if(!ok){
+        const QString what = tr("writing table in file '%1' failed").arg(filePath());
+        throw QCsvFileWriteError(what);
+      }
+    }
 
     /*! \brief Close this file writer
      */
@@ -223,10 +286,11 @@ namespace Mdt{ namespace PlainText{
 
    private:
 
+    iterator mFileIterator;
     QFile mFile;
     QByteArray mFileEncoding = "UTF-8";
     CsvGeneratorSettings mCsvSettings;
-    FileWriteOpenMode mOpenMode;
+    FileWriteOpenMode mOpenMode = FileWriteOpenMode::Append;
   };
 
 }} // namespace Mdt{ namespace PlainText{

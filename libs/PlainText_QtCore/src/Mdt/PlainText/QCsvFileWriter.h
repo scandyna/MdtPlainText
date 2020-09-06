@@ -23,12 +23,15 @@
 #define MDT_PLAIN_TEXT_QCSV_FILE_WRITER_H
 
 #include "QFileOpenError.h"
+#include "QCsvFileWriteError.h"
 #include "Mdt/PlainText/CsvGeneratorSettings.h"
 #include "Mdt/PlainText/FileWriteOpenMode.h"
 #include "mdt_plaintext_qtcore_export.h"
 #include <QString>
+#include <QStringList>
 #include <QByteArray>
 #include <memory>
+#include <vector>
 
 namespace Mdt{ namespace PlainText{
 
@@ -138,20 +141,21 @@ namespace Mdt{ namespace PlainText{
      */
     bool isOpen() const;
 
-    /*! \brief Append a record to this CSV file
+    /*! \brief Write a line to this CSV file
      *
-     * \code
-     * csvWriter.appendRecord({"A","B","C"});
-     * \endcode
-     *
-     * \code
-     * csvWriter.appendRecord({
-     *   {"A",CsvGeneratorField::Quote},
-     *   {"2",CsvGeneratorField::DoNotQuote},
-     *   "C"
-     * });
-     * \endcode
+     * \exception QCsvFileWriteError
+     * \pre This file writer must be open
+     * \sa isOpen()
      */
+    void writeLine(const QStringList & record);
+
+    /*! \brief Write a table to this CSV file
+     *
+     * \exception QCsvFileWriteError
+     * \pre This file writer must be open
+     * \sa isOpen()
+     */
+    void writeTable(const std::vector<QStringList> & table);
 
     /*! \brief Close this file writer
      */
