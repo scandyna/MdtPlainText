@@ -66,22 +66,16 @@ QString readTextFileUtf8(const QString & filePath)
 {
   assert( !filePath.isEmpty() );
 
-  QString content;
-
   QFile file(filePath);
   if( !file.open(QIODevice::ReadOnly | QIODevice::Text) ){
     qWarning() << "Mdt::PlainText::TestLib::readTextFileUtf8(): open file '" << filePath << "' failed: " << file.errorString();
-    return content;
+    return QString();
   }
 
   QTextStream in(&file);
   in.setCodec("UTF-8");
-  while (!in.atEnd()) {
-    QString line = in.readLine();
-    content += line;
-  }
 
-  return content;
+  return in.readAll();
 }
 
 }}} // namespace Mdt{ namespace PlainText{ namespace TestLib{
