@@ -81,7 +81,7 @@ build_script:
   - cmake --build . --config %configuration%
 
 test_script:
-  - ctest --output-on-failure --build-config %configuration% -j4 .
+  - ctest --output-on-failure --build-config %configuration% .
 
 
 # Easy tasks made difficult..
