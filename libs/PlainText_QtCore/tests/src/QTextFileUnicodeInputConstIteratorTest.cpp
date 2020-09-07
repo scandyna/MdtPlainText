@@ -31,7 +31,7 @@ using Mdt::PlainText::Impl::QTextFileUnicodeInputConstIteratorImpl;
 
 QTextFileUnicodeInputConstIteratorImpl iteratorImplFromFile(QFile & file)
 {
-  return QTextFileUnicodeInputConstIteratorImpl(&file, "UTF-8");
+  return QTextFileUnicodeInputConstIteratorImpl(file, "UTF-8");
 }
 
 
@@ -397,14 +397,14 @@ TEST_CASE("construct")
   {
     file.close();
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    QTextFileUnicodeInputConstIterator it(file, "UTF-8");
   }
 
   SECTION("A")
   {
     REQUIRE( writeTextFile(file, QLatin1String("ABC")) );
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    QTextFileUnicodeInputConstIterator it(file, "UTF-8");
     REQUIRE( *it == U'A' );
   }
 }
@@ -425,7 +425,7 @@ TEST_CASE("copy_construct")
   file.close();
 
   REQUIRE( openTextFileReadOnly(file) );
-  QTextFileUnicodeInputConstIterator a(&file, "UTF-8");
+  QTextFileUnicodeInputConstIterator a(file, "UTF-8");
 
   QTextFileUnicodeInputConstIterator b(a);
   REQUIRE( *b == QLatin1Char('A') );
@@ -439,7 +439,7 @@ TEST_CASE("assign")
   file.close();
 
   REQUIRE( openTextFileReadOnly(file) );
-  QTextFileUnicodeInputConstIterator a(&file, "UTF-8");
+  QTextFileUnicodeInputConstIterator a(file, "UTF-8");
 
   QTextFileUnicodeInputConstIterator b;
 
@@ -457,7 +457,7 @@ TEST_CASE("pre-increment")
     REQUIRE( writeTextFile(file, QLatin1String("AB")) );
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    QTextFileUnicodeInputConstIterator it(file, "UTF-8");
     REQUIRE( *it == U'A' );
 
     ++it;
@@ -469,7 +469,7 @@ TEST_CASE("pre-increment")
     REQUIRE( writeTextFile(file, QString::fromUtf8("A𐐅")) );
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    QTextFileUnicodeInputConstIterator it(file, "UTF-8");
     REQUIRE( *it == U'A' );
 
     ++it;
@@ -481,7 +481,7 @@ TEST_CASE("pre-increment")
     REQUIRE( writeTextFile(file, QString::fromUtf8("𐐅A")) );
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    QTextFileUnicodeInputConstIterator it(file, "UTF-8");
     REQUIRE( *it == U'\U00010405' );
 
     ++it;
@@ -503,7 +503,7 @@ TEST_CASE("post-increment")
     REQUIRE( writeTextFile(file, QLatin1String("AB")) );
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    QTextFileUnicodeInputConstIterator it(file, "UTF-8");
     REQUIRE( *it == U'A' );
 
     it++;
@@ -515,7 +515,7 @@ TEST_CASE("post-increment")
     REQUIRE( writeTextFile(file, QString::fromUtf8("A𐐅")) );
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    QTextFileUnicodeInputConstIterator it(file, "UTF-8");
     REQUIRE( *it == U'A' );
 
     it++;
@@ -527,7 +527,7 @@ TEST_CASE("post-increment")
     REQUIRE( writeTextFile(file, QString::fromUtf8("𐐅A")) );
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileUnicodeInputConstIterator it(&file, "UTF-8");
+    QTextFileUnicodeInputConstIterator it(file, "UTF-8");
     REQUIRE( *it == U'\U00010405' );
 
     it++;
@@ -543,7 +543,7 @@ TEST_CASE("comparison")
   file.close();
 
   REQUIRE( openTextFileReadOnly(file) );
-  QTextFileUnicodeInputConstIterator a(&file, "UTF-8");
+  QTextFileUnicodeInputConstIterator a(file, "UTF-8");
   auto b = a;
 
   REQUIRE( a == b );
@@ -568,7 +568,7 @@ TEST_CASE("std_copy")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileUnicodeInputConstIterator first(&file, "UTF-8");
+    QTextFileUnicodeInputConstIterator first(file, "UTF-8");
     std::copy( first, last, std::back_inserter(destination) );
     REQUIRE( destination == source );
   }
@@ -580,7 +580,7 @@ TEST_CASE("std_copy")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileUnicodeInputConstIterator first(&file, "UTF-8");
+    QTextFileUnicodeInputConstIterator first(file, "UTF-8");
     std::copy( first, last, std::back_inserter(destination) );
     REQUIRE( destination == source );
   }

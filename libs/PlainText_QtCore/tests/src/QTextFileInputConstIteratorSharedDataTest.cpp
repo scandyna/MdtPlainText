@@ -273,7 +273,7 @@ TEST_CASE("atEnd")
 
   SECTION("Empty file")
   {
-    QTextFileInputConstIteratorSharedData sd(&file, "UTF-8", rawBufferCapacity);
+    QTextFileInputConstIteratorSharedData sd(file, "UTF-8", rawBufferCapacity);
     REQUIRE( sd.atEnd() );
   }
 
@@ -283,7 +283,7 @@ TEST_CASE("atEnd")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIteratorSharedData sd(&file, "UTF-8", rawBufferCapacity);
+    QTextFileInputConstIteratorSharedData sd(file, "UTF-8", rawBufferCapacity);
     REQUIRE( !sd.atEnd() );
   }
 
@@ -293,7 +293,7 @@ TEST_CASE("atEnd")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIteratorSharedData sd(&file, "UTF-8", rawBufferCapacity);
+    QTextFileInputConstIteratorSharedData sd(file, "UTF-8", rawBufferCapacity);
     REQUIRE( !sd.atEnd() );
   }
 }
@@ -309,7 +309,7 @@ TEST_CASE("get")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIteratorSharedData sd(&file, "UTF-8");
+    QTextFileInputConstIteratorSharedData sd(file, "UTF-8");
     REQUIRE( !sd.atEnd() );
     REQUIRE( sd.get() == QLatin1Char('A') );
   }
@@ -320,7 +320,7 @@ TEST_CASE("get")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIteratorSharedData sd(&file, "UTF-8");
+    QTextFileInputConstIteratorSharedData sd(file, "UTF-8");
     REQUIRE( !sd.atEnd() );
     REQUIRE( sd.get().unicode() == 0x00F6 );
   }
@@ -331,7 +331,7 @@ TEST_CASE("get")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIteratorSharedData sd(&file, "UTF-8");
+    QTextFileInputConstIteratorSharedData sd(file, "UTF-8");
     REQUIRE( !sd.atEnd() );
     REQUIRE( sd.get().unicode() == 0x0135 );
   }
@@ -350,7 +350,7 @@ TEST_CASE("advance_get")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIteratorSharedData sd(&file, "UTF-8", rawBufferCapacity);
+    QTextFileInputConstIteratorSharedData sd(file, "UTF-8", rawBufferCapacity);
     REQUIRE( !sd.atEnd() );
     REQUIRE( sd.get() == QLatin1Char('A') );
     sd.advance();
@@ -363,7 +363,7 @@ TEST_CASE("advance_get")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIteratorSharedData sd(&file, "UTF-8", rawBufferCapacity);
+    QTextFileInputConstIteratorSharedData sd(file, "UTF-8", rawBufferCapacity);
     REQUIRE( !sd.atEnd() );
     REQUIRE( sd.get() == QLatin1Char('A') );
     sd.advance();
@@ -379,7 +379,7 @@ TEST_CASE("advance_get")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIteratorSharedData sd(&file, "UTF-8", rawBufferCapacity);
+    QTextFileInputConstIteratorSharedData sd(file, "UTF-8", rawBufferCapacity);
     REQUIRE( !sd.atEnd() );
     REQUIRE( sd.get() == QLatin1Char('A') );
     sd.advance();
@@ -398,7 +398,7 @@ TEST_CASE("advance_get")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIteratorSharedData sd(&file, "UTF-8", rawBufferCapacity);
+    QTextFileInputConstIteratorSharedData sd(file, "UTF-8", rawBufferCapacity);
     REQUIRE( !sd.atEnd() );
     REQUIRE( sd.get() == QLatin1Char('A') );
     sd.advance();

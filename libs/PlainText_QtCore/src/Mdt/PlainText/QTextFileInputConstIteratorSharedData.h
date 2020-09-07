@@ -65,12 +65,11 @@ namespace Mdt{ namespace PlainText{
      * If \a file is at end, or not enough data is available to get a unicode character,
      * atEnd() will return true.
      *
-     * \pre \a file must be a valid pointer
      * \pre \a file must be open with a readable mode
      * \exception QTextCodecNotFoundError
      * \exception QFileReadError
      */
-    explicit QTextFileInputConstIteratorSharedData(QFileDevice *file, const QByteArray & fileEncoding, int rawBufferCapacity = 1024);
+    explicit QTextFileInputConstIteratorSharedData(QFileDevice & file, const QByteArray & fileEncoding, int rawBufferCapacity = 1024);
 
     QTextFileInputConstIteratorSharedData(const QTextFileInputConstIteratorSharedData &) = delete;
     QTextFileInputConstIteratorSharedData & operator=(const QTextFileInputConstIteratorSharedData &) = delete;

@@ -45,7 +45,7 @@ TEST_CASE("construct")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIterator it(&file, "UTF-8");
+    QTextFileInputConstIterator it(file, "UTF-8");
     REQUIRE( it.isEof() );
   }
 
@@ -55,7 +55,7 @@ TEST_CASE("construct")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIterator it(&file, "UTF-8");
+    QTextFileInputConstIterator it(file, "UTF-8");
     REQUIRE( !it.isEof() );
     REQUIRE( *it == QLatin1Char('A') );
   }
@@ -69,7 +69,7 @@ TEST_CASE("copy_construct")
   file.close();
 
   REQUIRE( openTextFileReadOnly(file) );
-  QTextFileInputConstIterator a(&file, "UTF-8");
+  QTextFileInputConstIterator a(file, "UTF-8");
 
   QTextFileInputConstIterator b(a);
   REQUIRE( !b.isEof() );
@@ -84,7 +84,7 @@ TEST_CASE("assign")
   file.close();
 
   REQUIRE( openTextFileReadOnly(file) );
-  QTextFileInputConstIterator a(&file, "UTF-8");
+  QTextFileInputConstIterator a(file, "UTF-8");
 
   QTextFileInputConstIterator b;
   REQUIRE( b.isEof() );
@@ -102,7 +102,7 @@ TEST_CASE("pre-increment")
   file.close();
 
   REQUIRE( openTextFileReadOnly(file) );
-  QTextFileInputConstIterator it(&file, "UTF-8");
+  QTextFileInputConstIterator it(file, "UTF-8");
 
   ++it;
   REQUIRE( *it == QLatin1Char('B') );
@@ -120,7 +120,7 @@ TEST_CASE("post-increment")
   file.close();
 
   REQUIRE( openTextFileReadOnly(file) );
-  QTextFileInputConstIterator it(&file, "UTF-8");
+  QTextFileInputConstIterator it(file, "UTF-8");
 
   it++;
   REQUIRE( *it == QLatin1Char('B') );
@@ -134,7 +134,7 @@ TEST_CASE("comparison")
   file.close();
 
   REQUIRE( openTextFileReadOnly(file) );
-  QTextFileInputConstIterator a(&file, "UTF-8");
+  QTextFileInputConstIterator a(file, "UTF-8");
   auto b = a;
 
   REQUIRE( a == b );
@@ -159,7 +159,7 @@ TEST_CASE("std_copy")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIterator first(&file, "UTF-8");
+    QTextFileInputConstIterator first(file, "UTF-8");
     std::copy( first, last, std::back_inserter(destination) );
     REQUIRE( destination == source );
   }
@@ -171,7 +171,7 @@ TEST_CASE("std_copy")
     file.close();
 
     REQUIRE( openTextFileReadOnly(file) );
-    QTextFileInputConstIterator first(&file, "UTF-8");
+    QTextFileInputConstIterator first(file, "UTF-8");
     std::copy( first, last, std::back_inserter(destination) );
     REQUIRE( destination == source );
   }

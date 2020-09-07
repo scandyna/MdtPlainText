@@ -199,7 +199,7 @@ namespace Mdt{ namespace PlainText{
       }
 
       try{
-        mSourceIterator = boost::spirit::make_default_multi_pass( QTextFileUnicodeInputConstIterator(&mFile, mFileEncoding) );
+        mSourceIterator = boost::spirit::make_default_multi_pass( QTextFileUnicodeInputConstIterator(mFile, mFileEncoding) );
       }catch(const QTextCodecNotFoundError & error){
         close();
         throw error;

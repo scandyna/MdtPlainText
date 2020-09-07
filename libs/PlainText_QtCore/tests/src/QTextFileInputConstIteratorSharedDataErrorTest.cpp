@@ -26,7 +26,7 @@ TEST_CASE("Non existing codec")
   QTemporaryFile file;
   REQUIRE( file.open() );
 
-  REQUIRE_THROWS_AS( QTextFileInputConstIteratorSharedData(&file, "SomeUnknownEncoding") , QTextCodecNotFoundError );
+  REQUIRE_THROWS_AS( QTextFileInputConstIteratorSharedData(file, "SomeUnknownEncoding") , QTextCodecNotFoundError );
 }
 
 TEST_CASE("Read while closing file")
@@ -39,7 +39,7 @@ TEST_CASE("Read while closing file")
   file.close();
 
   REQUIRE( openTextFileReadOnly(file) );
-  QTextFileInputConstIteratorSharedData sd(&file, "UTF-8", rawBufferCapacity);
+  QTextFileInputConstIteratorSharedData sd(file, "UTF-8", rawBufferCapacity);
   REQUIRE( !sd.atEnd() );
 
   file.close();

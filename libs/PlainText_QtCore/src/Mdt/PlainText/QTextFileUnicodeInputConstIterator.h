@@ -50,11 +50,10 @@ namespace Mdt{ namespace PlainText{
 
       QTextFileUnicodeInputConstIteratorImpl() noexcept = default;
 
-      QTextFileUnicodeInputConstIteratorImpl(QFileDevice *file, const QByteArray & fileEncoding)
+      QTextFileUnicodeInputConstIteratorImpl(QFileDevice & file, const QByteArray & fileEncoding)
        : mIterator(file, fileEncoding)
       {
-        assert( file != nullptr );
-        assert( file->isOpen() );
+        assert( file.isOpen() );
 
         if( isDereferencable() ){
           currentCodeUint = *mIterator;
@@ -145,16 +144,14 @@ namespace Mdt{ namespace PlainText{
      * If \a file is at end, or not enough data is available to get a unicode point,
      * this iterator falls back to a end-of-file iterator.
      *
-     * \pre \a file must be a valid pointer
      * \pre \a file must be open with a readable mode
      * \exception QTextCodecNotFoundError
      * \exception QFileReadError
      */
-    QTextFileUnicodeInputConstIterator(QFileDevice *file, const QByteArray & fileEncoding)
+    QTextFileUnicodeInputConstIterator(QFileDevice & file, const QByteArray & fileEncoding)
      : mImpl(file, fileEncoding)
     {
-      assert( file != nullptr );
-      assert( file->isOpen() );
+      assert( file.isOpen() );
 
       extractCodePointIfDereferencable();
     }

@@ -32,7 +32,7 @@ bool parse(QFile & file, const Grammar & grammar, Result & destination)
 
   using MultiPassIterator = multi_pass<QTextFileUnicodeInputConstIterator>;
 
-  MultiPassIterator first = make_default_multi_pass( QTextFileUnicodeInputConstIterator(&file, "UTF-8") );
+  MultiPassIterator first = make_default_multi_pass( QTextFileUnicodeInputConstIterator(file, "UTF-8") );
   MultiPassIterator last = make_default_multi_pass( QTextFileUnicodeInputConstIterator() );
 
   return boost::spirit::qi::parse(first, last, grammar, destination);

@@ -80,13 +80,12 @@ namespace Impl{
 } // namespace Impl{
 
 
-QTextFileInputConstIteratorSharedData::QTextFileInputConstIteratorSharedData(QFileDevice *file, const QByteArray & fileEncoding, int rawBufferCapacity)
+QTextFileInputConstIteratorSharedData::QTextFileInputConstIteratorSharedData(QFileDevice & file, const QByteArray & fileEncoding, int rawBufferCapacity)
   : QObject(nullptr),
-    mFile(file)
+    mFile(&file)
 {
-  assert( file != nullptr );
-  assert( file->isOpen() );
-  assert( fileOpenModeIsReadable(*file) );
+  assert( file.isOpen() );
+  assert( fileOpenModeIsReadable(file) );
   assert( rawBufferCapacity > 0 );
 
   mRawDataBuffer.reserve(rawBufferCapacity);

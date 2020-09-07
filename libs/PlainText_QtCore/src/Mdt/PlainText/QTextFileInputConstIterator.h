@@ -32,6 +32,7 @@
 #include <QFlags>
 #include <boost/iterator/iterator_facade.hpp>
 #include <memory>
+#include <cassert>
 
 namespace Mdt{ namespace PlainText{
 
@@ -51,7 +52,7 @@ namespace Mdt{ namespace PlainText{
    *   // Error handling
    * }
    *
-   * QTextFileInputConstIterator first(&file, "UTF-8");
+   * QTextFileInputConstIterator first(file, "UTF-8");
    * QTextFileInputConstIterator last;
    * while(first != last){
    *   qDebug() << "*first: " << *first;
@@ -77,17 +78,15 @@ namespace Mdt{ namespace PlainText{
       * If \a file is at end, or not enough data is available to get a unicode character,
       * this iterator falls back to a end-of-file iterator.
       *
-      * \pre \a file must be a valid pointer
       * \pre \a file must be open with a readable mode
       * \exception QTextCodecNotFoundError
       * \exception QFileReadError
       */
-     QTextFileInputConstIterator(QFileDevice *file, const QByteArray & fileEncoding)
+     QTextFileInputConstIterator(QFileDevice & file, const QByteArray & fileEncoding)
       : mImpl( std::make_shared<QTextFileInputConstIteratorSharedData>(file, fileEncoding) )
      {
-       Q_ASSERT( file != nullptr );
-       Q_ASSERT( file->isOpen() );
-       Q_ASSERT( fileOpenModeIsReadable(*file) );
+       assert( file.isOpen() );
+       assert( fileOpenModeIsReadable(file) );
      }
 
     /*! \brief Copy construct a iterator from \a other
@@ -101,7 +100,7 @@ namespace Mdt{ namespace PlainText{
        if( !mImpl ){
          return true;
        }
-       Q_ASSERT( mImpl.get() != nullptr );
+       assert( mImpl.get() != nullptr );
 
        return mImpl->atEnd();
      }
@@ -112,8 +111,8 @@ namespace Mdt{ namespace PlainText{
 
     void increment()
     {
-      Q_ASSERT( !isEof() );
-      Q_ASSERT( mImpl.get() != nullptr );
+      assert( !isEof() );
+      assert( mImpl.get() != nullptr );
 
       mImpl->advance();
     }
@@ -125,8 +124,8 @@ namespace Mdt{ namespace PlainText{
 
     const QChar & dereference() const noexcept
     {
-      Q_ASSERT( !isEof() );
-      Q_ASSERT( mImpl.get() != nullptr );
+      assert( !isEof() );
+      assert( mImpl.get() != nullptr );
 
       return mImpl->get();
     }
