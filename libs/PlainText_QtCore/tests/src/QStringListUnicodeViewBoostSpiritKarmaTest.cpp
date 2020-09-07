@@ -91,14 +91,14 @@ TEST_CASE("unicode_char_")
   {
     record = qStringListFromStdStringList({"éö","àäè","ü$£"});
     REQUIRE( generateToStdu32String(record, *char_, result) );
-    REQUIRE( result == U"éö,àäè,ü$£" );
+    REQUIRE( result == U"\U000000E9\U000000F6,\U000000E0\U000000E4\U000000E8,\U000000FC$\U000000A3" );
   }
 
   SECTION("a|𐐅ö")
   {
     record = qStringListFromStdStringList({"a","𐐅ö"});
     REQUIRE( generateToStdu32String(record, *char_, result) );
-    REQUIRE( result == U"a,𐐅ö" );
+    REQUIRE( result == U"a,\U00010405\U000000F6" );
   }
 }
 
