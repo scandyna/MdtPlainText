@@ -4,8 +4,8 @@
  * (See accompanying file LICENSE.txt or copy at
  * https://www.boost.org/LICENSE_1_0.txt)
  */
-#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_H
-#define MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_H
+#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_PROTECTED_FIELD_H
+#define MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_PROTECTED_FIELD_H
 
 #include "Char.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
@@ -13,7 +13,7 @@
 #include <cstdint>
 #include <cassert>
 
-namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
+namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Qi{
 
 
   /*! \brief CSV protected field rule
@@ -75,6 +75,6 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
     Char<SourceIterator, uint32_t> mChar;
   };
 
-}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
+}}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Qi{
 
-#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_PROTECTED_FIELD_H
+#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_PROTECTED_FIELD_H

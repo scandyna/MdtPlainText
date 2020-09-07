@@ -15,19 +15,19 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME CsvGrammarTest
-  TARGET csvGrammarTest
+  NAME CsvQiGrammarTest
+  TARGET csvQiGrammarTest
   DEPENDENCIES Mdt::PlainText Boost::boost Mdt::Catch2Main
   SOURCE_FILES
-    src/CsvGrammarTest.cpp
+    src/CsvQiGrammarTest.cpp
 )
 
 mdt_add_test(
-  NAME CsvGrammarErrorTest
-  TARGET csvGrammarErrorTest
+  NAME CsvQiGrammarErrorTest
+  TARGET csvQiGrammarErrorTest
   DEPENDENCIES Mdt::PlainText Boost::boost Mdt::Catch2Main
   SOURCE_FILES
-    src/CsvGrammarErrorTest.cpp
+    src/CsvQiGrammarErrorTest.cpp
 )
 
 if(UNIX)

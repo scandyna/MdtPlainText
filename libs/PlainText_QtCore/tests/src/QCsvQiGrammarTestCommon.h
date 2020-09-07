@@ -20,9 +20,9 @@
  **
  ****************************************************************************/
 #include "catch2/catch.hpp"
-#include "Mdt/PlainText/Grammar/Csv/FieldColumn.h"
-#include "Mdt/PlainText/Grammar/Csv/CsvRecord.h"
-#include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/FieldColumn.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/CsvFile.h"
 #include "Mdt/PlainText/QStringUnicodeConstIterator.h"
 #include "Mdt/PlainText/BoostSpiritQiQStringSupport"
 #include "Mdt/PlainText/CsvParserSettings.h"
@@ -43,7 +43,7 @@ QString parseFieldColumn(const QString & sourceString, const CsvParserSettings &
   Q_ASSERT( settings.isValid() );
 
   QString data;
-  Mdt::PlainText::Grammar::Csv::FieldColumn<QStringUnicodeConstIterator, QString> rule(settings);
+  Mdt::PlainText::Grammar::Csv::Qi::FieldColumn<QStringUnicodeConstIterator, QString> rule(settings);
 
   QStringUnicodeConstIterator first( sourceString.cbegin(), sourceString.cend() );
   QStringUnicodeConstIterator last( sourceString.cend(), sourceString.cend() );
@@ -61,7 +61,7 @@ QStringList parseRecord(const QString & sourceString, const CsvParserSettings & 
   assert( settings.isValid() );
 
   QStringList record;
-  Mdt::PlainText::Grammar::Csv::CsvRecord<QStringUnicodeConstIterator, QStringList> rule(settings);
+  Mdt::PlainText::Grammar::Csv::Qi::CsvRecord<QStringUnicodeConstIterator, QStringList> rule(settings);
 
   QStringUnicodeConstIterator first( sourceString.cbegin(), sourceString.cend() );
   QStringUnicodeConstIterator last( sourceString.cend(), sourceString.cend() );
@@ -93,7 +93,7 @@ bool qStringListEqualsUtf8StringList(const QStringList & list, const std::vector
 StringTable parseCsvFileRuleString(const QString & sourceString, const CsvParserSettings & settings)
 {
   StringTable table;
-  Mdt::PlainText::Grammar::Csv::CsvFile<QStringUnicodeConstIterator, StringTable> rule(settings);
+  Mdt::PlainText::Grammar::Csv::Qi::CsvFile<QStringUnicodeConstIterator, StringTable> rule(settings);
 
   QStringUnicodeConstIterator first( sourceString.cbegin(), sourceString.cend() );
   QStringUnicodeConstIterator last( sourceString.cend(), sourceString.cend() );

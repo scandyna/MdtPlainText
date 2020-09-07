@@ -4,15 +4,15 @@
  * (See accompanying file LICENSE.txt or copy at
  * https://www.boost.org/LICENSE_1_0.txt)
  */
-#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_FILE_H
-#define MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_FILE_H
+#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_CSV_FILE_H
+#define MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_CSV_FILE_H
 
 #include "CsvRecord.h"
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include <boost/spirit/include/qi.hpp>
 #include <cassert>
 
-namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
+namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Qi{
 
   /*! \brief CSV file rule
    *
@@ -70,6 +70,6 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
     CsvRecord<SourceIterator, Record> mRecord;
   };
 
-}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
+}}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Qi{
 
-#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_CSV_FILE_H
+#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_CSV_FILE_H

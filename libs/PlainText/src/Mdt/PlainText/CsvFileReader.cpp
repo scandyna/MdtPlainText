@@ -6,8 +6,8 @@
  */
 #include "CsvFileReader.h"
 #include "CsvFileReaderTemplate.h"
-#include "Mdt/PlainText/Grammar/Csv/CsvFileLine.h"
-#include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/CsvFileLine.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/CsvFile.h"
 #include <cassert>
 
 namespace Mdt{ namespace PlainText{
@@ -74,7 +74,7 @@ std::vector<std::string> CsvFileReader::readLine()
   using SourceIterator = CsvFileReaderTemplate::const_iterator;
   using Record = std::vector<std::string>;
 
-  Grammar::Csv::CsvFileLine<SourceIterator, Record> rule( csvSettings() );
+  Grammar::Csv::Qi::CsvFileLine<SourceIterator, Record> rule( csvSettings() );
 
   return mImpl->readLine<Record>(rule);
 }
@@ -87,7 +87,7 @@ std::vector< std::vector<std::string> > CsvFileReader::readAll()
   using SourceIterator = CsvFileReaderTemplate::const_iterator;
   using Table = std::vector< std::vector<std::string> >;
 
-  Grammar::Csv::CsvFile<SourceIterator, Table> rule( csvSettings() );
+  Grammar::Csv::Qi::CsvFile<SourceIterator, Table> rule( csvSettings() );
 
   return mImpl->readAll<Table>(rule);
 }

@@ -4,8 +4,8 @@
  * (See accompanying file LICENSE.txt or copy at
  * https://www.boost.org/LICENSE_1_0.txt)
  */
-#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_NON_EMPTY_FIELD_COLUMN_H
-#define MDT_PLAIN_TEXT_GRAMMAR_CSV_NON_EMPTY_FIELD_COLUMN_H
+#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_NON_EMPTY_FIELD_COLUMN_H
+#define MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_NON_EMPTY_FIELD_COLUMN_H
 
 #include "ProtectedField.h"
 #include "NonEmptyUnprotectedField.h"
@@ -13,7 +13,7 @@
 #include <boost/spirit/include/qi.hpp>
 #include <cassert>
 
-namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
+namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Qi{
 
   /*! \brief CSV non empty field column rule
    *
@@ -54,6 +54,6 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
     NonEmptyUnprotectedField<SourceIterator, DestinationString> mNonEmptyUnprotectedField;
   };
 
-}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
+}}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Qi{
 
-#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_NON_EMPTY_FIELD_COLUMN_H
+#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_NON_EMPTY_FIELD_COLUMN_H

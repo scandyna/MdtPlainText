@@ -5,15 +5,15 @@
  * https://www.boost.org/LICENSE_1_0.txt)
  */
 #include "catch2/catch.hpp"
-#include "Mdt/PlainText/Grammar/Csv/SafeChar.h"
-#include "Mdt/PlainText/Grammar/Csv/UnprotectedField.h"
-#include "Mdt/PlainText/Grammar/Csv/NonEmptyUnprotectedField.h"
-#include "Mdt/PlainText/Grammar/Csv/ProtectedField.h"
-#include "Mdt/PlainText/Grammar/Csv/FieldColumn.h"
-#include "Mdt/PlainText/Grammar/Csv/NonEmptyFieldColumn.h"
-#include "Mdt/PlainText/Grammar/Csv/CsvRecord.h"
-#include "Mdt/PlainText/Grammar/Csv/CsvFileLine.h"
-#include "Mdt/PlainText/Grammar/Csv/CsvFile.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/SafeChar.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/UnprotectedField.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/NonEmptyUnprotectedField.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/ProtectedField.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/FieldColumn.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/NonEmptyFieldColumn.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/CsvRecord.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/CsvFileLine.h"
+#include "Mdt/PlainText/Grammar/Csv/Qi/CsvFile.h"
 #include "Mdt/PlainText/CsvParserSettings"
 #include <boost/spirit/include/qi.hpp>
 #include <string>
@@ -27,15 +27,15 @@ using namespace Mdt::PlainText;
 using StringRecord = std::vector<std::string>;
 using StringTable = std::vector<StringRecord>;
 
-using SafeChar = Grammar::Csv::SafeChar<std::string::const_iterator, uint32_t>;
-using UnprotectedField = Grammar::Csv::UnprotectedField<std::string::const_iterator, std::string>;
-using NonEmptyUnprotectedField = Grammar::Csv::NonEmptyUnprotectedField<std::string::const_iterator, std::string>;
-using ProtectedField = Grammar::Csv::ProtectedField<std::string::const_iterator, std::string>;
-using FieldColumn = Grammar::Csv::FieldColumn<std::string::const_iterator, std::string>;
-using NonEmptyFieldColumn = Grammar::Csv::NonEmptyFieldColumn<std::string::const_iterator, std::string>;
-using CsvRecord = Grammar::Csv::CsvRecord<std::string::const_iterator, StringRecord>;
-using CsvFileLine = Grammar::Csv::CsvFileLine<std::string::const_iterator, StringRecord>;
-using CsvFile = Grammar::Csv::CsvFile<std::string::const_iterator, StringTable>;
+using SafeChar = Grammar::Csv::Qi::SafeChar<std::string::const_iterator, uint32_t>;
+using UnprotectedField = Grammar::Csv::Qi::UnprotectedField<std::string::const_iterator, std::string>;
+using NonEmptyUnprotectedField = Grammar::Csv::Qi::NonEmptyUnprotectedField<std::string::const_iterator, std::string>;
+using ProtectedField = Grammar::Csv::Qi::ProtectedField<std::string::const_iterator, std::string>;
+using FieldColumn = Grammar::Csv::Qi::FieldColumn<std::string::const_iterator, std::string>;
+using NonEmptyFieldColumn = Grammar::Csv::Qi::NonEmptyFieldColumn<std::string::const_iterator, std::string>;
+using CsvRecord = Grammar::Csv::Qi::CsvRecord<std::string::const_iterator, StringRecord>;
+using CsvFileLine = Grammar::Csv::Qi::CsvFileLine<std::string::const_iterator, StringRecord>;
+using CsvFile = Grammar::Csv::Qi::CsvFile<std::string::const_iterator, StringTable>;
 
 /*
  * Used for GENERATE( values<> )
@@ -216,7 +216,7 @@ bool parseCsvFileStringFails(const std::string & sourceString, const CsvParserSe
 StringTable parseCsvFileString(const std::string & sourceString, const CsvParserSettings & settings)
 {
   StringTable table;
-  Mdt::PlainText::Grammar::Csv::CsvFile<std::string::const_iterator, StringTable> rule(settings);
+  Mdt::PlainText::Grammar::Csv::Qi::CsvFile<std::string::const_iterator, StringTable> rule(settings);
 
   const bool ok = boost::spirit::qi::parse(sourceString.cbegin(), sourceString.cend(), rule, table);
   if(!ok){

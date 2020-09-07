@@ -4,15 +4,15 @@
  * (See accompanying file LICENSE.txt or copy at
  * https://www.boost.org/LICENSE_1_0.txt)
  */
-#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_SAFE_CHAR_H
-#define MDT_PLAIN_TEXT_GRAMMAR_CSV_SAFE_CHAR_H
+#ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_SAFE_CHAR_H
+#define MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_SAFE_CHAR_H
 
 #include "Mdt/PlainText/CsvParserSettings.h"
 #include <boost/spirit/include/qi.hpp>
 #include <cassert>
 #include <string>
 
-namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
+namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Qi{
 
   /*! \brief SafeChar rule
    *
@@ -58,6 +58,6 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
     boost::spirit::qi::rule<SourceIterator, DestinationChar()> mSafeChar;
   };
 
-}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
+}}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Qi{
 
-#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_SAFE_CHAR_H
+#endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_SAFE_CHAR_H

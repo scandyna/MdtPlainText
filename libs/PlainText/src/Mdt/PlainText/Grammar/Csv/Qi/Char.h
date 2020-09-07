@@ -12,7 +12,7 @@
 #include <boost/spirit/include/qi.hpp>
 #include <cassert>
 
-namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
+namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Qi{
 
   /*! \brief Char rule
    *
@@ -47,6 +47,6 @@ namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
     SafeChar<SourceIterator, DestinationChar> mSafeChar;
   };
 
-}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{
+}}}}} // namespace Mdt{ namespace PlainText{ namespace Grammar{ namespace Csv{ namespace Qi{
 
 #endif // #ifndef MDT_PLAIN_TEXT_GRAMMAR_CSV_QI_CHAR_H

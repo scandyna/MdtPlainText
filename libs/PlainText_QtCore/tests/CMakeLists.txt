@@ -191,19 +191,19 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME QCsvGrammarTest
-  TARGET qCsvGrammarTest
+  NAME QCsvQiGrammarTest
+  TARGET qCsvQiGrammarTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
   SOURCE_FILES
-    src/QCsvGrammarTest.cpp
+    src/QCsvQiGrammarTest.cpp
 )
 
 mdt_add_test(
-  NAME QCsvGrammarErrorTest
-  TARGET qCsvGrammarErrorTest
+  NAME QCsvQiGrammarErrorTest
+  TARGET qCsvQiGrammarErrorTest
   DEPENDENCIES Mdt::PlainText_QtCore Mdt::Catch2Main Mdt::PlainText_TestLib
   SOURCE_FILES
-    src/QCsvGrammarErrorTest.cpp
+    src/QCsvQiGrammarErrorTest.cpp
 )
 
 mdt_add_test(

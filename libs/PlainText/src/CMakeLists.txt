@@ -8,16 +8,16 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_PlainText
-  Mdt/PlainText/Grammar/Csv/SafeChar.cpp
-  Mdt/PlainText/Grammar/Csv/Char.cpp
-  Mdt/PlainText/Grammar/Csv/UnprotectedField.cpp
-  Mdt/PlainText/Grammar/Csv/NonEmptyUnprotectedField.cpp
-  Mdt/PlainText/Grammar/Csv/ProtectedField.cpp
-  Mdt/PlainText/Grammar/Csv/FieldColumn.cpp
-  Mdt/PlainText/Grammar/Csv/NonEmptyFieldColumn.cpp
-  Mdt/PlainText/Grammar/Csv/CsvRecord.cpp
-  Mdt/PlainText/Grammar/Csv/CsvFileLine.cpp
-  Mdt/PlainText/Grammar/Csv/CsvFile.cpp
+  Mdt/PlainText/Grammar/Csv/Qi/SafeChar.cpp
+  Mdt/PlainText/Grammar/Csv/Qi/Char.cpp
+  Mdt/PlainText/Grammar/Csv/Qi/UnprotectedField.cpp
+  Mdt/PlainText/Grammar/Csv/Qi/NonEmptyUnprotectedField.cpp
+  Mdt/PlainText/Grammar/Csv/Qi/ProtectedField.cpp
+  Mdt/PlainText/Grammar/Csv/Qi/FieldColumn.cpp
+  Mdt/PlainText/Grammar/Csv/Qi/NonEmptyFieldColumn.cpp
+  Mdt/PlainText/Grammar/Csv/Qi/CsvRecord.cpp
+  Mdt/PlainText/Grammar/Csv/Qi/CsvFileLine.cpp
+  Mdt/PlainText/Grammar/Csv/Qi/CsvFile.cpp
   Mdt/PlainText/Grammar/Csv/Karma/SafeChar.cpp
   Mdt/PlainText/Grammar/Csv/Karma/UnprotectedField.cpp
   Mdt/PlainText/Grammar/Csv/Karma/ProtectedField.cpp
