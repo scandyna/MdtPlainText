@@ -14,32 +14,133 @@
  * Provides some libraries to read and write simple plain text
  * using the [boost Spirit](https://www.boost.org/doc/libs/1_74_0/libs/spirit/doc/html/index.html) library.
  *
- * It also provides some support to parse QString strings,
- * as well as putting boost Spirit parsers attributes into a QString.
+ * It also provides some support to use boost Spirit with QString and QFile.
  *
+ * \subsection csv_file_io_problem Reading CSV files (in the real world)
+ *
+ * Reading and writing CSV files seems not to be so hard at first look.
+ * There are lots of simple examples available on the web.
+ *
+ * But, what if we take into acount that a text field can have a field separator and maybe a end of line ?
+ * This requires field quoting. Notice that a double-quote can also be part of the text we want to store.
+ * Some examples are available on the [Wikipedia Comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) article.
+ *
+ * A other problem to take into account is reading big files.
+ * If a implementation loads the entire file into memory before processing it, it could potentially fail on some less powerfull devices.
+ * As other example, how can we check that a file has some data or not ?
+ * Assume that a empty file has, maybe, a header:
+ * \code
+ * | Date | ErrorCode | ErrorText |
+ * \endcode
+ * If we have to process the entire file only to check if it contains data,
+ * we loose a lot of performance.
  *
  * \section csv_file_io Reading and writing CSV files
  *
- * \todo Explain the problem of parsing CSV with text fields, also huge files, example of checking if a file contains at least 1 record
+ * To read a CSV file, Mdt::PlainText::CsvFileReader can be used:
+ * \code
+ * #include <Mdt/PlainText/CsvFileReader>
+ * #include <iostream>
+ * #include <vector>
+ * #include <string>
  *
- * \todo Write a basic example how to use CsvFileReader with the required includes,
- *   then explain encoding support, finaly same example with QCsvFileReader
+ * void printRecord(const std::vector<std::string> & record)
+ * {
+ *   if( record.empty() ){
+ *     return;
+ *   }
+ *   std::cout << record[0];
+ *   for(uint col = 1; col < record.size(); ++col){
+ *     std::cout << '|' << record[col];
+ *   }
+ * }
  *
- * Some CSV file readers can be used:
- * - Mdt::PlainText::CsvFileReader
- * - Mdt::PlainText::QCsvFileReader,
- *   which also supports reading files that have a different encoding than the machine locale one.
+ * int main()
+ * {
+ *   Mdt::PlainText::CsvFileReader reader;
+ *   reader.setFilePath("/some/path/to/file.csv");
+ *   reader.open();
+ *   while( !reader.atEnd() ){
+ *     printRecord( reader.readLine() );
+ *     std::cout << std::endl;
+ *   }
+ * }
+ * \endcode
+ *
+ * Above example work for files that only contains ASCII,
+ * or if you are reading a UTF-8 encoded file and display it on a UTF-8 console (for example on Linux).
+ *
+ * To have a real encoding support, Qt should be used.
+ * If so, Mdt::PlainText::QCsvFileReader can be used:
+ * \code
+ * #include <Mdt/PlainText/QCsvFileReader>
+ * #include <QDebug>
+ * #include <QStringList>
+ *
+ * int main()
+ * {
+ *   Mdt::PlainText::QCsvFileReader reader;
+ *   reader.setFilePath("/some/path/to/file.csv");
+ *   reader.setFileEncoding("UTF-8");
+ *   reader.open();
+ *   while( !reader.atEnd() ){
+ *     qDebug() << reader.readLine();
+ *   }
+ * }
+ * \endcode
+ *
+ * To write a CSV file, Mdt::PlainText::CsvFileWriter can be used:
+ * \code
+ * #include <Mdt/PlainText/CsvFileWriter>
+ *
+ * int main()
+ * {
+ *   Mdt::PlainText::CsvFileWriter writer;
+ *   writer.setFilePath("/some/path/to/file.csv");
+ *   writer.open();
+ *
+ *   writer.writeLine({"Error code","Error text"});
+ *   writer.writeLine({"21","Unexpected position of encoder number 3"});
+ *   writer.writeLine({"46","Error while trying to activate pump, please check on related errors"});
+ * }
+ * \endcode
+ *
+ * This will produce this output in the file:
+ * \code
+ * Error code,Error text
+ * 21,Unexpected position of encoder number 3
+ * 46,"Error while trying to activate pump, please check on related errors"
+ * \endcode
+ *
+ * Notice that for the last line, the text is quoted, because it contains a comma.
+ *
+ * Again, to support encoding, Mdt::PlainText::QCsvFileWriter should be used:
+ * \code
+ * #include <Mdt/PlainText/QCsvFileWriter>
+ *
+ * int main()
+ * {
+ *   Mdt::PlainText::QCsvFileWriter writer;
+ *   writer.setFilePath("/some/path/to/file.csv");
+ *   writer.setFileEncoding("UTF-8");
+ *   writer.open();
+ *
+ *   writer.writeLine({"Code d'erreur","Texte"});
+ *   writer.writeLine({"21","Position inattendue de l'encoder No 3"});
+ *   writer.writeLine({"46","Erreur lors de la tentative d'activer la pompe, SVP se référer aux erreurs en relation"});
+ * }
+ * \endcode
+ *
+ * \section custom_csv_file_io Creating custom CSV file readers and writers
  *
  * \todo Document how to write a custom %CsvFileReader, with int, float, ... fields
  *  Also document some tricks to make rules work, as encountered by CSV grammar.
  *
- * Some CSV file writers can be used:
- * - Mdt::PlainText::CsvFileWriter
- * - Mdt::PlainText::QCsvFileWriter,
- *   which also supports reading files that have a different encoding than the machine locale one.
  *
  * To write CSV files, some fields, like text fields, should be coted in the file,
  * others, like numbers, should not.
+ *
+ * \todo explain how this quoting is done (parsing the given strings)
  *
  * A possible way to could be to define a custom record, for example:
  * \code
@@ -56,6 +157,8 @@
  * A other way could be to convert all our data to its string representation,
  * then use Mdt::PlainText::CsvFileWriter with Mdt::PlainText::CsvGeneratorField,
  * which lets us tell if a field must be quoted or not in the resulting CSV file.
+ *
+ * \todo Also ref Mdt::PlainText::QCsvFileWriterTemplate
  *
  * \section support Some support helpers
  *
