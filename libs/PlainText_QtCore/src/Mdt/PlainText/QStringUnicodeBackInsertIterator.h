@@ -59,7 +59,7 @@ namespace Mdt{ namespace PlainText{
     /*! \brief Construct a back insert iterator to act on \a str
      */
     explicit QStringUnicodeBackInsertIterator(QString & str)
-     : mString(str)
+     : mString(&str)
     {
     }
 
@@ -83,7 +83,7 @@ namespace Mdt{ namespace PlainText{
      */
     QStringUnicodeBackInsertIterator & operator=(uint32_t codePoint)
     {
-      Impl::addCodePointToQString(codePoint, mString);
+      Impl::addCodePointToQString(codePoint, *mString);
 
       return *this;
     }
@@ -135,7 +135,7 @@ namespace Mdt{ namespace PlainText{
 
    private:
 
-    QString & mString;
+    QString *mString;
   };
 
 }} // namespace Mdt{ namespace PlainText{
