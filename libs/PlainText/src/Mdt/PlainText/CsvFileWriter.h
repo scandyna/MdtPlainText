@@ -29,7 +29,7 @@ namespace Mdt{ namespace PlainText{
    *
    * csvWriter.setFilePath("/some/path/to/file.csv");
    * csvWriter.open();
-   * csvWriter.appendLine({"A","B","C"});
+   * csvWriter.writeLine({"A","B","C"});
    * \endcode
    */
   class MDT_PLAINTEXT_EXPORT CsvFileWriter
