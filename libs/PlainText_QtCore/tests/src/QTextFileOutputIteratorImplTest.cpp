@@ -34,14 +34,14 @@ TEST_CASE("construct")
   QTemporaryFile file;
   REQUIRE( openTextFileForWrite(file) );
 
-  QTextFileOutputIteratorImpl it(&file, "UTF-8");
+  QTextFileOutputIteratorImpl it(file, "UTF-8");
 }
 
 TEST_CASE("put")
 {
   QTemporaryFile file;
   REQUIRE( openTextFileForWrite(file) );
-  QTextFileOutputIteratorImpl it(&file, "UTF-8");
+  QTextFileOutputIteratorImpl it(file, "UTF-8");
 
   SECTION("A")
   {

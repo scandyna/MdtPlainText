@@ -25,13 +25,12 @@
 
 namespace Mdt{ namespace PlainText{
 
-QTextFileOutputIteratorImpl::QTextFileOutputIteratorImpl(QFileDevice *file, const QByteArray & fileEncoding)
+QTextFileOutputIteratorImpl::QTextFileOutputIteratorImpl(QFileDevice & file, const QByteArray & fileEncoding)
   : QObject(nullptr),
-    mFile(file)
+    mFile(&file)
 {
-  assert( file != nullptr );
-  assert( file->isOpen() );
-  assert( fileOpenModeIsWritable(*file) );
+  assert( file.isOpen() );
+  assert( fileOpenModeIsWritable(file) );
 
   /*
    * Find a codec for requested encoding

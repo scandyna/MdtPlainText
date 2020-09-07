@@ -49,7 +49,7 @@ namespace Mdt{ namespace PlainText{
    * {
    *   // Error handling
    * }
-   * QTextFileUnicodeOutputIterator it(&file, "UTF-8");
+   * QTextFileUnicodeOutputIterator it(file, "UTF-8");
    * std::fill_n(it, 5, U'𝛀');
    * \endcode
    */
@@ -83,17 +83,13 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Construct a iterator that acts on a file
      *
-     * \pre \a file must be a valid pointer
      * \pre \a file must be open with a writable mode
      * \exception QTextCodecNotFoundError
-     *
-     * \todo Should take file by reference, see https://en.cppreference.com/w/cpp/iterator/ostreambuf_iterator/ostreambuf_iterator
      */
-    explicit QTextFileUnicodeOutputIterator(QFileDevice *file, const QByteArray & fileEncoding)
+    explicit QTextFileUnicodeOutputIterator(QFileDevice & file, const QByteArray & fileEncoding)
      : mIt(file, fileEncoding)
     {
-      assert( file != nullptr );
-      assert( file->isOpen() );
+      assert( file.isOpen() );
     }
 
     /*! \brief Append \a codePoint to the string

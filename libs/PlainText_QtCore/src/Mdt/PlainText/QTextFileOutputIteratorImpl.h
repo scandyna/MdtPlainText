@@ -46,11 +46,10 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Constructor
      *
-     * \pre \a file must be a valid pointer
      * \pre \a file must be open with a writable mode
      * \exception QTextCodecNotFoundError
      */
-    explicit QTextFileOutputIteratorImpl(QFileDevice *file, const QByteArray & fileEncoding);
+    explicit QTextFileOutputIteratorImpl(QFileDevice & file, const QByteArray & fileEncoding);
 
     QTextFileOutputIteratorImpl(const QTextFileOutputIteratorImpl &) = delete;
     QTextFileOutputIteratorImpl & operator=(const QTextFileOutputIteratorImpl &) = delete;

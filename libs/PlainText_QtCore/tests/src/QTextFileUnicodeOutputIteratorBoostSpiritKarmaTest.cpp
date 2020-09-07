@@ -27,7 +27,7 @@ template<typename Rule>
 bool generateToFile(const QString & source, const Rule & rule, QFile & file)
 {
   const Mdt::PlainText::QStringUnicodeView sourceContainer(source);
-  Mdt::PlainText::QTextFileUnicodeOutputIterator fileIterator(&file, "UTF-8");
+  Mdt::PlainText::QTextFileUnicodeOutputIterator fileIterator(file, "UTF-8");
 
   return boost::spirit::karma::generate(fileIterator, rule, sourceContainer);
 }

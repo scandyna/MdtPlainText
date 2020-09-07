@@ -74,18 +74,14 @@ namespace Mdt{ namespace PlainText{
 
     /*! \brief Construct a iterator that acts on a file
      *
-     * \pre \a file must be a valid pointer
      * \pre \a file must be open with a writable mode
      * \exception QTextCodecNotFoundError
-     *
-     * \todo Should take file by reference, see https://en.cppreference.com/w/cpp/iterator/ostreambuf_iterator/ostreambuf_iterator
      */
-    explicit QTextFileOutputIterator(QFileDevice *file, const QByteArray & fileEncoding)
+    explicit QTextFileOutputIterator(QFileDevice & file, const QByteArray & fileEncoding)
      : mImpl( std::make_shared<QTextFileOutputIteratorImpl>(file, fileEncoding) )
     {
-      assert( file != nullptr );
-      assert( file->isOpen() );
-      assert( fileOpenModeIsWritable(*file) );
+      assert( file.isOpen() );
+      assert( fileOpenModeIsWritable(file) );
     }
 
     /*! \brief Append a code unit to the file

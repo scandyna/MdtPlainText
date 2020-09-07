@@ -29,7 +29,7 @@ TEST_CASE("Non existing codec")
   QTemporaryFile file;
   REQUIRE( openTextFileForWrite(file) );
 
-  REQUIRE_THROWS_AS( QTextFileOutputIteratorImpl(&file, "SomeUnknownEncoding") , QTextCodecNotFoundError );
+  REQUIRE_THROWS_AS( QTextFileOutputIteratorImpl(file, "SomeUnknownEncoding") , QTextCodecNotFoundError );
 }
 
 TEST_CASE("Close file while writing")
@@ -37,7 +37,7 @@ TEST_CASE("Close file while writing")
   QTemporaryFile file;
   REQUIRE( openTextFileForWrite(file) );
 
-  QTextFileOutputIteratorImpl it(&file, "UTF-8");
+  QTextFileOutputIteratorImpl it(file, "UTF-8");
 
   file.close();
   REQUIRE_THROWS_AS( it.put(u'A'), QFileWriteError );

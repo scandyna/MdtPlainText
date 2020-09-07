@@ -229,7 +229,7 @@ namespace Mdt{ namespace PlainText{
         throw QFileOpenError(what);
       }
 
-      mFileIterator = iterator(&mFile, mFileEncoding);
+      mFileIterator = iterator(mFile, mFileEncoding);
     }
 
     /*! \brief Check if this file writer is open

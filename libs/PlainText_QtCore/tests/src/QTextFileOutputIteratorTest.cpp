@@ -28,7 +28,7 @@ TEST_CASE("construct")
   QTemporaryFile file;
   REQUIRE( openTextFileForWrite(file) );
 
-  QTextFileOutputIterator it(&file, "UTF-8");
+  QTextFileOutputIterator it(file, "UTF-8");
 }
 
 /*
@@ -43,7 +43,7 @@ TEST_CASE("copy_construct")
   QTemporaryFile file;
   REQUIRE( openTextFileForWrite(file) );
 
-  QTextFileOutputIterator a(&file, "UTF-8");
+  QTextFileOutputIterator a(file, "UTF-8");
 
   QTextFileOutputIterator b(a);
 }
@@ -58,7 +58,7 @@ TEST_CASE("assign")
 {
   QTemporaryFile file;
   REQUIRE( openTextFileForWrite(file) );
-  QTextFileOutputIterator it(&file, "UTF-8");
+  QTextFileOutputIterator it(file, "UTF-8");
 
   SECTION("A")
   {
@@ -94,7 +94,7 @@ TEST_CASE("dereference")
 {
   QTemporaryFile file;
   REQUIRE( openTextFileForWrite(file) );
-  QTextFileOutputIterator it(&file, "UTF-8");
+  QTextFileOutputIterator it(file, "UTF-8");
 
   SECTION("A")
   {
@@ -107,7 +107,7 @@ TEST_CASE("pre-increment")
 {
   QTemporaryFile file;
   REQUIRE( openTextFileForWrite(file) );
-  QTextFileOutputIterator it(&file, "UTF-8");
+  QTextFileOutputIterator it(file, "UTF-8");
 
   SECTION("A")
   {
@@ -120,7 +120,7 @@ TEST_CASE("post-increment")
 {
   QTemporaryFile file;
   REQUIRE( openTextFileForWrite(file) );
-  QTextFileOutputIterator it(&file, "UTF-8");
+  QTextFileOutputIterator it(file, "UTF-8");
 
   SECTION("A")
   {
