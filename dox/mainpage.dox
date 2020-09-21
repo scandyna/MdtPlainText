@@ -37,6 +37,8 @@
  *
  * \section csv_file_io Reading and writing CSV files
  *
+ * \subsection read_csv_file Read CSV file
+ *
  * To read a CSV file, Mdt::PlainText::CsvFileReader can be used:
  * \code
  * #include <Mdt/PlainText/CsvFileReader>
@@ -88,6 +90,8 @@
  *   }
  * }
  * \endcode
+ *
+ * \subsection write_csv_file Write CSV file
  *
  * To write a CSV file, Mdt::PlainText::CsvFileWriter can be used:
  * \code
