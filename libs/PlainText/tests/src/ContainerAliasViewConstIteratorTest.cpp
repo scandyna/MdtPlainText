@@ -175,7 +175,21 @@ TEST_CASE("default_construct")
   IntListAsDoubleListIterator a( list.cbegin() );
 
   IntListAsDoubleListIterator b;
-  REQUIRE( a != b );
+  /*
+   * From here: https://en.cppreference.com/w/cpp/named_req/ForwardIterator
+   * A value-initialized LegacyForwardIterator behaves like the past-the-end iterator
+   * of some unspecified empty container.
+   *
+   * Comparing it with a iterator to a existing container is undefined.
+   * On MSVC, debug build, this fires a assertion
+   * (a and b are not from the same container)
+   *
+   *The only thing we can do is assign a valid one to it.
+   */
+  //REQUIRE( a != b );
+
+  b = a;
+  REQUIRE( a == b );
 }
 
 TEST_CASE("multipass")
