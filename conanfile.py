@@ -49,6 +49,10 @@ class MdtPlainTextConan(ConanFile):
       self.requires("qt/5.12.7@bincrafters/stable")
 
 
+  def package_id(self):
+    del self.info.options.build_tests
+
+
   def configure_cmake(self):
     cmake = CMake(self)
     cmake.definitions["FROM_CONAN_PROJECT_VERSION"] = self.version
