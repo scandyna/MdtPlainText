@@ -129,27 +129,31 @@ test_linux_clang6.0_x86_64_libc++_release:
   extends: .test_linux
 
 
+.deploy_linux_conan:
+  image: registry.gitlab.com/scandyna/docker-images/ubuntu-18.04-cpp-gui:latest
+  extends: .deploy_conan
+
 
 deploy_linux_gcc7_x86_64_debug:
   dependencies:
   variables:
     CONAN_PROFILE: linux_gcc7_x86_64
     BUILD_TYPE: Debug
-  extends: .deploy_conan
+  extends: .deploy_linux_conan
 
 deploy_linux_gcc7_x86_64_release:
   dependencies:
   variables:
     CONAN_PROFILE: linux_gcc7_x86_64
     BUILD_TYPE: Release
-  extends: .deploy_conan
+  extends: .deploy_linux_conan
 
 deploy_linux_gcc7_x86_64_relwithdebinfo:
   dependencies:
   variables:
     CONAN_PROFILE: linux_gcc7_x86_64
     BUILD_TYPE: RelWithDebInfo
-  extends: .deploy_conan
+  extends: .deploy_linux_conan
 
 
 ###############################
