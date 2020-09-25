@@ -357,14 +357,14 @@ deploy_windows_msvc_x86_64_release:
     QT_PREFIX_PATH: "C:/Qt/5.14.2/msvc2017_64"
   extends: .deploy_windows_conan
 
-deploy_windows_msvc_x86_64_relwithdebinfo:
-  image: registry.gitlab.com/scandyna/docker-images/windows-cpp-qt-5.14.2-win64_msvc2017_64:latest
-  variables:
-    CONAN_PROFILE: windows_msvc16_x86_64
-    BUILD_TYPE: RelWithDebInfo
-    BOOST_PREFIX_PATH: "C:/Libraries/boost_1_73_0"
-    QT_PREFIX_PATH: "C:/Qt/5.14.2/msvc2017_64"
-  extends: .deploy_windows_conan
+#deploy_windows_msvc_x86_64_relwithdebinfo:
+  #image: registry.gitlab.com/scandyna/docker-images/windows-cpp-qt-5.14.2-win64_msvc2017_64:latest
+  #variables:
+    #CONAN_PROFILE: windows_msvc16_x86_64
+    #BUILD_TYPE: RelWithDebInfo
+    #BOOST_PREFIX_PATH: "C:/Libraries/boost_1_73_0"
+    #QT_PREFIX_PATH: "C:/Qt/5.14.2/msvc2017_64"
+  #extends: .deploy_windows_conan
 
 ###############################
 # API doc
