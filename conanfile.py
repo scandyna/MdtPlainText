@@ -17,7 +17,7 @@ class MdtPlainTextConan(ConanFile):
                      "use_conan_boost": False,
                      "use_conan_qt": False,
                      "build_tests": False}
-  requires = "MdtCMakeModules/[>=0.14.9]@scandyna/testing"
+  requires = "MdtCMakeModules/[0.14.12]@scandyna/testing"
   generators = "cmake", "cmake_paths", "virtualenv"
   exports_sources = "libs/PlainText/*", "libs/PlainText_QtCore/*", "CMakeLists.txt", "conanfile.py", "LICENSE.txt", "COPYING", "COPYING.LESSER"
   # If no_copy_source is False, conan copies sources to build directory and does in-source build,
