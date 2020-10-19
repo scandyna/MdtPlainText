@@ -13,7 +13,7 @@
 
 .windows_runner:
   tags:
-    - windows10-T560-docker
+    - docker-windows
 
 
 stages:
