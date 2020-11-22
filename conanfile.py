@@ -11,13 +11,11 @@ class MdtPlainTextConan(ConanFile):
   settings = "os", "compiler", "build_type", "arch"
   options = {"shared": [True, False],
              "use_conan_boost": [True, False],
-             "use_conan_qt": [True, False],
-             "build_tests": [True, False]}
+             "use_conan_qt": [True, False]}
   default_options = {"shared": True,
                      "use_conan_boost": False,
-                     "use_conan_qt": False,
-                     "build_tests": False}
-  requires = "MdtCMakeModules/[0.14.12]@scandyna/testing"
+                     "use_conan_qt": False}
+  build_requires = "MdtCMakeModules/[>=0.14.12]@scandyna/testing", "Catch2/[>=2.11.1]@catchorg/stable"
   generators = "cmake", "cmake_paths", "virtualenv"
   exports_sources = "libs/PlainText/*", "libs/PlainText_QtCore/*", "CMakeLists.txt", "conanfile.py", "LICENSE.txt", "COPYING", "COPYING.LESSER"
   # If no_copy_source is False, conan copies sources to build directory and does in-source build,
@@ -37,9 +35,6 @@ class MdtPlainTextConan(ConanFile):
 
   def requirements(self):
 
-    if self.options.build_tests:
-      self.requires("Catch2/[>=2.11.1]@catchorg/stable")
-
     if self.options.use_conan_boost:
       self.requires("boost/[>=1.65.0]@conan/stable")
 
@@ -47,10 +42,6 @@ class MdtPlainTextConan(ConanFile):
     # As workaround, try fix a known version that we can build
     if self.options.use_conan_qt:
       self.requires("qt/5.12.7@bincrafters/stable")
-
-
-  def package_id(self):
-    del self.info.options.build_tests
 
 
   def configure_cmake(self):

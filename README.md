@@ -98,7 +98,6 @@ Here are the available options:
 | shared           | True    |  [True, False]   | Build as shared library |
 | use_conan_boost  | False   |  [True, False]   | Use Boost as conan dependency |
 | use_conan_qt     | False   |  [True, False]   | Use [conan Qt](https://github.com/bincrafters/conan-qt) as conan dependency |
-| build_tests      | False   |  [True, False]   | If True, will also require Catch2 |
 
 ### Using Conan profiles
 
