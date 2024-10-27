@@ -4,7 +4,7 @@ from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
 import os
 
 class MdtPlainTextConan(ConanFile):
-  name = "MdtPlainText"
+  name = "mdtplaintext"
   license = "BSD 3-Clause"
   url = "https://gitlab.com/scandyna/mdtplaintext"
   description = "Provides some libraries to read and write simple plain text using the boost Spirit library, typically CSV."
