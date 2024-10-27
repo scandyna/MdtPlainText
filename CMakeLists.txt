@@ -1,24 +1,15 @@
 ##############################################################
-#  Copyright Philippe Steinmann 2020 - 2020.
+#  Copyright Philippe Steinmann 2020 - 2024.
 #  Distributed under the Boost Software License, Version 1.0.
 #  (See accompanying file LICENSE.txt or copy at
 #  https://www.boost.org/LICENSE_1_0.txt)
 ##############################################################
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 
 # CMAKE_PREFIX_PATH is empty before any call to project()
 # Because set_project_version() does not exist,
 # we call the project command twice (is there a cleaner solution?)
 project(MdtPlainText)
-
-#######################
-# Conan
-#######################
-
-if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-  include("${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-  conan_basic_setup(NO_OUTPUT_DIRS)
-endif()
 
 #######################################################
 # Project definition with versionning got from git tag
@@ -33,12 +24,14 @@ set(INITIAL_PROJECT_VERSION)
 if(FROM_CONAN_PROJECT_VERSION)
   set(INITIAL_PROJECT_VERSION ${FROM_CONAN_PROJECT_VERSION})
 else()
-  mdt_cmake_project_version_from_git_tag(INITIAL_PROJECT_VERSION DEFAULT_VERSION 0.1.0)
+  mdt_cmake_project_version_from_git_tag(INITIAL_PROJECT_VERSION DEFAULT_VERSION 0.0.0)
 endif()
 
 project(MdtPlainText VERSION ${INITIAL_PROJECT_VERSION} LANGUAGES CXX)
 
 unset(INITIAL_PROJECT_VERSION)
+
+message(DEBUG "PROJECT_VERSION: ${PROJECT_VERSION}")
 
 #######################
 # Options
@@ -127,17 +120,6 @@ endif()
 # endif()
 
 #######################
-# Paths to dependencies
-#######################
-
-include(AddQt5ToCMakePrefixPath)
-
-if(ENABLE_QT_SUPPORT)
-  set(QT_PREFIX_PATH CACHE PATH "Path to the root of Qt distribution. (For example: /opt/qt/Qt5/5.13.0/gcc_64). If empty, system distribution is considered.")
-  add_qt5_to_cmake_prefix_path("${QT_PREFIX_PATH}")
-endif()
-
-#######################
 # Dependencies
 #######################
 
@@ -177,16 +159,16 @@ endif()
 #######################
 
 if(SANITIZER_ENABLE_ADDRESS)
-  mdt_build_with_address_sanitizer(BUILD_TYPES Instrumented)
+  mdt_build_with_address_sanitizer(BUILD_TYPES Instrumented RelWithDebInfo Debug)
 endif()
 if(SANITIZER_ENABLE_MEMORY)
-  mdt_build_with_memory_sanitizer(BUILD_TYPES Instrumented)
+  mdt_build_with_memory_sanitizer(BUILD_TYPES Instrumented RelWithDebInfo Debug)
 endif()
 if(SANITIZER_ENABLE_UNDEFINED)
-  mdt_build_with_undefined_sanitizer(BUILD_TYPES Instrumented)
+  mdt_build_with_undefined_sanitizer(BUILD_TYPES Instrumented RelWithDebInfo Debug)
 endif()
 if(SANITIZER_ENABLE_THREAD)
-  mdt_build_with_thread_sanitizer(BUILD_TYPES Instrumented)
+  mdt_build_with_thread_sanitizer(BUILD_TYPES Instrumented RelWithDebInfo Debug)
 endif()
 
 #######################

@@ -85,19 +85,13 @@ This is the recommended way.
 MdtPlainText has those dependencies:
  - [mdt-cmake-modules](https://gitlab.com/scandyna/mdt-cmake-modules)
  - boost
- - Qt5
-
-Qt5 can be installed using Conan, which can be usefull
-if the required binaries are not distributed by Qt.
-If you use the native compiler, it is possible to not manage Qt as Conan dependency.
+ - Qt
 
 Here are the available options:
 
 | Option           | Default | Possible Values  | Explanations |
 | -----------------|:------- |:----------------:|--------------|
 | shared           | True    |  [True, False]   | Build as shared library |
-| use_conan_boost  | False   |  [True, False]   | Use Boost as conan dependency |
-| use_conan_qt     | False   |  [True, False]   | Use [conan Qt](https://github.com/bincrafters/conan-qt) as conan dependency |
 
 ### Using Conan profiles
 
