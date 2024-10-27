@@ -17,7 +17,7 @@ include:
   - component: $CI_SERVER_FQDN/scandyna/gitlab-ci-cd-cpp-components/BuildApiDoc@0.0.12
     inputs:
       build_command: 'doxygen'
-    rules: *BuildDoc_rules
+      rules: *BuildDoc_rules
 
 
 pages:
