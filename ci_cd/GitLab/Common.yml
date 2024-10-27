@@ -1,0 +1,9 @@
+
+.BuildAndTest_rules: &BuildAndTest_rules
+  - changes:
+    - CMakeLists.txt
+    - conanfile.py
+    - libs/**/*
+    - .gitlab-ci.yml
+    - ci_cd/GitLab/*
+    when: on_success

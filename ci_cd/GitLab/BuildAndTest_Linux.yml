@@ -1,5 +1,6 @@
 
 include:
+  - local: 'ci_cd/GitLab/Common.yml'
   - component: $CI_SERVER_FQDN/scandyna/gitlab-ci-cd-cpp-components/BuildAndTest_Ubuntu-18-04_gcc8_x86_64@0.0.12
     inputs:
       rules: *BuildAndTest_rules
