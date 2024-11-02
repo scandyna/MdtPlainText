@@ -52,6 +52,9 @@ mdt_set_available_build_types(Release Debug RelWithDebInfo MinSizeRel Instrument
 option(WARNING_AS_ERROR "Threat warnings as errors" OFF)
 option(BOOST_SPIRIT_DEBUG "Enable Boost Spirit debug" OFF)
 option(ENABLE_QT_SUPPORT "Enable Qt support" ON)
+# If we build packages (f.ex. Conan packages), the PlainText library will be available as package
+# We don't want to embed PlainText into the PlainText_QtCore package
+option(USE_PACKAGED_PLAIN_TEXT "Use the packaged PlainText library" OFF)
 
 # Provide LPO/LTO option if supported
 # Note: CMake before 3.9 does only support Intel compiler on Linux.
@@ -130,12 +133,16 @@ find_package(Boost REQUIRED)
 
 if(BUILD_TESTS OR BUILD_BENCHMARKS)
   find_package(Catch2 REQUIRED)
-  find_package(Qt5 COMPONENTS Test REQUIRED)
+  find_package(Qt5 REQUIRED COMPONENTS Test)
 endif()
 
 if(ENABLE_QT_SUPPORT)
   find_package(Threads REQUIRED)
-  find_package(Qt5 COMPONENTS Core REQUIRED)
+  find_package(Qt5 REQUIRED COMPONENTS Core)
+endif()
+
+if(USE_PACKAGED_PLAIN_TEXT)
+  find_package(Mdt${PROJECT_VERSION_MAJOR} REQUIRED COMPONENTS PlainText)
 endif()
 
 #######################
@@ -260,7 +267,9 @@ if(BUILD_TESTS)
   add_subdirectory(libs/TestLib)
 endif()
 
-add_subdirectory(libs/PlainText)
+if(NOT USE_PACKAGED_PLAIN_TEXT)
+  add_subdirectory(libs/PlainText)
+endif()
 
 if(ENABLE_QT_SUPPORT)
   add_subdirectory(libs/PlainText_QtCore)

@@ -9,3 +9,14 @@ include:
         - 'Debug'
       shared_libs:
         - 'True'
+  - component: $CI_SERVER_FQDN/scandyna/gitlab-ci-cd-cpp-components/Conan_CreateAndTest_Ubuntu-18-04_gcc8_x86_64@0.0.12
+    inputs:
+      job_name_suffix: '_Tier2'
+      components:
+        - 'mdtplaintext_qtcore'
+      build_types:
+        - 'Debug'
+      shared_libs:
+        - 'True'
+      needs:
+        - 'Conan_CreateAndTest_Ubuntu-18-04_gcc8_x86_64_Tier1'

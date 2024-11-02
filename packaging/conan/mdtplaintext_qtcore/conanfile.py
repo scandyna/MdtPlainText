@@ -4,11 +4,11 @@ from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
 from conan.tools.files import copy
 import os
 
-class MdtPlainTextConan(ConanFile):
-  name = "mdtplaintext"
+class MdtPlainTextQtCoreConan(ConanFile):
+  name = "mdtplaintext_qtcore"
   license = "BSD 3-Clause"
   url = "https://gitlab.com/scandyna/mdtplaintext"
-  description = "Provides some libraries to read and write simple plain text using the boost Spirit library, typically CSV."
+  description = "Provides some libraries to read and write simple plain text using the boost Spirit library and Qt, typically CSV."
   settings = "os", "compiler", "build_type", "arch"
   options = {
     "shared": [True, False]
@@ -28,7 +28,8 @@ class MdtPlainTextConan(ConanFile):
 
   def requirements(self):
     self.requires("MdtCMakeConfig/0.0.5@scandyna/testing")
-    self.requires("boost/1.72.0")
+    self.requires(f"mdtplaintext/{self.version}@scandyna/testing")
+    self.requires("qt/5.15.6")
 
   def build_requirements(self):
     self.test_requires("MdtCMakeModules/0.19.3@scandyna/testing")
@@ -39,8 +40,8 @@ class MdtPlainTextConan(ConanFile):
     copy(self, "COPYING", source_root, self.export_sources_folder)
     copy(self, "COPYING.LESSER", source_root, self.export_sources_folder)
     copy(self, "LICENSE.txt", source_root, self.export_sources_folder)
-    copy(self, "libs/PlainText/CMakeLists.txt", source_root, self.export_sources_folder)
-    copy(self, "libs/PlainText/src/*", source_root, self.export_sources_folder)
+    copy(self, "libs/PlainText_QtCore/CMakeLists.txt", source_root, self.export_sources_folder)
+    copy(self, "libs/PlainText_QtCore/src/*", source_root, self.export_sources_folder)
 
   def layout(self):
     cmake_layout(self)
@@ -48,7 +49,8 @@ class MdtPlainTextConan(ConanFile):
   def generate(self):
     tc = CMakeToolchain(self)
     tc.variables["FROM_CONAN_PROJECT_VERSION"] = self.version
-    tc.variables["ENABLE_QT_SUPPORT"] = "OFF"
+    tc.variables["ENABLE_QT_SUPPORT"] = "ON"
+    tc.variables["USE_PACKAGED_PLAIN_TEXT"] = "ON"
     #tc.variables["CMAKE_MESSAGE_LOG_LEVEL"] = "DEBUG"
     #tc.variables["INSTALL_CONAN_PACKAGE_FILES"] = "ON"
     tc.generate()
@@ -63,7 +65,6 @@ class MdtPlainTextConan(ConanFile):
     cmake.install()
 
   def package_info(self):
-    self.cpp_info.set_property("cmake_file_name", "Mdt0PlainText")
-    self.cpp_info.set_property("cmake_target_name", "Mdt0::PlainText")
-    self.cpp_info.libs = ["Mdt0PlainText"]
-    self.cpp_info.defines = ["BOOST_SPIRIT_UNICODE"]
+    self.cpp_info.set_property("cmake_file_name", "Mdt0PlainText_QtCore")
+    self.cpp_info.set_property("cmake_target_name", "Mdt0::PlainText_QtCore")
+    self.cpp_info.libs = ["Mdt0PlainText_QtCore"]
