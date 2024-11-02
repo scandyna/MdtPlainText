@@ -37,16 +37,51 @@ For a overview how to install them, see https://gitlab.com/scandyna/build-and-in
 
 Update your CMakeLists.txt to use the required libraries:
 ```cmake
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 project(MyApp)
 
-find_package(Threads REQUIRED)
-find_package(Boost REQUIRED)
-find_package(Qt5 COMPONENTS Core Gui REQUIRED)
-find_package(Mdt0 COMPONENTS PlainText_QtCore REQUIRED)
+find_package(Mdt0 REQUIRED COMPONENTS PlainText)
+
+add_executable(myApp myApp.cpp)
+target_link_libraries(myApp Mdt0::PlainText)
+```
+
+If you use Qt, you can use `PlainText_QtCore`:
+```cmake
+cmake_minimum_required(VERSION 3.15)
+project(MyApp)
+
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Mdt0 REQUIRED COMPONENTS PlainText_QtCore)
 
 add_executable(myApp myApp.cpp)
 target_link_libraries(myApp Mdt0::PlainText_QtCore)
+```
+
+## Project using Conan
+
+If you use [Conan](https://conan.io/),
+add MdtPlainText as requirement in your `conanfile.txt`:
+```conan
+[requires]
+mdtplaintext/x.y.z@scandyna/testing
+
+[generators]
+CMakeDeps
+CMakeToolchain
+VirtualBuildEnv
+```
+
+If you need better unicode support,
+you may choose the Qt based one:
+```conan
+[requires]
+mdtplaintext_qtcore/x.y.z@scandyna/testing
+
+[generators]
+CMakeDeps
+CMakeToolchain
+VirtualBuildEnv
 ```
 
 # Build and install MdtPlainText
