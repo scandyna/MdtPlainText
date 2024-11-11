@@ -27,7 +27,7 @@ class MdtPlainTextConan(ConanFile):
       self.version = "0.0.0"
 
   def requirements(self):
-    self.requires("MdtCMakeConfig/0.0.5@scandyna/testing")
+    self.requires("mdtcmakeconfig/0.1.0@scandyna/testing")
     self.requires("boost/1.72.0")
 
   def build_requirements(self):

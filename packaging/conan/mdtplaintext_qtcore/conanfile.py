@@ -27,7 +27,7 @@ class MdtPlainTextQtCoreConan(ConanFile):
       self.version = "0.0.0"
 
   def requirements(self):
-    self.requires("MdtCMakeConfig/0.0.5@scandyna/testing")
+    self.requires("mdtcmakeconfig/0.1.0@scandyna/testing")
     self.requires(f"mdtplaintext/{self.version}@scandyna/testing")
     self.requires("qt/5.15.6")
 
