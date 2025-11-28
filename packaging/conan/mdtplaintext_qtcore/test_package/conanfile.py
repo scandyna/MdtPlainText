@@ -7,11 +7,14 @@ class MdtPlainTextTestpackageConan(ConanFile):
   settings = "os", "compiler", "build_type", "arch"
   generators = "CMakeDeps", "VirtualBuildEnv"
 
+  def layout(self):
+    cmake_layout(self)
+
   def requirements(self):
     self.requires(self.tested_reference_str)
 
   def build_requirements(self):
-    self.test_requires("MdtCMakeModules/0.19.3@scandyna/testing")
+    self.test_requires("mdtcmakemodules/0.21.0@scandyna/testing")
 
   def generate(self):
     tc = CMakeToolchain(self)

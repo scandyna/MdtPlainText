@@ -136,7 +136,7 @@ This permits to have personal binary repository,
 avoiding to recompile everything everytime.
 This becomes more important if Qt is managed by Conan.
 
-This requires modifications in the `settings.yml` Conan configuration,
+This requires modifications in the `settings_user.yml` Conan configuration,
 and also some profile files.
 See my [conan-config repository](https://gitlab.com/scandyna/conan-config) for more informations.
 
@@ -196,114 +196,10 @@ cmake --build . --target INSTALL
 
 # Work on MdtPlainText
 
-This chapter is like the previous (Install MdtPlainText),
-but covers some more details, like the dependencies and options to run the unit tests.
+## Build
 
-## Required tools and libraries
+See [BUILD](BUILD.md).
 
-The dependencies are the same as in previous chapter plus those:
- - [Catch2](https://github.com/catchorg/Catch2)
+## Create Conan package
 
-If you use Conan, nothing has to be installed explicitely.
-Otherwise, see the documentation of the dependencies.
-
-
-## Build on Linux with the native compiler
-
-Install the dependencies:
-```bash
-conan install -s build_type=Debug -o build_tests=True --build=missing ..
-```
-
-Configure MdtPlainText:
-```bash
-cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON ..
-cmake-gui .
-```
-
-To build , run:
-```cmd
-cmake --build .
-```
-
-## Build on Linux with Clang and libc++
-
-Install the dependencies if Qt is used:
-```bash
-conan install --profile linux_clang6.0_x86_64_libc++_qt_gui_modules -s build_type=Debug -o use_conan_qt=True -o build_tests=True --build=missing ..
-```
-
-Activate the build environment:
-```bash
-source activate.sh
-```
-
-Configure MdtPlainText:
-```bash
-cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON ..
-cmake-gui .
-```
-
-Build and run the tests:
-```bash
-cmake --build .
-ctest . --output-on-failure
-```
-
-To restore the standard environment:
-```bash
-source deactivate.sh
-```
-
-## Configure and build with ThreadSanitizer
-
-Gcc supports ThreadSanitizer, but Clang seems to give less false positive.
-This is what I experieced on Ubuntu 18.04 with those default compilers.
-
-Install the required dependencies:
-```bash
-conan install --profile linux_clang6.0_x86_64_libc++_tsan_qt_gui_modules -o use_conan_qt=True -o build_tests=True  ..
-```
-
-Activate the build environment:
-```bash
-source activate.sh
-```
-
-Configure MdtPlainText:
-```bash
-cmake -DCMAKE_BUILD_TYPE=Instrumented -DSANITIZER_ENABLE_THREAD=ON ..
-cmake-gui .
-```
-
-Build and run the tests:
-```bash
-cmake --build . --config Instrumented
-ctest . --output-on-failure -C Instrumented
-```
-
-To restore the standard environment:
-```bash
-source deactivate.sh
-```
-
-# Create a Conan package
-
-The package version is picked up from git tag.
-If working on MdtPlainText, go to the root of the source tree:
-```bash
-git tag x.y.z
-conan create . scandyna/testing --profile $CONAN_PROFILE -s build_type=$BUILD_TYPE
-```
-
-Above examples will generate a package that uses the Qt and boost version that are installed on the system,
-or passed to the `CMAKE_PREFIX_PATH` of your build.
-
-To create packages that depend on Conan Qt and boost:
-```bash
-conan create . scandyna/testing -o MdtPlainText:use_conan_qt=True -o MdtPlainText:use_conan_boost=True
-```
-
-Because Qt offers binary compatibility,
-it should not be required to create package for each minor Qt version,
-but more a package per compiler and other things that breaks binary compatibility.
+See [README](packaging/conan/README.md) in the conan packaging folder.

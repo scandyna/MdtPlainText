@@ -10,6 +10,7 @@ class MdtPlainTextConan(ConanFile):
   url = "https://gitlab.com/scandyna/mdtplaintext"
   description = "Provides some libraries to read and write simple plain text using the boost Spirit library, typically CSV."
   settings = "os", "compiler", "build_type", "arch"
+  package_type = "library"
   options = {
     "shared": [True, False]
   }
@@ -20,18 +21,18 @@ class MdtPlainTextConan(ConanFile):
 
   # See: https://docs.conan.io/en/latest/reference/conanfile/attributes.html#short-paths
   # Should only be enabled if building with MSVC on Windows causes problems
-  short_paths = False
+  # short_paths = False
 
   def set_version(self):
     if not self.version:
       self.version = "0.0.0"
 
   def requirements(self):
-    self.requires("mdtcmakeconfig/0.1.0@scandyna/testing")
-    self.requires("boost/1.72.0")
+    self.requires("mdtcmakeconfig/0.2.3@scandyna/testing")
+    self.requires("boost/1.88.0")
 
   def build_requirements(self):
-    self.test_requires("MdtCMakeModules/0.19.3@scandyna/testing")
+    self.test_requires("mdtcmakemodules/0.21.0@scandyna/testing")
 
   def export_sources(self):
     source_root = os.path.join(self.recipe_folder, "../../../")

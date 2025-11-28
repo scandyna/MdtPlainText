@@ -10,6 +10,7 @@ class MdtPlainTextQtCoreConan(ConanFile):
   url = "https://gitlab.com/scandyna/mdtplaintext"
   description = "Provides some libraries to read and write simple plain text using the boost Spirit library and Qt, typically CSV."
   settings = "os", "compiler", "build_type", "arch"
+  package_type = "library"
   options = {
     "shared": [True, False]
   }
@@ -20,19 +21,20 @@ class MdtPlainTextQtCoreConan(ConanFile):
 
   # See: https://docs.conan.io/en/latest/reference/conanfile/attributes.html#short-paths
   # Should only be enabled if building with MSVC on Windows causes problems
-  short_paths = False
+  # short_paths = False
 
   def set_version(self):
     if not self.version:
       self.version = "0.0.0"
 
   def requirements(self):
-    self.requires("mdtcmakeconfig/0.1.0@scandyna/testing")
-    self.requires(f"mdtplaintext/{self.version}@scandyna/testing")
-    self.requires("qt/5.15.6")
+    self.requires("mdtcmakeconfig/0.2.3@scandyna/testing")
+    self.requires(f"mdtplaintext/{self.version}@scandyna/testing", transitive_headers=True, transitive_libs=True)
+    self.requires("qt/5.15.16", transitive_headers=True, transitive_libs=True)
+    self.requires("boost/1.88.0", transitive_headers=True)
 
   def build_requirements(self):
-    self.test_requires("MdtCMakeModules/0.19.3@scandyna/testing")
+    self.test_requires("mdtcmakemodules/0.21.0@scandyna/testing")
 
   def export_sources(self):
     source_root = os.path.join(self.recipe_folder, "../../../")

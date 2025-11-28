@@ -14,12 +14,12 @@ class MdtPlainTextConan(ConanFile):
   generators = "CMakeDeps", "VirtualBuildEnv"
 
   def requirements(self):
-    self.requires("boost/1.72.0")
-    self.requires("qt/5.15.6")
+    self.requires("boost/1.88.0")
+    self.requires("qt/5.15.16")
 
   def build_requirements(self):
-    self.test_requires("catch2/2.13.9")
-    self.test_requires("MdtCMakeModules/0.19.3@scandyna/testing")
+    self.test_requires("catch2/2.13.10")
+    self.test_requires("mdtcmakemodules/0.21.0@scandyna/testing")
 
   def generate(self):
     tc = CMakeToolchain(self)
