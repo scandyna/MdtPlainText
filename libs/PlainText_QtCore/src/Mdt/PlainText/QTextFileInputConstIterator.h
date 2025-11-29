@@ -3,7 +3,7 @@
  ** MdtPlainText - A C++ library to read and write simple plain text
  ** using the boost Spirit library.
  **
- ** Copyright (C) 2020-2020 Philippe Steinmann.
+ ** Copyright (C) 2020-2025 Philippe Steinmann.
  **
  ** This program is free software: you can redistribute it and/or modify
  ** it under the terms of the GNU Lesser General Public License as published by
@@ -89,9 +89,13 @@ namespace Mdt{ namespace PlainText{
        assert( fileOpenModeIsReadable(file) );
      }
 
-    /*! \brief Copy construct a iterator from \a other
+    /*! \brief Copy construct an iterator from \a other
      */
     QTextFileInputConstIterator(const QTextFileInputConstIterator & other) noexcept = default;
+
+    /*! \brief Copy assign \a other to this iterator
+     */
+    QTextFileInputConstIterator & operator=(const QTextFileInputConstIterator & other) noexcept = default;
 
      /*! \brief Check if this iterator is a end-of-file iterator
       */
