@@ -3,7 +3,7 @@
  ** MdtPlainText - A C++ library to read and write simple plain text
  ** using the boost Spirit library.
  **
- ** Copyright (C) 2020-2020 Philippe Steinmann.
+ ** Copyright (C) 2020-2025 Philippe Steinmann.
  **
  ** This program is free software: you can redistribute it and/or modify
  ** it under the terms of the GNU Lesser General Public License as published by
@@ -39,7 +39,7 @@ bool writeTextFileUtf8(QFile & file, const QString & content)
   assert( file.isWritable() );
 
   QTextStream out(&file);
-  out.setCodec("UTF-8");
+  // out.setCodec("UTF-8");
   out << content;
 
   return true;
@@ -73,7 +73,7 @@ QString readTextFileUtf8(const QString & filePath)
   }
 
   QTextStream in(&file);
-  in.setCodec("UTF-8");
+  // in.setCodec("UTF-8");
 
   return in.readAll();
 }

@@ -60,7 +60,6 @@ target_link_libraries(Mdt_PlainText
     Boost::boost
 )
 
-target_compile_features(Mdt_PlainText PUBLIC cxx_std_14)
 
 if(BUILD_USE_IPO_LTO)
   set_target_properties(Mdt_PlainText

@@ -3,7 +3,7 @@
  ** MdtPlainText - A C++ library to read and write simple plain text
  ** using the boost Spirit library.
  **
- ** Copyright (C) 2020-2020 Philippe Steinmann.
+ ** Copyright (C) 2020-2025 Philippe Steinmann.
  **
  ** This program is free software: you can redistribute it and/or modify
  ** it under the terms of the GNU Lesser General Public License as published by
@@ -113,7 +113,13 @@ namespace Mdt{ namespace PlainText{
       std::vector<uint32_t> unicodeBuffer;
       std::copy( mBegin, mEnd, std::back_inserter(unicodeBuffer) );
 
-      return QString::fromUcs4( unicodeBuffer.data(), unicodeBuffer.size() );
+      /*
+       * FIXME: since Qt6, QString::romUcs4(const uint *, qsizetype) is deprecated.
+       * QString::fromUcs4(const char32_t *, qsizetype) should be used.
+       * I think, uint32_t is used here to work with Boost Spirit, the change may be big ?
+       * For now, do a cast like done in qstring.h in Qt6.
+       */
+      return QString::fromUcs4( reinterpret_cast<const char32_t *>( unicodeBuffer.data() ), unicodeBuffer.size() );
     }
 
    private:

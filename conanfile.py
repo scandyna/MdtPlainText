@@ -15,7 +15,7 @@ class MdtPlainTextConan(ConanFile):
 
   def requirements(self):
     self.requires("boost/1.88.0")
-    self.requires("qt/5.15.16")
+    self.requires("qt/6.8.3")
 
   def build_requirements(self):
     self.test_requires("catch2/2.13.10")

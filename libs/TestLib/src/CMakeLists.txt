@@ -1,5 +1,5 @@
 ##############################################################
-#  Copyright Philippe Steinmann 2020 - 2020.
+#  Copyright Philippe Steinmann 2020 - 2025.
 #  Distributed under the Boost Software License, Version 1.0.
 #  (See accompanying file LICENSE.txt or copy at
 #  https://www.boost.org/LICENSE_1_0.txt)
@@ -21,7 +21,7 @@ endif()
 
 target_link_libraries(Mdt_PlainText_TestLib
   PUBLIC
-    Mdt::PlainText Qt5::Core
+    Mdt::PlainText Qt6::Core
 )
 
 target_include_directories(Mdt_PlainText_TestLib

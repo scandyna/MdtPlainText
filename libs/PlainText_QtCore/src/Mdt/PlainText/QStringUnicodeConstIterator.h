@@ -68,6 +68,9 @@ namespace Mdt{ namespace PlainText{
       constexpr
       bool hasNext() const noexcept
       {
+        if(end == nullptr){
+          return false;
+        }
         return position < (end - 1);
       }
 
