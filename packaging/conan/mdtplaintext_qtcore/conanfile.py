@@ -30,11 +30,11 @@ class MdtPlainTextQtCoreConan(ConanFile):
   def requirements(self):
     self.requires("mdtcmakeconfig/0.2.3@scandyna/testing")
     self.requires(f"mdtplaintext/{self.version}@scandyna/testing", transitive_headers=True, transitive_libs=True)
-    self.requires("qt/5.15.16", transitive_headers=True, transitive_libs=True)
+    self.requires("qt/6.8.3", transitive_headers=True, transitive_libs=True)
     self.requires("boost/1.88.0", transitive_headers=True)
 
   def build_requirements(self):
-    self.test_requires("mdtcmakemodules/0.21.0@scandyna/testing")
+    self.test_requires("mdtcmakemodules/0.22.0@scandyna/testing")
 
   def export_sources(self):
     source_root = os.path.join(self.recipe_folder, "../../../")
