@@ -111,7 +111,7 @@ if(MSVC)
   #         See also: https://stackoverflow.com/questions/32098001/stdunique-ptr-pimpl-in-dll-generates-c4251-with-visual-studio
   add_compile_options(/wd4996 /wd4244 /wd4267 /wd4275 /wd4251)
 else()
-  add_compile_options(-Wall -Wextra -pedantic)
+  add_compile_options(-Wall -Wextra -pedantic) # TODO: add -Wconversion
   if(WARNING_AS_ERROR)
     add_compile_options(-Werror)
   endif()
@@ -133,12 +133,14 @@ find_package(Boost REQUIRED)
 
 if(BUILD_TESTS OR BUILD_BENCHMARKS)
   find_package(Catch2 REQUIRED)
-  find_package(Qt5 REQUIRED COMPONENTS Test)
+  find_package(Qt6 REQUIRED COMPONENTS Test)
 endif()
 
 if(ENABLE_QT_SUPPORT)
   find_package(Threads REQUIRED)
-  find_package(Qt5 REQUIRED COMPONENTS Core)
+  find_package(Qt6 REQUIRED COMPONENTS Core)
+  # https://gitlab.com/scandyna/mdtplaintext/-/issues/5
+  find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
 endif()
 
 if(USE_PACKAGED_PLAIN_TEXT)

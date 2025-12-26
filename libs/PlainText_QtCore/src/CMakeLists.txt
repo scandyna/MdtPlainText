@@ -1,5 +1,5 @@
 ##############################################################
-#  Copyright Philippe Steinmann 2020 - 2024.
+#  Copyright Philippe Steinmann 2020 - 2025.
 #  Distributed under the Boost Software License, Version 1.0.
 #  (See accompanying file LICENSE.txt or copy at
 #  https://www.boost.org/LICENSE_1_0.txt)
@@ -34,7 +34,9 @@ add_library(Mdt::PlainText_QtCore ALIAS Mdt_PlainText_QtCore)
 target_link_libraries(Mdt_PlainText_QtCore
   PUBLIC
     Boost::boost
-    Qt5::Core
+    Qt6::Core
+    # https://gitlab.com/scandyna/mdtplaintext/-/issues/5
+    Qt6::Core5Compat
 )
 
 if(USE_PACKAGED_PLAIN_TEXT)
